@@ -57,3 +57,31 @@
         (visibility public)
         (default ?NONE)))
 
+(defclass MAIN::executable-sequence
+  (is-a has-parent
+        has-title
+        has-scope))
+(defclass MAIN::executable-sequence-with-arguments
+  (is-a executable-sequence
+        has-arguments))
+; A site is a block of executable code which once left cannot be returned to from the point being left
+; It is an error to return to the site or fallthrough it. All execution flow must be explicitly handled. 
+; When the i960 starts up, it conceptually starts executing from a site. 
+;
+; Call sites must do everything manually so you enter them through normal branches or conditional jumps. 
+;
+(defclass MAIN::site
+  (is-a executable-sequence-with-arguments))
+
+; A leaf function is a self contained routine which does _not_ take advantage of the register window concept of the i960. 
+; Execution can fallthrough the bottom as it will use the bx to the target register. It is safe to pass control to other executable-sequences
+; A leaf function is implied to be returned to from a subinvocation. The instructions used to enter a leaf are bal/balx with bx used to leave the leaf
+(defclass MAIN::leaf
+  (is-a executable-sequence-with-arguments))
+
+; A method is a routine which uses the register window concept of the i960. This is the usual routine type so it has a very normal name.
+; One can return to methods and invoke other types of executable sequences. A method is entered via call/callx and left via ret. Routines in the 
+; interrupt and fault tables must be methods. This allows for proper functionality according to how the i960 works.
+(defclass MAIN::method
+  (is-a executable-sequence-with-arguments))
+
