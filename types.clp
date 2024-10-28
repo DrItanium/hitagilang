@@ -20,7 +20,6 @@
 ; ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 (defclass MAIN::has-parent
   (is-a USER)
   (slot parent
@@ -85,3 +84,12 @@
 (defclass MAIN::method
   (is-a executable-sequence-with-arguments))
 
+(defclass MAIN::type
+  (is-a has-scope)
+  (slot is-core-type
+        (type SYMBOL)
+        (allowed-symbols UNKNOWN
+                         FALSE
+                         TRUE)
+        (visibility public)
+        (storage local)))
