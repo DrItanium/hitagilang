@@ -24,21 +24,64 @@
 (defgeneric MAIN::comment
             "Attach a i960 comment to a given expression")
 
+
 (defmethod MAIN::comment
-  ((?expression LEXEME)
-   (?message LEXEME))
+  ((?message LEXEME))
   (format nil
-          "%s # %s"
-          ?expression
+          "# %s"
           ?message))
 
 (defmethod MAIN::comment
-  ((?expression LEXEME)
-   (?message MULTIFIELD))
-  (comment ?expression
-           (implode$ ?message )))
+  ((?message MULTIFIELD))
+  (comment (implode$ ?message)))
 (defmethod MAIN::comment
-  ((?expression LEXEME)
-   $?message)
-  (comment ?expression
-           ?message))
+  ($?message)
+  (comment ?message))
+
+(defmethod MAIN::label
+  ((?title SYMBOL))
+  (format nil
+          "%s:"
+          ?title))
+
+
+(defmethod MAIN::op-0arg
+  ((?keyword SYMBOL))
+  ?keyword)
+
+(defmethod MAIN::op-1arg
+  ((?keyword SYMBOL)
+   (?arg0 LEXEME
+          NUMBER))
+  (format nil
+          "%s %s"
+          ?keyword
+          (str-cat ?arg0)))
+
+(defmethod MAIN::op-2arg
+  ((?keyword SYMBOL)
+   (?arg0 LEXEME
+          NUMBER)
+   (?arg1 LEXEME
+          NUMBER))
+  (format nil
+          "%s %s, %s"
+          ?keyword
+          (str-cat ?arg0)
+          (str-cat ?arg1)))
+
+(defmethod MAIN::op-3arg
+  ((?keyword SYMBOL)
+   (?arg0 LEXEME
+          NUMBER)
+   (?arg1 LEXEME
+          NUMBER)
+   (?arg2 LEXEME
+          NUMBER))
+  (format nil
+          "%s %s, %s, %s"
+          ?keyword
+          (str-cat ?arg0)
+          (str-cat ?arg1)
+          (str-cat ?arg2)))
+
