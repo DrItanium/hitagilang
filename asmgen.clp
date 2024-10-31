@@ -451,6 +451,7 @@
                                                       synmov
                                                       synmovl
                                                       synmovq
+                                                      ldphy
                                                       )
            ?*three-register-only-operations* = (create$ daddc
                                                         dsubc)
@@ -535,6 +536,7 @@
                                         sendserv
                                         signal
                                         wait
+                                        ldtime
                                         resumprcs)
            ?*freglit-flit-ops* = (create$ movr
                                           cosr
