@@ -848,10 +848,6 @@
                   ?src1
                   ?src2))
 ; mem instructions
-(defgeneric MAIN::*bx)
-(defgeneric MAIN::*balx)
-(defgeneric MAIN::*callx)
-
 (defglobal MAIN 
            ?*store-ops* = (create$ st
                                    stob
@@ -863,8 +859,15 @@
                                   ldib
                                   ldos
                                   ldis)
+           ?*mem-other* = (create$ bx
+                                   callx)
 
            )
+(progn$ (?operation ?*mem-other*)
+        (forward-declare-opcode ?operation)
+        (generic-opcode-decl ?operation
+                             "(?targ mem-format-argument)"
+                             "?targ"))
 (progn$ (?operation ?*load-ops*)
         (forward-declare-opcode ?operation)
         (generic-opcode-decl ?operation
@@ -884,7 +887,14 @@
                              (format nil
                                      "%s ?dst"
                                      (string-call-convert-register "?src"))))
-
+(defmethod MAIN::*balx
+  ((?targ mem-format-argument)
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction balx
+                  ?targ
+                  (convert-register ?dst)))
 (defmethod MAIN::*lda
   ((?src mem-format-argument)
    (?dest register
