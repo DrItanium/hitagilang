@@ -240,31 +240,9 @@
   (generic-opcode-decl ?op
                        ""
                        ""))
-(deffunction MAIN::is-valid-long-register
-             (?reg)
-             (switch (type ?reg)
-                     (case float-literal then TRUE)
-                     (case float-register then TRUE)
-                     (case literal then TRUE)
-                     (case register then (send ?reg get-valid-long-register-target))
-                     (default FALSE)))
-(deffunction MAIN::is-valid-triple-register
-             (?reg)
-             (switch (type ?reg)
-                     (case float-literal then TRUE)
-                     (case float-register then TRUE)
-                     (case literal then TRUE)
-                     (case register then (send ?reg get-valid-triple-register-target))
-                     (default FALSE)))
-
-(deffunction MAIN::is-valid-quad-register
-             (?reg)
-             (switch (type ?reg)
-                     (case float-literal then TRUE)
-                     (case float-register then TRUE)
-                     (case literal then TRUE)
-                     (case register then (send ?reg get-valid-quad-register-target))
-                     (default FALSE)))
+(defgeneric MAIN::convert-register)
+(defgeneric MAIN::convert-literal)
+(defgeneric MAIN::convert-reg/lit)
 (deffunction MAIN::is-valid-register
              (?value)
              (switch (type ?value)
@@ -280,13 +258,49 @@
                      (case literal then TRUE)
                      (case INTEGER then (<= 0 ?value 31))
                      (default FALSE)))
-
 (deffunction MAIN::is-valid-reg-literal
              (?value)
              (or (is-valid-register ?value)
                  (is-valid-literal ?value)))
-(defgeneric MAIN::convert-register)
-(defgeneric MAIN::convert-literal)
+(deffunction MAIN::is-valid-long-register
+             (?reg)
+             (switch (type ?reg)
+                     (case float-literal then TRUE)
+                     (case float-register then TRUE)
+                     (case literal then TRUE)
+                     (case register then (send ?reg get-valid-long-register-target))
+                     (case SYMBOL then
+                       (and ?reg
+                            (is-valid-register ?reg)
+                            (is-valid-long-register (convert-register ?reg))))
+                     (default FALSE)))
+(deffunction MAIN::is-valid-triple-register
+             (?reg)
+             (switch (type ?reg)
+                     (case float-literal then TRUE)
+                     (case float-register then TRUE)
+                     (case literal then TRUE)
+                     (case register then 
+                       (send ?reg get-valid-triple-register-target))
+                     (case SYMBOL then
+                       (and ?reg
+                            (is-valid-register ?reg)
+                            (is-valid-triple-register (convert-register ?reg))))
+                     (default FALSE)))
+
+(deffunction MAIN::is-valid-quad-register
+             (?reg)
+             (switch (type ?reg)
+                     (case float-literal then TRUE)
+                     (case float-register then TRUE)
+                     (case literal then TRUE)
+                     (case register then (send ?reg get-valid-quad-register-target))
+                     (case SYMBOL then
+                       (and ?reg
+                            (is-valid-register ?reg)
+                            (is-valid-quad-register (convert-register ?reg))))
+                     (default FALSE)))
+
 (defmethod MAIN::convert-register
   ((?var register))
   ?var)
@@ -303,7 +317,6 @@
          (is-valid-literal ?current-argument)))
   (symbol-to-instance-name (sym-cat ?var l)))
 
-(defgeneric MAIN::convert-reg/lit)
 (defmethod MAIN::convert-reg/lit
   ((?var register
          SYMBOL
@@ -838,19 +851,9 @@
 (defgeneric MAIN::*bx)
 (defgeneric MAIN::*balx)
 (defgeneric MAIN::*callx)
-(defgeneric MAIN::*ldob)
-(defgeneric MAIN::*ldos)
-(defgeneric MAIN::*lda)
-(defgeneric MAIN::*ld)
 (defgeneric MAIN::*ldl)
 (defgeneric MAIN::*ldt)
 (defgeneric MAIN::*ldq)
-(defgeneric MAIN::*ldib)
-(defgeneric MAIN::*ldis)
-
-(defgeneric MAIN::*stl)
-(defgeneric MAIN::*stt)
-(defgeneric MAIN::*stq)
 
 (defglobal MAIN 
            ?*store-ops* = (create$ st
@@ -858,7 +861,22 @@
                                    stib
                                    stos
                                    stis)
+           ?*load-ops* = (create$ ld
+                                  ldob
+                                  ldib
+                                  ldos
+                                  ldis)
+
            )
+(progn$ (?operation ?*load-ops*)
+        (forward-declare-opcode ?operation)
+        (generic-opcode-decl ?operation
+                             (format nil
+                                     "(?src mem-format-argument) %s"
+                                     (string-arg-reg-field "?dst"))
+                             (format nil
+                                     "?src %s"
+                                     (string-call-convert-register "?dst"))))
 
 (progn$ (?operation ?*store-ops*)
         (forward-declare-opcode ?operation)
@@ -870,26 +888,37 @@
                                      "%s ?dst"
                                      (string-call-convert-register "?src"))))
 
+(defmethod MAIN::*lda
+  ((?src mem-format-argument)
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (definstruction lda
+                  ?src
+                  (convert-register ?dest)))
 (defmethod MAIN::*stl
   ((?src register
+         SYMBOL
          (is-valid-long-register ?current-argument))
    (?dest mem-format-argument))
   (definstruction stl
-                  ?src
+                  (convert-register ?src)
                   ?dest))
 (defmethod MAIN::*stt
   ((?src register
+         SYMBOL
          (is-valid-triple-register ?current-argument))
    (?dest mem-format-argument))
   (definstruction stt
-                  ?src
+                  (convert-register ?src)
                   ?dest))
 (defmethod MAIN::*stq
   ((?src register
-         (is-valid-triple-register ?current-argument))
+         SYMBOL
+         (is-valid-quad-register ?current-argument))
    (?dest mem-format-argument))
   (definstruction stq
-                  ?src
+                  (convert-register ?src)
                   ?dest))
 ;synthetic instructions
 (defmethod MAIN::*ldconst
