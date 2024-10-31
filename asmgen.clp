@@ -1,3 +1,25 @@
+; hitagilang
+; Copyright (c) 2024, Joshua Scoggins
+; All rights reserved.
+; 
+; Redistribution and use in source and binary forms, with or without
+; modification, are permitted provided that the following conditions are met:
+;     * Redistributions of source code must retain the above copyright
+;       notice, this list of conditions and the following disclaimer.
+;     * Redistributions in binary form must reproduce the above copyright
+;       notice, this list of conditions and the following disclaimer in the
+;       documentation and/or other materials provided with the distribution.
+; 
+; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+; ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+; WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+; DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR 
+; ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+; (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+; ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ; Generic routines for generating i960 style assembly instructions in gnu syntax
 (defmessage-handler STRING to-string primary
                     ()
@@ -89,6 +111,7 @@
 (defmessage-handler MAIN::float-register to-string primary
                     ()
                     (str-cat ?self:title))
+
 (defclass MAIN::label
   (is-a USER)
   (slot title
@@ -291,6 +314,85 @@
          INTEGER
          (is-valid-literal ?current-argument)))
   (convert-literal ?var))
+
+(defclass MAIN::mem-format-argument
+  (is-a USER)
+  (slot displacement
+        (type SYMBOL
+              INTEGER)
+        (storage local)
+        (visibility public)
+        (default-dynamic FALSE))
+  (slot abase
+        (type INSTANCE
+              SYMBOL)
+        (storage local)
+        (visibility public)
+        (default-dynamic FALSE))
+  (slot index
+        (type INSTANCE
+              SYMBOL)
+        (storage local)
+        (visibility public)
+        (default-dynamic FALSE))
+  (slot scale
+        (type INTEGER)
+        (allowed-integers 1
+                          2
+                          4
+                          8
+                          16)
+        (storage local)
+        (visibility public)
+        (default-dynamic 1))
+  (message-handler init after)
+  (message-handler to-string primary))
+(defmessage-handler MAIN::mem-format-argument init after
+                    ()
+                    (if (and ?self:abase 
+                             (is-valid-register ?self:index)) then
+                      (dynamic-put abase
+                                   (convert-register (dynamic-get abase))))
+                    (if (and ?self:index
+                             (is-valid-register ?self:index)) then
+                      (dynamic-put index
+                                   (convert-register (dynamic-get index))))
+                    )
+
+(defmessage-handler MAIN::mem-format-argument to-string primary
+                    ()
+                    (format nil
+                            "%s%s%s"
+                            (if ?self:displacement then
+                              (if (integerp ?self:displacement) then
+                                (format nil
+                                        "0x%x"
+                                        ?self:displacement)
+                                else
+                                ?self:displacement)
+                              else
+                              "")
+                            (if ?self:abase then
+                              (format nil 
+                                      "(%s)"
+                                      (send ?self:abase
+                                            to-string))
+                              else
+                              "")
+                            (if ?self:index then
+                              (format nil
+                                      "[%s%s]"
+                                      (send ?self:index
+                                            to-string)
+                                      (if (<> ?self:scale 1) then
+                                        (format nil 
+                                                "*%d"
+                                                ?self:scale)
+                                        else
+                                        ""))
+                              else
+                              "")
+                            ))
 
 
 ; ctrl instructions
@@ -746,104 +848,49 @@
 (defgeneric MAIN::*ldib)
 (defgeneric MAIN::*ldis)
 
-(defgeneric MAIN::*st)
 (defgeneric MAIN::*stl)
 (defgeneric MAIN::*stt)
 (defgeneric MAIN::*stq)
-(defgeneric MAIN::*stos)
-(defgeneric MAIN::*stib)
-(defgeneric MAIN::*stis)
 
-(defgeneric MAIN::*stob)
-(defclass MAIN::mem-format-argument
-  (is-a USER)
-  (slot displacement
-        (type SYMBOL
-              INTEGER)
-        (storage local)
-        (visibility public)
-        (default-dynamic FALSE))
-  (slot abase
-        (type INSTANCE
-              SYMBOL)
-        (storage local)
-        (visibility public)
-        (default-dynamic FALSE))
-  (slot index
-        (type INSTANCE
-              SYMBOL)
-        (storage local)
-        (visibility public)
-        (default-dynamic FALSE))
-  (slot scale
-        (type INTEGER)
-        (allowed-integers 1
-                          2
-                          4
-                          8
-                          16)
-        (storage local)
-        (visibility public)
-        (default-dynamic 1))
-  (message-handler init after)
-  (message-handler to-string primary))
-(defmessage-handler MAIN::mem-format-argument init after
-                    ()
-                    (if (and ?self:abase 
-                             (is-valid-register ?self:index)) then
-                      (dynamic-put abase
-                                   (convert-register (dynamic-get abase))))
-                    (if (and ?self:index
-                             (is-valid-register ?self:index)) then
-                      (dynamic-put index
-                                   (convert-register (dynamic-get index))))
-                    )
+(defglobal MAIN 
+           ?*store-ops* = (create$ st
+                                   stob
+                                   stib
+                                   stos
+                                   stis)
+           )
 
-(defmessage-handler MAIN::mem-format-argument to-string primary
-                    ()
-                    (format nil
-                            "%s%s%s"
-                            (if ?self:displacement then
-                              (if (integerp ?self:displacement) then
-                                (format nil
-                                        "0x%x"
-                                        ?self:displacement)
-                                else
-                                ?self:displacement)
-                              else
-                              "")
-                            (if ?self:abase then
-                              (format nil 
-                                      "(%s)"
-                                      (send ?self:abase
-                                            to-string))
-                              else
-                              "")
-                            (if ?self:index then
-                              (format nil
-                                      "[%s%s]"
-                                      (send ?self:index
-                                            to-string)
-                                      (if (<> ?self:scale 1) then
-                                        (format nil 
-                                                "*%d"
-                                                ?self:scale)
-                                        else
-                                        ""))
-                              else
-                              "")
-                            ))
+(progn$ (?operation ?*store-ops*)
+        (forward-declare-opcode ?operation)
+        (generic-opcode-decl ?operation
+                             (format nil
+                                     "%s (?dst mem-format-argument)"
+                                     (string-arg-reg-field "?src"))
+                             (format nil
+                                     "%s ?dst"
+                                     (string-call-convert-register "?src"))))
 
-
-
-(defmethod MAIN::*stob
+(defmethod MAIN::*stl
   ((?src register
-         SYMBOL
-         (is-valid-register ?current-argument))
-   (?dst mem-format-argument))
-  (definstruction stob
-                  (convert-register ?src)
-                  ?dst))
+         (is-valid-long-register ?current-argument))
+   (?dest mem-format-argument))
+  (definstruction stl
+                  ?src
+                  ?dest))
+(defmethod MAIN::*stt
+  ((?src register
+         (is-valid-triple-register ?current-argument))
+   (?dest mem-format-argument))
+  (definstruction stt
+                  ?src
+                  ?dest))
+(defmethod MAIN::*stq
+  ((?src register
+         (is-valid-triple-register ?current-argument))
+   (?dest mem-format-argument))
+  (definstruction stq
+                  ?src
+                  ?dest))
 ;synthetic instructions
 (defmethod MAIN::*ldconst
   ((?value NUMBER
