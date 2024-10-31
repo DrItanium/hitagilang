@@ -851,9 +851,6 @@
 (defgeneric MAIN::*bx)
 (defgeneric MAIN::*balx)
 (defgeneric MAIN::*callx)
-(defgeneric MAIN::*ldl)
-(defgeneric MAIN::*ldt)
-(defgeneric MAIN::*ldq)
 
 (defglobal MAIN 
            ?*store-ops* = (create$ st
@@ -894,6 +891,30 @@
           SYMBOL
           (is-valid-register ?current-argument)))
   (definstruction lda
+                  ?src
+                  (convert-register ?dest)))
+(defmethod MAIN::*ldl
+  ((?src mem-format-argument)
+   (?dest register
+          SYMBOL
+          (is-valid-long-register ?current-argument)))
+  (definstruction ldl
+                  ?src
+                  (convert-register ?dest)))
+(defmethod MAIN::*ldt
+  ((?src mem-format-argument)
+   (?dest register
+          SYMBOL
+          (is-valid-triple-register ?current-argument)))
+  (definstruction ldt
+                  ?src
+                  (convert-register ?dest)))
+(defmethod MAIN::*ldq
+  ((?src mem-format-argument)
+   (?dest register
+          SYMBOL
+          (is-valid-quad-register ?current-argument)))
+  (definstruction ldq
                   ?src
                   (convert-register ?dest)))
 (defmethod MAIN::*stl
