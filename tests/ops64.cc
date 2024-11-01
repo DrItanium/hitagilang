@@ -13,5 +13,10 @@ B operator&(const B& a, const B& b) { return B(a._a & b._a, a._b & b._b, a._c & 
 B operator|(const B& a, const B& b) { return B(a._a | b._a, a._b | b._b, a._c | b._c, a._d | b._d); }
 B operator^(const B& a, const B& b) { return B(a._a ^ b._a, a._b ^ b._b, a._c ^ b._c, a._d ^ b._d); }
 B operator~(const B& a) { return B(~a._a, ~a._b, ~a._c, ~a._d); }
-
-
+B nand0(const B& a, const B& b) { return ~(a & b); }
+B nand1(const B& a, const B& b) { 
+    return B(~(a._a & a._a),
+             ~(a._b & a._b),
+             ~(a._c & a._c),
+             ~(a._d & a._d));
+}
