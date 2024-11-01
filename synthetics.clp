@@ -484,3 +484,13 @@
                          get-next-long-register)
                    (send (convert-register ?dest)
                          get-next-long-register))))
+
+(defmethod MAIN::*nop
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (*or 0 
+       ?src 
+       ?src))
+(defmethod MAIN::*nop () (*nop r15))
+
