@@ -92,3 +92,11 @@ Ordinal getA_a(struct A* a) { return a->a; }
 LongOrdinal getA_b(struct A* a) { return a->b; }
 struct B getA_c(struct A* a) { return a->c; }
 struct C getA_d(struct A* a) { return a->d; }
+
+LongOrdinal countItems(Ordinal* items) {
+    LongOrdinal count = 0;
+    for (Ordinal* curr = items; *curr; ++curr) {
+        ++count;
+    }
+    return count;
+}

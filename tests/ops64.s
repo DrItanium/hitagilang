@@ -488,3 +488,24 @@ _getA_c:
 _getA_d:
 	ldq	32(g0),g0
 .Li960R57:	ret
+	.align 4
+	.globl _countItems
+	#  Function 'countItems'
+	#  Registers used: g0 g1 g2 g3 g4 g5 g6 fp cc 
+	#		   
+_countItems:
+	movl	0,g2 #m5.1
+	ld	(g0),g4
+	cmpobe	0,g4,.L64
+.L62:
+	addo	g2,1,g4
+	cmpo	g4,g2
+	testl	g6
+	addo	g3,g6,g5
+	movl	g4,g2 # m4
+	addo	g0,4,g0
+	ld	(g0),g4
+	cmpobne	0,g4,.L62
+.L64:
+	movl	g2,g0 # m4
+.Li960R58:	ret
