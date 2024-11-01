@@ -640,3 +640,285 @@ _divre:
 	divr	fp1,fp0,fp0
 	movre	fp0,g0
 .Li960R72:	ret
+	.align 4
+	.globl _eqol
+	#  Function 'eqol'
+	#  Registers used: g0 g1 g2 g3 g4 fp cc 
+	#		   
+_eqol:
+	mov	0,g4
+	cmpobne	g2,g0,.L80
+	cmpobne	g3,g1,.L80
+	mov	1,g4
+.L80:
+	mov	g4,g0
+.Li960R73:	ret
+	.align 4
+	.globl _neol
+	#  Function 'neol'
+	#  Registers used: g0 g1 g2 g3 g4 fp cc 
+	#		   
+_neol:
+	mov	0,g4
+	cmpobne	g2,g0,.L83
+	cmpobe	g3,g1,.L82
+.L83:
+	mov	1,g4
+.L82:
+	mov	g4,g0
+.Li960R74:	ret
+	.align 4
+	.globl _lol
+	#  Function 'lol'
+	#  Registers used: g0 g1 g2 g3 g4 fp cc 
+	#		   
+_lol:
+	mov	0,g4
+	cmpobl	g1,g3,.L86
+	cmpobne	g1,g3,.L85
+	cmpobge	g0,g2,.L85
+.L86:
+	mov	1,g4
+.L85:
+	mov	g4,g0
+.Li960R75:	ret
+	.align 4
+	.globl _leol
+	#  Function 'leol'
+	#  Registers used: g0 g1 g2 g3 g4 fp cc 
+	#		   
+_leol:
+	mov	0,g4
+	cmpobl	g3,g1,.L88
+	cmpobne	g3,g1,.L89
+	cmpobl	g2,g0,.L88
+.L89:
+	mov	1,g4
+.L88:
+	mov	g4,g0
+.Li960R76:	ret
+	.align 4
+	.globl _gol
+	#  Function 'gol'
+	#  Registers used: g0 g1 g2 g3 g4 fp cc 
+	#		   
+_gol:
+	mov	0,g4
+	cmpobl	g3,g1,.L92
+	cmpobne	g3,g1,.L91
+	cmpobge	g2,g0,.L91
+.L92:
+	mov	1,g4
+.L91:
+	mov	g4,g0
+.Li960R77:	ret
+	.align 4
+	.globl _geol
+	#  Function 'geol'
+	#  Registers used: g0 g1 g2 g3 g4 fp cc 
+	#		   
+_geol:
+	mov	0,g4
+	cmpobl	g1,g3,.L94
+	cmpobne	g1,g3,.L95
+	cmpobl	g0,g2,.L94
+.L95:
+	mov	1,g4
+.L94:
+	mov	g4,g0
+.Li960R78:	ret
+	.align 4
+	.globl _eqil
+	#  Function 'eqil'
+	#  Registers used: g0 g1 g2 g3 g4 fp cc 
+	#		   
+_eqil:
+	mov	0,g4
+	cmpobne	g2,g0,.L97
+	cmpobne	g3,g1,.L97
+	mov	1,g4
+.L97:
+	mov	g4,g0
+.Li960R79:	ret
+	.align 4
+	.globl _neil
+	#  Function 'neil'
+	#  Registers used: g0 g1 g2 g3 g4 fp cc 
+	#		   
+_neil:
+	mov	0,g4
+	cmpobne	g2,g0,.L100
+	cmpobe	g3,g1,.L99
+.L100:
+	mov	1,g4
+.L99:
+	mov	g4,g0
+.Li960R80:	ret
+	.align 4
+	.globl _lil
+	#  Function 'lil'
+	#  Registers used: g0 g1 g2 g3 g4 fp cc 
+	#		   
+_lil:
+	mov	0,g4
+	cmpibl	g1,g3,.L103
+	cmpobne	g1,g3,.L102
+	cmpobge	g0,g2,.L102
+.L103:
+	mov	1,g4
+.L102:
+	mov	g4,g0
+.Li960R81:	ret
+	.align 4
+	.globl _leil
+	#  Function 'leil'
+	#  Registers used: g0 g1 g2 g3 g4 fp cc 
+	#		   
+_leil:
+	mov	0,g4
+	cmpibl	g3,g1,.L105
+	cmpobne	g3,g1,.L106
+	cmpobl	g2,g0,.L105
+.L106:
+	mov	1,g4
+.L105:
+	mov	g4,g0
+.Li960R82:	ret
+	.align 4
+	.globl _gil
+	#  Function 'gil'
+	#  Registers used: g0 g1 g2 g3 g4 fp cc 
+	#		   
+_gil:
+	mov	0,g4
+	cmpibl	g3,g1,.L109
+	cmpobne	g3,g1,.L108
+	cmpobge	g2,g0,.L108
+.L109:
+	mov	1,g4
+.L108:
+	mov	g4,g0
+.Li960R83:	ret
+	.align 4
+	.globl _geil
+	#  Function 'geil'
+	#  Registers used: g0 g1 g2 g3 g4 fp cc 
+	#		   
+_geil:
+	mov	0,g4
+	cmpibl	g1,g3,.L111
+	cmpobne	g1,g3,.L112
+	cmpobl	g0,g2,.L111
+.L112:
+	mov	1,g4
+.L111:
+	mov	g4,g0
+.Li960R84:	ret
+	.align 4
+	.globl _eqo
+	#  Function 'eqo'
+	#  Registers used: g0 g1 fp cc 
+	#		   
+_eqo:
+	cmpi	g0,g1
+	teste	g0
+.Li960R85:	ret
+	.align 4
+	.globl _neo
+	#  Function 'neo'
+	#  Registers used: g0 g1 fp cc 
+	#		   
+_neo:
+	cmpi	g0,g1
+	testne	g0
+.Li960R86:	ret
+	.align 4
+	.globl _lo
+	#  Function 'lo'
+	#  Registers used: g0 g1 fp cc 
+	#		   
+_lo:
+	cmpo	g0,g1
+	testl	g0
+.Li960R87:	ret
+	.align 4
+	.globl _leo
+	#  Function 'leo'
+	#  Registers used: g0 g1 fp cc 
+	#		   
+_leo:
+	cmpo	g0,g1
+	testle	g0
+.Li960R88:	ret
+	.align 4
+	.globl _go
+	#  Function 'go'
+	#  Registers used: g0 g1 fp cc 
+	#		   
+_go:
+	cmpo	g0,g1
+	testg	g0
+.Li960R89:	ret
+	.align 4
+	.globl _geo
+	#  Function 'geo'
+	#  Registers used: g0 g1 fp cc 
+	#		   
+_geo:
+	cmpo	g0,g1
+	testge	g0
+.Li960R90:	ret
+	.align 4
+	.globl _eqi
+	#  Function 'eqi'
+	#  Registers used: g0 g1 fp cc 
+	#		   
+_eqi:
+	cmpi	g0,g1
+	teste	g0
+.Li960R91:	ret
+	.align 4
+	.globl _nei
+	#  Function 'nei'
+	#  Registers used: g0 g1 fp cc 
+	#		   
+_nei:
+	cmpi	g0,g1
+	testne	g0
+.Li960R92:	ret
+	.align 4
+	.globl _li
+	#  Function 'li'
+	#  Registers used: g0 g1 fp cc 
+	#		   
+_li:
+	cmpi	g0,g1
+	testl	g0
+.Li960R93:	ret
+	.align 4
+	.globl _lei
+	#  Function 'lei'
+	#  Registers used: g0 g1 fp cc 
+	#		   
+_lei:
+	cmpi	g0,g1
+	testle	g0
+.Li960R94:	ret
+	.align 4
+	.globl _gi
+	#  Function 'gi'
+	#  Registers used: g0 g1 fp cc 
+	#		   
+_gi:
+	cmpi	g0,g1
+	testg	g0
+.Li960R95:	ret
+	.align 4
+	.globl _gei
+	#  Function 'gei'
+	#  Registers used: g0 g1 fp cc 
+	#		   
+_gei:
+	cmpi	g0,g1
+	testge	g0
+.Li960R96:	ret

@@ -3,6 +3,7 @@
  */
 
 #include <stdint.h>
+#include <stdbool.h>
 
 typedef uint32_t Ordinal;
 typedef int32_t Integer;
@@ -135,3 +136,32 @@ ExtendedReal addre(ExtendedReal a, ExtendedReal b) { return a + b; }
 ExtendedReal subre(ExtendedReal a, ExtendedReal b) { return a - b; }
 ExtendedReal mulre(ExtendedReal a, ExtendedReal b) { return a * b; }
 ExtendedReal divre(ExtendedReal a, ExtendedReal b) { return a / b; }
+
+
+bool eqol(LongOrdinal a, LongOrdinal b) { return a == b; }
+bool neol(LongOrdinal a, LongOrdinal b) { return a != b; }
+bool lol(LongOrdinal a, LongOrdinal b) { return a < b; }
+bool leol(LongOrdinal a, LongOrdinal b) { return a <= b; }
+bool gol(LongOrdinal a, LongOrdinal b) { return a > b; }
+bool geol(LongOrdinal a, LongOrdinal b) { return a >= b; }
+
+bool eqil(LongInteger a, LongInteger b) { return a == b; }
+bool neil(LongInteger a, LongInteger b) { return a != b; }
+bool lil(LongInteger a, LongInteger b) { return a < b; }
+bool leil(LongInteger a, LongInteger b) { return a <= b; }
+bool gil(LongInteger a, LongInteger b) { return a > b; }
+bool geil(LongInteger a, LongInteger b) { return a >= b; }
+
+bool eqo(Ordinal a, Ordinal b) { return a == b; }
+bool neo(Ordinal a, Ordinal b) { return a != b; }
+bool lo(Ordinal a, Ordinal b) { return a < b; }
+bool leo(Ordinal a, Ordinal b) { return a <= b; }
+bool go(Ordinal a, Ordinal b) { return a > b; }
+bool geo(Ordinal a, Ordinal b) { return a >= b; }
+
+bool eqi(Integer a, Integer b) { return a == b; }
+bool nei(Integer a, Integer b) { return a != b; }
+bool li(Integer a, Integer b) { return a < b; }
+bool lei(Integer a, Integer b) { return a <= b; }
+bool gi(Integer a, Integer b) { return a > b; }
+bool gei(Integer a, Integer b) { return a >= b; }
