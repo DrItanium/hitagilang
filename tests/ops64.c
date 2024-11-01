@@ -165,3 +165,24 @@ bool li(Integer a, Integer b) { return a < b; }
 bool lei(Integer a, Integer b) { return a <= b; }
 bool gi(Integer a, Integer b) { return a > b; }
 bool gei(Integer a, Integer b) { return a >= b; }
+
+bool eqrl(LongReal a, LongReal b) { return a == b; }
+bool nerl(LongReal a, LongReal b) { return a != b; }
+bool lrl(LongReal a, LongReal b) { return a < b; }
+bool lerl(LongReal a, LongReal b) { return a <= b; }
+bool grl(LongReal a, LongReal b) { return a > b; }
+bool gerl(LongReal a, LongReal b) { return a >= b; }
+
+bool eqre(ExtendedReal a, ExtendedReal b) { return a == b; }
+bool nere(ExtendedReal a, ExtendedReal b) { return a != b; }
+bool lre(ExtendedReal a, ExtendedReal b) { return a < b; }
+bool lere(ExtendedReal a, ExtendedReal b) { return a <= b; }
+bool gre(ExtendedReal a, ExtendedReal b) { return a > b; }
+bool gere(ExtendedReal a, ExtendedReal b) { return a >= b; }
+
+bool eqr(Real a, Real b) { return a == b; }
+bool ner(Real a, Real b) { return a != b; }
+bool lr(Real a, Real b) { return a < b; }
+bool ler(Real a, Real b) { return a <= b; }
+bool gr(Real a, Real b) { return a > b; }
+bool ger(Real a, Real b) { return a >= b; }

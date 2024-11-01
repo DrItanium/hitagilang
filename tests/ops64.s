@@ -922,3 +922,177 @@ _gei:
 	cmpi	g0,g1
 	testge	g0
 .Li960R96:	ret
+	.align 4
+	.globl _eqrl
+	#  Function 'eqrl'
+	#  Registers used: g0 g1 g2 g3 fp cc 
+	#		   
+_eqrl:
+	cmprl g0,g2
+	teste	g0
+.Li960R97:	ret
+	.align 4
+	.globl _nerl
+	#  Function 'nerl'
+	#  Registers used: g0 g1 g2 g3 fp cc 
+	#		   
+_nerl:
+	cmprl g0,g2
+	testne	g0
+.Li960R98:	ret
+	.align 4
+	.globl _lrl
+	#  Function 'lrl'
+	#  Registers used: g0 g1 g2 g3 fp cc 
+	#		   
+_lrl:
+	cmprl g0,g2
+	testl	g0
+.Li960R99:	ret
+	.align 4
+	.globl _lerl
+	#  Function 'lerl'
+	#  Registers used: g0 g1 g2 g3 fp cc 
+	#		   
+_lerl:
+	cmprl g0,g2
+	testle	g0
+.Li960R100:	ret
+	.align 4
+	.globl _grl
+	#  Function 'grl'
+	#  Registers used: g0 g1 g2 g3 fp cc 
+	#		   
+_grl:
+	cmprl g0,g2
+	testg	g0
+.Li960R101:	ret
+	.align 4
+	.globl _gerl
+	#  Function 'gerl'
+	#  Registers used: g0 g1 g2 g3 fp cc 
+	#		   
+_gerl:
+	cmprl g0,g2
+	testge	g0
+.Li960R102:	ret
+	.align 4
+	.globl _eqre
+	#  Function 'eqre'
+	#  Registers used: g0 g1 g2 g3 g4 g5 g6 g7 fp fp0 
+	#		   fp1 cc 
+_eqre:
+	movre	g0,fp0
+	movre	g4,fp1
+	cmpr fp0,fp1
+	teste	g0
+.Li960R103:	ret
+	.align 4
+	.globl _nere
+	#  Function 'nere'
+	#  Registers used: g0 g1 g2 g3 g4 g5 g6 g7 fp fp0 
+	#		   fp1 cc 
+_nere:
+	movre	g0,fp0
+	movre	g4,fp1
+	cmpr fp0,fp1
+	testne	g0
+.Li960R104:	ret
+	.align 4
+	.globl _lre
+	#  Function 'lre'
+	#  Registers used: g0 g1 g2 g3 g4 g5 g6 g7 fp fp0 
+	#		   fp1 cc 
+_lre:
+	movre	g0,fp0
+	movre	g4,fp1
+	cmpr fp0,fp1
+	testl	g0
+.Li960R105:	ret
+	.align 4
+	.globl _lere
+	#  Function 'lere'
+	#  Registers used: g0 g1 g2 g3 g4 g5 g6 g7 fp fp0 
+	#		   fp1 cc 
+_lere:
+	movre	g0,fp0
+	movre	g4,fp1
+	cmpr fp0,fp1
+	testle	g0
+.Li960R106:	ret
+	.align 4
+	.globl _gre
+	#  Function 'gre'
+	#  Registers used: g0 g1 g2 g3 g4 g5 g6 g7 fp fp0 
+	#		   fp1 cc 
+_gre:
+	movre	g0,fp0
+	movre	g4,fp1
+	cmpr fp0,fp1
+	testg	g0
+.Li960R107:	ret
+	.align 4
+	.globl _gere
+	#  Function 'gere'
+	#  Registers used: g0 g1 g2 g3 g4 g5 g6 g7 fp fp0 
+	#		   fp1 cc 
+_gere:
+	movre	g0,fp0
+	movre	g4,fp1
+	cmpr fp0,fp1
+	testge	g0
+.Li960R108:	ret
+	.align 4
+	.globl _eqr
+	#  Function 'eqr'
+	#  Registers used: g0 g1 fp cc 
+	#		   
+_eqr:
+	cmpr g0,g1
+	teste	g0
+.Li960R109:	ret
+	.align 4
+	.globl _ner
+	#  Function 'ner'
+	#  Registers used: g0 g1 fp cc 
+	#		   
+_ner:
+	cmpr g0,g1
+	testne	g0
+.Li960R110:	ret
+	.align 4
+	.globl _lr
+	#  Function 'lr'
+	#  Registers used: g0 g1 fp cc 
+	#		   
+_lr:
+	cmpr g0,g1
+	testl	g0
+.Li960R111:	ret
+	.align 4
+	.globl _ler
+	#  Function 'ler'
+	#  Registers used: g0 g1 fp cc 
+	#		   
+_ler:
+	cmpr g0,g1
+	testle	g0
+.Li960R112:	ret
+	.align 4
+	.globl _gr
+	#  Function 'gr'
+	#  Registers used: g0 g1 fp cc 
+	#		   
+_gr:
+	cmpr g0,g1
+	testg	g0
+.Li960R113:	ret
+	.align 4
+	.globl _ger
+	#  Function 'ger'
+	#  Registers used: g0 g1 fp cc 
+	#		   
+_ger:
+	cmpr g0,g1
+	testge	g0
+.Li960R114:	ret
