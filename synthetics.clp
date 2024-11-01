@@ -22,6 +22,7 @@
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (include asmgen.clp)
+(include opcodes.clp)
 ; synthetic instructions
 (defmethod MAIN::*ldconst
   ((?value NUMBER
