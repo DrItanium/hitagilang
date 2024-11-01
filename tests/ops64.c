@@ -62,3 +62,6 @@ int divi2(int a, int b) { return a / b; }
 int remi2(int a, int b) { return a % b; }
 int shli2(int a, int b) { return a << b; }
 int shri2(int a, int b) { return a >> b; }
+
+LongOrdinal ldol(LongOrdinal* a) { return *a; }
+LongInteger ldil(LongInteger* a) { return *a; }

@@ -432,3 +432,17 @@ _shli2:
 _shri2:
 	shri	g1,g0,g0
 .Li960R49:	ret
+	.align 4
+	.globl _ldol
+	#  Function 'ldol'
+	#  Registers used: g0 g1 fp 
+_ldol:
+	ldl	(g0),g0
+.Li960R50:	ret
+	.align 4
+	.globl _ldil
+	#  Function 'ldil'
+	#  Registers used: g0 g1 fp 
+_ldil:
+	ldl	(g0),g0
+.Li960R51:	ret
