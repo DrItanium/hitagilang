@@ -95,6 +95,14 @@
         (visibility public)
         (allowed-symbols FALSE
                          TRUE))
+  (slot next-register
+        (type INSTANCE
+              SYMBOL)
+        (access initialize-only)
+        (storage local)
+        (visibility public)
+        (allowed-symbols FALSE)
+        (default-dynamic FALSE))
   (message-handler to-string primary))
 (defmessage-handler MAIN::register to-string primary
                     ()
@@ -954,120 +962,20 @@
                   (convert-register ?src)
                   ?dest))
 ;synthetic instructions
-(defmethod MAIN::*ldconst
-  ((?value NUMBER
-           SYMBOL)
-   (?dest register
-          SYMBOL
-          (is-valid-register ?current-argument)))
-  (definstruction ldconst
-                  ?value
-                  (convert-register ?dest)))
-
-(defmethod MAIN::*cmpibez ((?src2 register) (?targ SYMBOL)) (*cmpibe [0l] ?src2 ?targ))
-(defmethod MAIN::*cmpobez ((?src2 register) (?targ SYMBOL)) (*cmpobe [0l] ?src2 ?targ))
-(defmethod MAIN::*cmpibnez ((?src2 register) (?targ SYMBOL)) (*cmpibne [0l] ?src2 ?targ))
-(defmethod MAIN::*cmpobnez ((?src2 register) (?targ SYMBOL)) (*cmpobne [0l] ?src2 ?targ))
-(defmethod MAIN::*cmpiblz ((?src2 register) (?targ SYMBOL)) (*cmpibl [0l] ?src2 ?targ))
-(defmethod MAIN::*cmpiblez ((?src2 register) (?targ SYMBOL)) (*cmpible [0l] ?src2 ?targ))
-(defmethod MAIN::*cmpibgz ((?src2 register) (?targ SYMBOL)) (*cmpibg [0l] ?src2 ?targ))
-(defmethod MAIN::*cmpibgez ((?src2 register) (?targ SYMBOL)) (*cmpibge [0l] ?src2 ?targ))
-; Is a given register value between two other register values
-; equivalent to (<= ?lo ?target ?hi) in CLIPS
-(defmethod MAIN::*twixto 
-  ((?lo reg/lit)
-   (?target reg/lit)
-   (?hi reg/lit))
-  (create$ (*cmpo ?hi 
-                  ?target)
-           (*concmpo ?lo
-                     ?target)))
-
-(defmethod MAIN::*twixti
-  ((?lo reg/lit)
-   (?target reg/lit)
-   (?hi reg/lit))
-  (create$ (*cmpi ?hi 
-                  ?target)
-           (*concmpi ?lo
-                     ?target)))
-; compare with zero
-(defmethod MAIN::*cmpiz ((?src2 reg/lit)) (*cmpi [0l] ?src2))
-(defmethod MAIN::*cmpoz ((?src2 reg/lit)) (*cmpo [0l] ?src2))
-
-(defmethod MAIN::*extract-byte
-  ((?bitpos literal)
-   (?src/dest register))
-  (*extract ?bitpos
-            [8l]
-            ?src/dest))
-(defmethod MAIN::*extract-lowest-byte
-  ((?src/dest register))
-  (*extract-byte [0l]
-                 ?src/dest))
-
-(defmethod MAIN::*extract-lower-byte
-  ((?src/dest register))
-  (*extract-byte [8l]
-                 ?src/dest))
-
-(defmethod MAIN::*extract-higher-byte
-  ((?src/dest register))
-  (*extract-byte [16l]
-                 ?src/dest))
-
-(defmethod MAIN::*extract-highest-byte
-  ((?src/dest register))
-  (*extract-byte [24l]
-                 ?src/dest))
-(defmethod MAIN::*extract-lower-half
-  ((?src/dest register))
-  (*extract [0l]
-            [16l]
-            ?src/dest))
-
-(defmethod MAIN::*extract-upper-half
-  ((?src/dest register))
-  (*extract [16l]
-            [16l]
-            ?src/dest))
-
-; according to the manuals, the modpc instruction expects src to be the same as mask. Src is a dummy operand
-(defmethod MAIN::*modpc
-  ((?mask reg/lit)
-   (?src/dest register))
-  (*modpc ?mask
-          ?mask
-          ?src/dest))
-
-(defmethod MAIN::*get-pc
-  ((?dest register))
-  (*modpc [0l] 
-          ?dest))
-
-(defmethod MAIN::*get-ac
-  ((?dest register))
-  (*modac [0l]
-          [0l]
-          ?dest))
-
-(defmethod MAIN::*get-tc
-  ((?dest register))
-  (*modtc [0l]
-          [0l]
-          ?dest))
-; @todo figure out how to reference the "next" register in a long register pair
 ; make this last to be sure
 (definstances MAIN::literals-and-registers
               (g0 of register
                   (valid-long-register-target TRUE)
                   (valid-triple-register-target TRUE)
                   (valid-quad-register-target TRUE)
+                  (next-register [g1])
                   (title g0))
               (g1 of register
+                  (next-register [g2])
                   (title g1))
               (g2 of register
                   (valid-long-register-target TRUE)
+                  (next-register [g3])
                   (title g2))
               (g3 of register
                   (title g3))
@@ -1075,11 +983,14 @@
                   (valid-triple-register-target TRUE)
                   (valid-quad-register-target TRUE)
                   (valid-long-register-target TRUE)
+                  (next-register [g5])
                   (title g4))
               (g5 of register
+                  (next-register [g6])
                   (title g5))
               (g6 of register
                   (valid-long-register-target TRUE)
+                  (next-register [g7])
                   (title g6))
               (g7 of register
                   (title g7))
@@ -1087,11 +998,14 @@
                   (valid-triple-register-target TRUE)
                   (valid-quad-register-target TRUE)
                   (valid-long-register-target TRUE)
+                  (next-register [g9])
                   (title g8))
               (g9 of register
+                  (next-register [g10])
                   (title g9))
               (g10 of register
                    (valid-long-register-target TRUE)
+                  (next-register [g11])
                    (title g10))
               (g11 of register
                    (title g11))
@@ -1099,61 +1013,73 @@
                    (valid-triple-register-target TRUE)
                    (valid-quad-register-target TRUE)
                    (valid-long-register-target TRUE)
+                   (next-register [g13])
                    (title g12))
               (g13 of register
+                   (next-register [g14])
                    (title g13))
               (g14 of register
+                   (next-register [fp])
                    (valid-long-register-target TRUE)
                    (title g14))
-              (lr of register
-                  (valid-long-register-target TRUE)
-                  (title g14))
               (fp of register
                   (title fp))
               (pfp of register
                    (valid-long-register-target TRUE)
                    (valid-triple-register-target TRUE)
                    (valid-quad-register-target TRUE)
+                   (next-register [sp])
                    (title pfp))
               (sp of register
+                   (next-register [rip])
                   (title sp))
               (rip of register
                    (valid-long-register-target TRUE)
+                   (next-register [r3])
                    (title rip))
               (r3 of register
                   (title r3))
               (r4 of register
+                   (next-register [r5])
                   (valid-long-register-target TRUE)
                   (valid-triple-register-target TRUE)
                   (valid-quad-register-target TRUE)
                   (title r4))
               (r5 of register
+                   (next-register [r6])
                   (title r5))
               (r6 of register
+                   (next-register [r7])
                   (valid-long-register-target TRUE)
                   (title r6))
               (r7 of register
                   (title r7))
               (r8 of register
+                   (next-register [r9])
                   (valid-long-register-target TRUE)
                   (valid-triple-register-target TRUE)
                   (valid-quad-register-target TRUE)
                   (title r8))
               (r9 of register
+                   (next-register [r10])
                   (title r9))
               (r10 of register
                    (valid-long-register-target TRUE)
+                   (next-register [r11])
                    (title r10))
               (r11 of register
                    (title r11))
               (r12 of register
+                   (next-register [r13])
                    (valid-long-register-target TRUE)
                    (valid-triple-register-target TRUE)
                    (valid-quad-register-target TRUE)
                    (title r12))
               (r13 of register
+                   (next-register [r14])
                    (title r13))
               (r14 of register
+                   (next-register [r15])
                    (valid-long-register-target TRUE)
                    (title r14))
               (r15 of register
