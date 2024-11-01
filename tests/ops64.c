@@ -240,3 +240,5 @@ LongOrdinal doOpFP6(int index, LongOrdinal arg0, LongOrdinal arg1, LongOrdinal a
     return doFP6(fp, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
 }
 
+LongOrdinal inco(LongOrdinal a) { return ++a; }
+LongOrdinal deco(LongOrdinal a) { return --a; }

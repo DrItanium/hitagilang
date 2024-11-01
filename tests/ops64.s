@@ -1342,3 +1342,28 @@ _doOpFP6:
 	movq	r8,g8
 	ret
 	#End Epilogue#
+	.align 4
+	.globl _inco
+	#  Function 'inco'
+	#  Registers used: g0 g1 g4 g5 g6 fp cc 
+	#		   
+_inco:
+	movl	g0,g4 # m4
+	addo	g0,1,g0
+	cmpo	g0,g4
+	testl	g6
+	addo	g5,g6,g1
+.Li960R125:	ret
+	.align 4
+	.globl _deco
+	#  Function 'deco'
+	#  Registers used: g0 g1 g4 g5 g6 fp cc 
+	#		   
+_deco:
+	movl	g0,g4 # m4
+	subo	1,g0,g0
+	cmpo	g0,g4
+	testl	g6
+	subo	1,g5,g1
+	addo	g6,g1,g1
+.Li960R126:	ret

@@ -31,3 +31,4 @@ unsigned short extractUpperHalf(unsigned int value) {
 unsigned char extractSrcDest(int value) {
     return extractValue<unsigned char, int, 0x1F, 19 >(value);
 }
+
