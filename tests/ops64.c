@@ -68,3 +68,27 @@ LongInteger ldil(LongInteger* a) { return *a; }
 
 Ordinal setbit(Ordinal value, int shift) { return (value) | (1 << (shift)); }
 Ordinal clearbit(Ordinal value, int shift) { return (value) & (~(1 << (shift))); }
+
+// structures
+struct B {
+    Ordinal a;
+    Ordinal b;
+    Ordinal c;
+    Ordinal d;
+};
+struct C {
+    Ordinal a;
+    LongOrdinal b;
+};
+struct A {
+    Ordinal a;
+    LongOrdinal b;
+    struct B c;
+    struct C d;
+};
+
+
+Ordinal getA_a(struct A* a) { return a->a; }
+LongOrdinal getA_b(struct A* a) { return a->b; }
+struct B getA_c(struct A* a) { return a->c; }
+struct C getA_d(struct A* a) { return a->d; }

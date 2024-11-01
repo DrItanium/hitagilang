@@ -460,3 +460,31 @@ _setbit:
 _clearbit:
 	clrbit	g1,g0,g0
 .Li960R53:	ret
+	.align 4
+	.globl _getA_a
+	#  Function 'getA_a'
+	#  Registers used: g0 fp 
+_getA_a:
+	ld	(g0),g0
+.Li960R54:	ret
+	.align 4
+	.globl _getA_b
+	#  Function 'getA_b'
+	#  Registers used: g0 g1 fp 
+_getA_b:
+	ldl	8(g0),g0
+.Li960R55:	ret
+	.align 4
+	.globl _getA_c
+	#  Function 'getA_c'
+	#  Registers used: g0 g1 g2 g3 fp 
+_getA_c:
+	ldq	16(g0),g0
+.Li960R56:	ret
+	.align 4
+	.globl _getA_d
+	#  Function 'getA_d'
+	#  Registers used: g0 g1 g2 g3 fp 
+_getA_d:
+	ldq	32(g0),g0
+.Li960R57:	ret
