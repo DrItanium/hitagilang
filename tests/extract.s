@@ -62,6 +62,41 @@ __Z14extractHighesti:
 	shro	24,g0,g0
 .Li960R5:	ret
 	.align 4
+	.globl __Z16extractLowerHalfj
+	#  Function '_Z16extractLowerHalfj'
+	#  Registers used: g0 fp sp 
+	#		   r3* 
+__Z16extractLowerHalfj:
+	callx	__Z12extractValueItjLj65535ELj0EET_T0_
+	shlo	16,g0,g0
+	shro	16,g0,g0
+.Li960R6:	ret
+	.align 4
+	.globl __Z12extractValueItjLj65535ELj0EET_T0_
+	#  Function '_Z12extractValueItjLj65535ELj0EET_T0_'
+	#  Registers used: g0 fp 
+__Z12extractValueItjLj65535ELj0EET_T0_:
+	shlo	16,g0,g0
+	shro	16,g0,g0
+.Li960R7:	ret
+	.align 4
+	.globl __Z16extractUpperHalfj
+	#  Function '_Z16extractUpperHalfj'
+	#  Registers used: g0 fp sp 
+	#		   r3* 
+__Z16extractUpperHalfj:
+	callx	__Z12extractValueItjLj65535ELj16EET_T0_
+	shlo	16,g0,g0
+	shro	16,g0,g0
+.Li960R8:	ret
+	.align 4
+	.globl __Z12extractValueItjLj65535ELj16EET_T0_
+	#  Function '_Z12extractValueItjLj65535ELj16EET_T0_'
+	#  Registers used: g0 fp 
+__Z12extractValueItjLj65535ELj16EET_T0_:
+	shro	16,g0,g0
+.Li960R9:	ret
+	.align 4
 	.globl __Z14extractSrcDesti
 	#  Function '_Z14extractSrcDesti'
 	#  Registers used: g0 fp sp 
@@ -70,7 +105,7 @@ __Z14extractSrcDesti:
 	callx	__Z12extractValueIhiLi31ELi19EET_T0_
 	shlo	24,g0,g0
 	shro	24,g0,g0
-.Li960R6:	ret
+.Li960R10:	ret
 	.align 4
 	.globl __Z12extractValueIhiLi31ELi19EET_T0_
 	#  Function '_Z12extractValueIhiLi31ELi19EET_T0_'
@@ -78,4 +113,4 @@ __Z14extractSrcDesti:
 __Z12extractValueIhiLi31ELi19EET_T0_:
 	shri	19,g0,g0
 	and	31,g0,g0
-.Li960R7:	ret
+.Li960R11:	ret

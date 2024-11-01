@@ -22,6 +22,12 @@ char extractHigher(int value) {
 char extractHighest(int value) {
     return extractValue<int, char>(value, 0xFF, 24);
 }
+unsigned short extractLowerHalf(unsigned int value) {
+    return extractValue<unsigned short, unsigned int, 0xFFFF, 0>(value);
+}
+unsigned short extractUpperHalf(unsigned int value) {
+    return extractValue<unsigned short, unsigned int, 0xFFFF, 16>(value);
+}
 unsigned char extractSrcDest(int value) {
     return extractValue<unsigned char, int, 0x1F, 19 >(value);
 }
