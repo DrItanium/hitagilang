@@ -146,3 +146,27 @@
                        get-next-register)
                  (send (convert-register ?dest)
                        get-next-register))))
+
+(defmethod MAIN::*xort
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-triple-register ?current-argument)))
+  (create$ (*xorl ?src1
+                  ?src2
+                  ?dest)
+           (*xor (send (send (convert-register ?src1)
+                             get-next-register) 
+                       get-next-register)
+                 (send (send (convert-register ?src2)
+                             get-next-register)
+                       get-next-register)
+                 (send (send (convert-register ?dest)
+                             get-next-register)
+                       get-next-register))))
+
