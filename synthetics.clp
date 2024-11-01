@@ -501,8 +501,8 @@
    (?dest register
           SYMBOL
           (is-valid-register ?current-argument)))
-  (*addi ?src
-         1
+  (*addi 1
+         ?src
          ?dest))
 
 (defmethod MAIN::*inco
@@ -512,8 +512,8 @@
    (?dest register
           SYMBOL
           (is-valid-register ?current-argument)))
-  (*addo ?src
-         1
+  (*addo 1
+         ?src
          ?dest))
 
 (defmethod MAIN::*deci 
@@ -523,8 +523,8 @@
    (?dest register
           SYMBOL
           (is-valid-register ?current-argument)))
-  (*subi ?src
-         1
+  (*subi 1
+         ?src
          ?dest))
 
 (defmethod MAIN::*deco
@@ -534,6 +534,6 @@
    (?dest register
           SYMBOL
           (is-valid-register ?current-argument)))
-  (*subo ?src
-         1
+  (*subo 1
+         ?src
          ?dest))
