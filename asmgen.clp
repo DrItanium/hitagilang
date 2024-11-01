@@ -1005,7 +1005,7 @@
                   (title g9))
               (g10 of register
                    (valid-long-register-target TRUE)
-                  (next-register [g11])
+                   (next-register [g11])
                    (title g10))
               (g11 of register
                    (title g11))
@@ -1031,7 +1031,7 @@
                    (next-register [sp])
                    (title pfp))
               (sp of register
-                   (next-register [rip])
+                  (next-register [rip])
                   (title sp))
               (rip of register
                    (valid-long-register-target TRUE)
@@ -1040,28 +1040,28 @@
               (r3 of register
                   (title r3))
               (r4 of register
-                   (next-register [r5])
+                  (next-register [r5])
                   (valid-long-register-target TRUE)
                   (valid-triple-register-target TRUE)
                   (valid-quad-register-target TRUE)
                   (title r4))
               (r5 of register
-                   (next-register [r6])
+                  (next-register [r6])
                   (title r5))
               (r6 of register
-                   (next-register [r7])
+                  (next-register [r7])
                   (valid-long-register-target TRUE)
                   (title r6))
               (r7 of register
                   (title r7))
               (r8 of register
-                   (next-register [r9])
+                  (next-register [r9])
                   (valid-long-register-target TRUE)
                   (valid-triple-register-target TRUE)
                   (valid-quad-register-target TRUE)
                   (title r8))
               (r9 of register
-                   (next-register [r10])
+                  (next-register [r10])
                   (title r9))
               (r10 of register
                    (valid-long-register-target TRUE)
