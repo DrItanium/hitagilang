@@ -7,7 +7,6 @@
 typedef uint64_t LongOrdinal;
 typedef int64_t LongInteger;
 typedef double LongReal;
-
 LongOrdinal addol(LongOrdinal a, LongOrdinal b) { return a + b; }
 LongOrdinal subol(LongOrdinal a, LongOrdinal b) { return a - b; }
 LongOrdinal mulol(LongOrdinal a, LongOrdinal b) { return a * b; }
@@ -19,7 +18,14 @@ LongOrdinal andl(LongOrdinal a, LongOrdinal b) { return a & b; }
 LongOrdinal orl(LongOrdinal a, LongOrdinal b) { return a | b; }
 LongOrdinal notl(LongOrdinal a) { return ~a; }
 LongOrdinal xorl(LongOrdinal a, LongOrdinal b) { return a ^ b; }
-LongOrdinal xnorl(LongOrdinal a, LongOrdinal b) {
-    // from the programmer's reference
-    return ~(b | a) | (b & a);
-}
+LongOrdinal xnorl(LongOrdinal a, LongOrdinal b) { return ~(b ^ a); }
+LongOrdinal nandl(LongOrdinal a, LongOrdinal b) { return ~(b & a); }
+LongOrdinal norl(LongOrdinal a, LongOrdinal b) { return ~(b | a); }
+
+LongInteger addil(LongInteger a, LongInteger b) { return a + b; }
+LongInteger subil(LongInteger a, LongInteger b) { return a - b; }
+LongInteger mulil(LongInteger a, LongInteger b) { return a * b; }
+LongInteger divil(LongInteger a, LongInteger b) { return a / b; }
+LongInteger remil(LongInteger a, LongInteger b) { return a % b; }
+LongInteger shlil(LongInteger a, LongInteger b) { return a << b; }
+LongInteger shril(LongInteger a, LongInteger b) { return a >> b; }

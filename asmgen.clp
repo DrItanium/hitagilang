@@ -1056,6 +1056,7 @@
   (*modtc [0l]
           [0l]
           ?dest))
+; @todo figure out how to reference the "next" register in a long register pair
 ; make this last to be sure
 (definstances MAIN::literals-and-registers
               (g0 of register
