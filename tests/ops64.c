@@ -65,3 +65,6 @@ int shri2(int a, int b) { return a >> b; }
 
 LongOrdinal ldol(LongOrdinal* a) { return *a; }
 LongInteger ldil(LongInteger* a) { return *a; }
+
+Ordinal setbit(Ordinal value, int shift) { return (value) | (1 << (shift)); }
+Ordinal clearbit(Ordinal value, int shift) { return (value) & (~(1 << (shift))); }

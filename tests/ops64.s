@@ -446,3 +446,17 @@ _ldol:
 _ldil:
 	ldl	(g0),g0
 .Li960R51:	ret
+	.align 4
+	.globl _setbit
+	#  Function 'setbit'
+	#  Registers used: g0 g1 fp 
+_setbit:
+	setbit	g1,g0,g0
+.Li960R52:	ret
+	.align 4
+	.globl _clearbit
+	#  Function 'clearbit'
+	#  Registers used: g0 g1 fp 
+_clearbit:
+	clrbit	g1,g0,g0
+.Li960R53:	ret
