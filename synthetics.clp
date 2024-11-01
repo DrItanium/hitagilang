@@ -126,4 +126,23 @@
   (*modtc [0l]
           [0l]
           ?dest))
-; @todo figure out how to reference the "next" register in a long register pair
+
+(defmethod MAIN::*xorl
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-long-register ?current-argument)))
+  (create$ (*xor (convert-register ?src1)
+                 (convert-register ?src2)
+                 (convert-register ?dest))
+           (*xor (send (convert-register ?src1)
+                       get-next-register)
+                 (send (convert-register ?src2)
+                       get-next-register)
+                 (send (convert-register ?dest)
+                       get-next-register))))
