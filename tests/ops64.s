@@ -236,3 +236,199 @@ _shril:
 	#End Prologue#
 	callx	___ashrdi3
 .Li960R21:	ret
+	.align 4
+	.globl _addo
+	#  Function 'addo'
+	#  Registers used: g0 g1 fp 
+_addo:
+	addo	g0,g1,g0
+.Li960R22:	ret
+	.align 4
+	.globl _subo
+	#  Function 'subo'
+	#  Registers used: g0 g1 fp 
+_subo:
+	subo	g1,g0,g0
+.Li960R23:	ret
+	.align 4
+	.globl _mulo
+	#  Function 'mulo'
+	#  Registers used: g0 g1 fp 
+_mulo:
+	mulo	g0,g1,g0
+.Li960R24:	ret
+	.align 4
+	.globl _divo
+	#  Function 'divo'
+	#  Registers used: g0 g1 fp 
+_divo:
+	divo	g1,g0,g0
+.Li960R25:	ret
+	.align 4
+	.globl _remo
+	#  Function 'remo'
+	#  Registers used: g0 g1 fp 
+_remo:
+	remo	g1,g0,g0
+.Li960R26:	ret
+	.align 4
+	.globl _shlo
+	#  Function 'shlo'
+	#  Registers used: g0 g1 fp 
+_shlo:
+	shlo	g1,g0,g0
+.Li960R27:	ret
+	.align 4
+	.globl _shro
+	#  Function 'shro'
+	#  Registers used: g0 g1 fp 
+_shro:
+	shro	g1,g0,g0
+.Li960R28:	ret
+	.align 4
+	.globl _and
+	#  Function 'and'
+	#  Registers used: g0 g1 fp 
+_and:
+	and	g0,g1,g0
+.Li960R29:	ret
+	.align 4
+	.globl _or
+	#  Function 'or'
+	#  Registers used: g0 g1 fp 
+_or:
+	or	g0,g1,g0
+.Li960R30:	ret
+	.align 4
+	.globl _not
+	#  Function 'not'
+	#  Registers used: g0 fp 
+_not:
+	not	g0,g0
+.Li960R31:	ret
+	.align 4
+	.globl _xor
+	#  Function 'xor'
+	#  Registers used: g0 g1 fp 
+_xor:
+	xor	g0,g1,g0
+.Li960R32:	ret
+	.align 4
+	.globl _xnor
+	#  Function 'xnor'
+	#  Registers used: g0 g1 fp 
+_xnor:
+	xnor	g0,g1,g0
+.Li960R33:	ret
+	.align 4
+	.globl _nand
+	#  Function 'nand'
+	#  Registers used: g0 g1 fp 
+_nand:
+	nand	g1,g0,g0
+.Li960R34:	ret
+	.align 4
+	.globl _nor
+	#  Function 'nor'
+	#  Registers used: g0 g1 fp 
+_nor:
+	nor	g1,g0,g0
+.Li960R35:	ret
+	.align 4
+	.globl _addi
+	#  Function 'addi'
+	#  Registers used: g0 g1 fp 
+_addi:
+	addo	g0,g1,g0
+.Li960R36:	ret
+	.align 4
+	.globl _subi
+	#  Function 'subi'
+	#  Registers used: g0 g1 fp 
+_subi:
+	subo	g1,g0,g0
+.Li960R37:	ret
+	.align 4
+	.globl _muli
+	#  Function 'muli'
+	#  Registers used: g0 g1 fp 
+_muli:
+	mulo	g0,g1,g0
+.Li960R38:	ret
+	.align 4
+	.globl _divi
+	#  Function 'divi'
+	#  Registers used: g0 g1 fp 
+_divi:
+	divi	g1,g0,g0
+.Li960R39:	ret
+	.align 4
+	.globl _remi
+	#  Function 'remi'
+	#  Registers used: g0 g1 fp 
+_remi:
+	remi	g1,g0,g0
+.Li960R40:	ret
+	.align 4
+	.globl _shli
+	#  Function 'shli'
+	#  Registers used: g0 g1 fp 
+_shli:
+	shlo	g1,g0,g0
+.Li960R41:	ret
+	.align 4
+	.globl _shri
+	#  Function 'shri'
+	#  Registers used: g0 g1 fp 
+_shri:
+	shri	g1,g0,g0
+.Li960R42:	ret
+	.align 4
+	.globl _addi2
+	#  Function 'addi2'
+	#  Registers used: g0 g1 fp 
+_addi2:
+	addo	g0,g1,g0
+.Li960R43:	ret
+	.align 4
+	.globl _subi2
+	#  Function 'subi2'
+	#  Registers used: g0 g1 fp 
+_subi2:
+	subo	g1,g0,g0
+.Li960R44:	ret
+	.align 4
+	.globl _muli2
+	#  Function 'muli2'
+	#  Registers used: g0 g1 fp 
+_muli2:
+	mulo	g0,g1,g0
+.Li960R45:	ret
+	.align 4
+	.globl _divi2
+	#  Function 'divi2'
+	#  Registers used: g0 g1 fp 
+_divi2:
+	divi	g1,g0,g0
+.Li960R46:	ret
+	.align 4
+	.globl _remi2
+	#  Function 'remi2'
+	#  Registers used: g0 g1 fp 
+_remi2:
+	remi	g1,g0,g0
+.Li960R47:	ret
+	.align 4
+	.globl _shli2
+	#  Function 'shli2'
+	#  Registers used: g0 g1 fp 
+_shli2:
+	shlo	g1,g0,g0
+.Li960R48:	ret
+	.align 4
+	.globl _shri2
+	#  Function 'shri2'
+	#  Registers used: g0 g1 fp 
+_shri2:
+	shri	g1,g0,g0
+.Li960R49:	ret
