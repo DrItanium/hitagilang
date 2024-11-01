@@ -103,7 +103,13 @@
         (visibility public)
         (allowed-symbols FALSE)
         (default-dynamic FALSE))
+  (message-handler get-next-long-register primary)
   (message-handler to-string primary))
+(defmessage-handler MAIN::register get-next-long-register primary
+                    ()
+                    (send (send ?self:next-register
+                                get-next-register)
+                          get-next-register))
 (defmessage-handler MAIN::register to-string primary
                     ()
                     (str-cat ?self:title))

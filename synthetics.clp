@@ -160,13 +160,89 @@
   (create$ (*xorl ?src1
                   ?src2
                   ?dest)
-           (*xor (send (send (convert-register ?src1)
-                             get-next-register) 
+           (*xor (send (convert-register ?src1)
+                       get-next-long-register)
+                 (send (convert-register ?src2)
+                       get-next-long-register)
+                 (send (convert-register ?dest)
+                       get-next-long-register))))
+
+(defmethod MAIN::*xorq
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-quad-register ?current-argument)))
+  (create$ (*xorl ?src1
+                  ?src2
+                  ?dest)
+           (*xorl (send (convert-register ?src1)
+                        get-next-long-register)
+                  (send (convert-register ?src2)
+                        get-next-long-register)
+                  (send (convert-register ?dest)
+                        get-next-long-register))))
+
+(defmethod MAIN::*xnorl
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-long-register ?current-argument)))
+  (create$ (*xnor (convert-register ?src1)
+                 (convert-register ?src2)
+                 (convert-register ?dest))
+           (*xnor (send (convert-register ?src1)
                        get-next-register)
-                 (send (send (convert-register ?src2)
-                             get-next-register)
+                 (send (convert-register ?src2)
                        get-next-register)
-                 (send (send (convert-register ?dest)
-                             get-next-register)
+                 (send (convert-register ?dest)
                        get-next-register))))
 
+(defmethod MAIN::*xnort
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-triple-register ?current-argument)))
+  (create$ (*xnorl ?src1
+                  ?src2
+                  ?dest)
+           (*xnor (send (convert-register ?src1)
+                       get-next-long-register)
+                 (send (convert-register ?src2)
+                       get-next-long-register)
+                 (send (convert-register ?dest)
+                       get-next-long-register))))
+
+(defmethod MAIN::*xnorq
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-quad-register ?current-argument)))
+  (create$ (*xnorl ?src1
+                  ?src2
+                  ?dest)
+           (*xnorl (send (convert-register ?src1)
+                        get-next-long-register)
+                  (send (convert-register ?src2)
+                        get-next-long-register)
+                  (send (convert-register ?dest)
+                        get-next-long-register))))
