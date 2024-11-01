@@ -8,7 +8,9 @@ typedef uint32_t Ordinal;
 typedef int32_t Integer;
 typedef uint64_t LongOrdinal;
 typedef int64_t LongInteger;
+typedef float Real;
 typedef double LongReal;
+typedef long double ExtendedReal;
 LongOrdinal addol(LongOrdinal a, LongOrdinal b) { return a + b; }
 LongOrdinal subol(LongOrdinal a, LongOrdinal b) { return a - b; }
 LongOrdinal mulol(LongOrdinal a, LongOrdinal b) { return a * b; }
@@ -118,3 +120,18 @@ struct B B_orp(struct B* a, struct B* b) {
     result.d = a->d | b->d;
     return result;
 }
+
+Real addr(Real a, Real b) { return a + b; }
+Real subr(Real a, Real b) { return a - b; }
+Real mulr(Real a, Real b) { return a * b; }
+Real divr(Real a, Real b) { return a / b; }
+
+LongReal addrl(LongReal a, LongReal b) { return a + b; }
+LongReal subrl(LongReal a, LongReal b) { return a - b; }
+LongReal mulrl(LongReal a, LongReal b) { return a * b; }
+LongReal divrl(LongReal a, LongReal b) { return a / b; }
+
+ExtendedReal addre(ExtendedReal a, ExtendedReal b) { return a + b; }
+ExtendedReal subre(ExtendedReal a, ExtendedReal b) { return a - b; }
+ExtendedReal mulre(ExtendedReal a, ExtendedReal b) { return a * b; }
+ExtendedReal divre(ExtendedReal a, ExtendedReal b) { return a / b; }

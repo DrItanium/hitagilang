@@ -540,3 +540,103 @@ _B_orp:
 	or	g2,g0,g7
 	movq	g4,g0
 .Li960R60:	ret
+	.align 4
+	.globl _addr
+	#  Function 'addr'
+	#  Registers used: g0 g1 fp 
+_addr:
+	addr	g0,g1,g0
+.Li960R61:	ret
+	.align 4
+	.globl _subr
+	#  Function 'subr'
+	#  Registers used: g0 g1 fp 
+_subr:
+	subr	g1,g0,g0
+.Li960R62:	ret
+	.align 4
+	.globl _mulr
+	#  Function 'mulr'
+	#  Registers used: g0 g1 fp 
+_mulr:
+	mulr	g0,g1,g0
+.Li960R63:	ret
+	.align 4
+	.globl _divr
+	#  Function 'divr'
+	#  Registers used: g0 g1 fp 
+_divr:
+	divr	g1,g0,g0
+.Li960R64:	ret
+	.align 4
+	.globl _addrl
+	#  Function 'addrl'
+	#  Registers used: g0 g1 g2 g3 fp 
+_addrl:
+	addrl	g0,g2,g0
+.Li960R65:	ret
+	.align 4
+	.globl _subrl
+	#  Function 'subrl'
+	#  Registers used: g0 g1 g2 g3 fp 
+_subrl:
+	subrl	g2,g0,g0
+.Li960R66:	ret
+	.align 4
+	.globl _mulrl
+	#  Function 'mulrl'
+	#  Registers used: g0 g1 g2 g3 fp 
+_mulrl:
+	mulrl	g0,g2,g0
+.Li960R67:	ret
+	.align 4
+	.globl _divrl
+	#  Function 'divrl'
+	#  Registers used: g0 g1 g2 g3 fp 
+_divrl:
+	divrl	g2,g0,g0
+.Li960R68:	ret
+	.align 4
+	.globl _addre
+	#  Function 'addre'
+	#  Registers used: g0 g1 g2 g3 g4 g5 g6 g7 fp fp0 
+	#		   fp1 
+_addre:
+	movre	g0,fp0
+	movre	g4,fp1
+	addr	fp0,fp1,fp0
+	movre	fp0,g0
+.Li960R69:	ret
+	.align 4
+	.globl _subre
+	#  Function 'subre'
+	#  Registers used: g0 g1 g2 g3 g4 g5 g6 g7 fp fp0 
+	#		   fp1 
+_subre:
+	movre	g0,fp0
+	movre	g4,fp1
+	subr	fp1,fp0,fp0
+	movre	fp0,g0
+.Li960R70:	ret
+	.align 4
+	.globl _mulre
+	#  Function 'mulre'
+	#  Registers used: g0 g1 g2 g3 g4 g5 g6 g7 fp fp0 
+	#		   fp1 
+_mulre:
+	movre	g0,fp0
+	movre	g4,fp1
+	mulr	fp0,fp1,fp0
+	movre	fp0,g0
+.Li960R71:	ret
+	.align 4
+	.globl _divre
+	#  Function 'divre'
+	#  Registers used: g0 g1 g2 g3 g4 g5 g6 g7 fp fp0 
+	#		   fp1 
+_divre:
+	movre	g0,fp0
+	movre	g4,fp1
+	divr	fp1,fp0,fp0
+	movre	fp0,g0
+.Li960R72:	ret
