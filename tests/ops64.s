@@ -509,3 +509,34 @@ _countItems:
 .L64:
 	movl	g2,g0 # m4
 .Li960R58:	ret
+	.align 4
+	.globl _B_or
+	#  Function 'B_or'
+	#  Registers used: g0 g1 g2 g3 g4 g5 g6 g7 fp r4* 
+	#		   r5* r6* r7* 
+_B_or:
+	or	g0,g4,r4
+	or	g1,g5,r5
+	or	g2,g6,r6
+	or	g3,g7,r7
+	movq	r4,g0
+.Li960R59:	ret
+	.align 4
+	.globl _B_orp
+	#  Function 'B_orp'
+	#  Registers used: g0 g1 g2 g3 g4 g5 g6 g7 fp 
+_B_orp:
+	ld	(g0),g3
+	ld	(g1),g2
+	or	g3,g2,g4
+	ld	4(g0),g3
+	ld	4(g1),g2
+	or	g3,g2,g5
+	ld	8(g0),g3
+	ld	8(g1),g2
+	or	g3,g2,g6
+	ld	12(g0),g2
+	ld	12(g1),g0
+	or	g2,g0,g7
+	movq	g4,g0
+.Li960R60:	ret

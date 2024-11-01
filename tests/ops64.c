@@ -100,3 +100,21 @@ LongOrdinal countItems(Ordinal* items) {
     }
     return count;
 }
+
+struct B B_or(struct B a, struct B b) {
+    struct B result;
+    result.a = a.a | b.a;
+    result.b = a.b | b.b;
+    result.c = a.c | b.c;
+    result.d = a.d | b.d;
+    return result;
+}
+
+struct B B_orp(struct B* a, struct B* b) {
+    struct B result;
+    result.a = a->a | b->a;
+    result.b = a->b | b->b;
+    result.c = a->c | b->c;
+    result.d = a->d | b->d;
+    return result;
+}
