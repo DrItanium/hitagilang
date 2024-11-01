@@ -107,8 +107,7 @@
   (message-handler to-string primary))
 (defmessage-handler MAIN::register get-next-long-register primary
                     ()
-                    (send (send ?self:next-register
-                                get-next-register)
+                    (send ?self:next-register
                           get-next-register))
 (defmessage-handler MAIN::register to-string primary
                     ()
