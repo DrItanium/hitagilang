@@ -1096,3 +1096,249 @@ _ger:
 	cmpr g0,g1
 	testge	g0
 .Li960R114:	ret
+	.align 4
+	.globl _doFP0
+	#  Function 'doFP0'
+	#  Registers used: g0 fp sp 
+	#		   r3* 
+_doFP0:
+	callx	(g0)
+.Li960R115:	ret
+	.align 4
+	.globl _doFP1
+	#  Function 'doFP1'
+	#  Registers used: g0 g1 g4 fp sp 
+	#		   r3* 
+_doFP1:
+	mov	g0,g4
+	mov	g1,g0
+	callx	(g4)
+.Li960R116:	ret
+	.align 4
+	.globl _doFP2
+	#  Function 'doFP2'
+	#  Registers used: g0 g1 g4 fp sp 
+	#		   r3* 
+_doFP2:
+	mov	g0,g4
+	mov	g1,g0
+	callx	(g4)
+.Li960R117:	ret
+	.align 4
+	.globl _doFP3
+	#  Function 'doFP3'
+	#  Registers used: g0 g1 g4 fp sp 
+	#		   r3* 
+_doFP3:
+	mov	g0,g4
+	mov	g1,g0
+	callx	(g4)
+	shlo	16,g0,g0
+	shri	16,g0,g0
+.Li960R118:	ret
+	.align 4
+	.globl _doFP4
+	#  Function 'doFP4'
+	#  Registers used: g0 g1 g2 g4 fp sp 
+	#		   r3* 
+_doFP4:
+	mov	g0,g4
+	mov	g1,g0
+	mov	g2,g1
+	callx	(g4)
+	shlo	16,g0,g0
+	shri	16,g0,g0
+.Li960R119:	ret
+	.align 4
+	.globl _doFP5
+	#  Function 'doFP5'
+	#  Registers used: g0 g1 g2 g3 g4 g5 g6 g7 g8* g9* g10* g11* g13 g14 fp sp 
+	#		   r3* 
+_doFP5:
+	movq	g8,r4
+	mov	g0,g13
+	movl	g2,g0 # m4
+	movl	g4,g2 # m4
+	movl	g6,g4 # m4
+	movl	g8,g6 # m4
+	movl	g10,g8 # m4
+	ldl	48(g14),g10
+	mov	g14,r3
+	mov	0,g14
+	callx	(g13)
+	mov	r3,g14
+.Li960R120:
+	#EPILOGUE#
+	movq	r4,g8
+	ret
+	#End Epilogue#
+	.align 4
+	.globl _opFP6
+	#  Function 'opFP6'
+	#  Registers used: g0 g1 g2 g3 g4 g5 g6 g7 g8* g9* g10* g11* g13 g14 fp r4* 
+	#		   r5* r6* r7* r8* r9* cc 
+_opFP6:
+	movq	g8,r12
+	ldl	48(g14),r6
+	ldl	56(g14),r8
+	addo	g0,g2,r4
+	cmpo	r4,g0
+	testl	g13
+	addo	g1,g3,r5
+	addo	g13,r5,r5
+	addo	r4,g4,g0
+	cmpo	g0,r4
+	testl	g2
+	addo	r5,g5,g1
+	addo	g2,g1,g1
+	addo	g0,g6,g4
+	cmpo	g4,g0
+	testl	g2
+	addo	g1,g7,g5
+	addo	g2,g5,g5
+	addo	g4,g8,g6
+	cmpo	g6,g4
+	testl	g0
+	addo	g5,g9,g7
+	addo	g0,g7,g7
+	addo	g6,g10,g4
+	cmpo	g4,g6
+	testl	g0
+	addo	g7,g11,g5
+	addo	g0,g5,g5
+	addo	g4,r6,g6
+	cmpo	g6,g4
+	testl	g0
+	addo	g5,r7,g7
+	addo	g0,g7,g7
+	addo	g6,r8,g0
+	cmpo	g0,g6
+	testl	g4
+	addo	g7,r9,g1
+	addo	g4,g1,g1
+.Li960R121:
+	#EPILOGUE#
+	movq	r12,g8
+	ret
+	#End Epilogue#
+	.align 4
+	.globl _opFP6_1
+	#  Function 'opFP6_1'
+	#  Registers used: g0 g1 g2 g3 g4 g5 g6 g7 g8* g9* g10* g11* g13 g14 fp r4* 
+	#		   r5* r6* r7* r8* r9* cc 
+_opFP6_1:
+	movq	g8,r12
+	ldl	48(g14),r6
+	ldl	56(g14),r8
+	subo	g2,g0,r4
+	cmpo	r4,g0
+	testg	g13
+	subo	g3,g1,r5
+	subo	g13,r5,r5
+	subo	g4,r4,g0
+	cmpo	g0,r4
+	testg	g2
+	subo	g5,r5,g1
+	subo	g2,g1,g1
+	subo	g6,g0,g4
+	cmpo	g4,g0
+	testg	g2
+	subo	g7,g1,g5
+	subo	g2,g5,g5
+	subo	g8,g4,g6
+	cmpo	g6,g4
+	testg	g0
+	subo	g9,g5,g7
+	subo	g0,g7,g7
+	subo	g10,g6,g4
+	cmpo	g4,g6
+	testg	g0
+	subo	g11,g7,g5
+	subo	g0,g5,g5
+	subo	r6,g4,g6
+	cmpo	g6,g4
+	testg	g0
+	subo	r7,g5,g7
+	subo	g0,g7,g7
+	subo	r8,g6,g0
+	cmpo	g0,g6
+	testg	g4
+	subo	r9,g7,g1
+	subo	g4,g1,g1
+.Li960R122:
+	#EPILOGUE#
+	movq	r12,g8
+	ret
+	#End Epilogue#
+	.align 4
+	.globl _doFP6
+	#  Function 'doFP6'
+	#  Registers used: g0 g1 g2 g3 g4 g5 g6 g7 g8* g9* g10* g11* g13 g14 fp sp 
+	#		   r3* 
+_doFP6:
+	movq	g8,r4
+	lda	64(sp),sp #lda6
+	#Prologue stats:
+	#  Total Frame Size: 64 bytes
+	#  Register Save Size: 4 regs, 16 bytes
+	#End Prologue#
+	mov	g0,g13
+	ldl	56(g14),g0
+	stl	g0,-16(sp)
+	ldl	64(g14),g0
+	stl	g0,-8(sp)
+	movl	g2,g0 # m4
+	movl	g4,g2 # m4
+	movl	g6,g4 # m4
+	movl	g8,g6 # m4
+	movl	g10,g8 # m4
+	ldl	48(g14),g10
+	mov	g14,r3
+	lda	-64(sp),g14 #lda8
+	callx	(g13)
+	mov	r3,g14
+.Li960R123:
+	#EPILOGUE#
+	movq	r4,g8
+	ret
+	#End Epilogue#
+	.align 4
+	.globl _doOpFP6
+	#  Function 'doOpFP6'
+	#  Registers used: g0 g1 g2 g3 g4 g5 g6 g7 g8* g9* g10* g11* g14 fp sp 
+	#		   r3* r4* r5* cc 
+_doOpFP6:
+	movq	g8,r8
+	lda	80(sp),sp #lda6
+	#Prologue stats:
+	#  Total Frame Size: 80 bytes
+	#  Register Save Size: 4 regs, 16 bytes
+	#End Prologue#
+	mov	g0,g1
+	movl	g4,r4 # m4
+	mov	0,g0
+	cmpobe	0,g1,.L154
+	cmpobe	1,g1,.L155
+	b	.L153
+.L154:
+	ldconst	_opFP6,g0 # ldconst 10
+	b	.L153
+.L155:
+	ldconst	_opFP6_1,g0 # ldconst 10
+.L153:
+	ldl	48(g14),g4
+	stl	g4,-32(sp)
+	ldl	56(g14),g4
+	stl	g4,-24(sp)
+	ldl	64(g14),g4
+	stl	g4,-16(sp)
+	movl	r4,g4 # m4
+	mov	g14,r3
+	lda	-80(sp),g14 #lda8
+	callx	_doFP6
+	mov	r3,g14
+.Li960R124:
+	#EPILOGUE#
+	movq	r8,g8
+	ret
+	#End Epilogue#

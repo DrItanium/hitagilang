@@ -186,3 +186,57 @@ bool lr(Real a, Real b) { return a < b; }
 bool ler(Real a, Real b) { return a <= b; }
 bool gr(Real a, Real b) { return a > b; }
 bool ger(Real a, Real b) { return a >= b; }
+
+typedef void (*FunctionPointer0)(void);
+typedef void (*FunctionPointer1)(int);
+typedef int (*FunctionPointer2)(int);
+typedef short (*FunctionPointer3)(short);
+typedef short (*FunctionPointer4)(short, short);
+typedef LongOrdinal (*FunctionPointer5)(LongOrdinal, LongOrdinal, LongOrdinal, LongOrdinal, LongOrdinal, LongOrdinal);
+typedef LongOrdinal (*FunctionPointer6)(LongOrdinal, LongOrdinal, LongOrdinal, LongOrdinal, LongOrdinal, LongOrdinal, LongOrdinal, LongOrdinal);
+
+void doFP0(FunctionPointer0 fp) {
+    fp();
+}
+void doFP1(FunctionPointer1 fp, int arg0) {
+    fp(arg0);
+}
+int doFP2(FunctionPointer2 fp, int arg0) {
+    return fp(arg0);
+}
+short doFP3(FunctionPointer3 fp, short arg0) {
+    return fp(arg0);
+}
+
+short doFP4(FunctionPointer4 fp, short arg0, short arg1) {
+    return fp(arg0, arg1);
+}
+
+LongOrdinal doFP5(FunctionPointer5 fp, LongOrdinal arg0, LongOrdinal arg1, LongOrdinal arg2, LongOrdinal arg3, LongOrdinal arg4, LongOrdinal arg5) {
+    return fp(arg0, arg1, arg2, arg3, arg4, arg5);
+}
+LongOrdinal opFP6(LongOrdinal arg0, LongOrdinal arg1, LongOrdinal arg2, LongOrdinal arg3, LongOrdinal arg4, LongOrdinal arg5, LongOrdinal arg6, LongOrdinal arg7) {
+    return arg0 + arg1 + arg2 + arg3 + arg4 + arg5 + arg6 + arg7;
+}
+LongOrdinal opFP6_1(LongOrdinal arg0, LongOrdinal arg1, LongOrdinal arg2, LongOrdinal arg3, LongOrdinal arg4, LongOrdinal arg5, LongOrdinal arg6, LongOrdinal arg7) {
+    return arg0 - arg1 - arg2 - arg3 - arg4 - arg5 - arg6 - arg7;
+}
+LongOrdinal doFP6(FunctionPointer6 fp, LongOrdinal arg0, LongOrdinal arg1, LongOrdinal arg2, LongOrdinal arg3, LongOrdinal arg4, LongOrdinal arg5, LongOrdinal arg6, LongOrdinal arg7) {
+    return fp(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+}
+
+LongOrdinal doOpFP6(int index, LongOrdinal arg0, LongOrdinal arg1, LongOrdinal arg2, LongOrdinal arg3, LongOrdinal arg4, LongOrdinal arg5, LongOrdinal arg6, LongOrdinal arg7) {
+    FunctionPointer6 fp = 0;
+    switch (index) {
+        case 0:
+            fp = opFP6;
+            break;
+        case 1:
+            fp = opFP6_1;
+            break;
+        default:
+            break;
+    }
+    return doFP6(fp, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+}
+
