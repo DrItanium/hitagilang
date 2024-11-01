@@ -19,4 +19,7 @@ LongOrdinal andl(LongOrdinal a, LongOrdinal b) { return a & b; }
 LongOrdinal orl(LongOrdinal a, LongOrdinal b) { return a | b; }
 LongOrdinal notl(LongOrdinal a) { return ~a; }
 LongOrdinal xorl(LongOrdinal a, LongOrdinal b) { return a ^ b; }
-LongOrdinal xnorl(LongOrdinal a, LongOrdinal b) { return ~(a ^ b); }
+LongOrdinal xnorl(LongOrdinal a, LongOrdinal b) {
+    // from the programmer's reference
+    return ~(b | a) | (b & a);
+}
