@@ -246,3 +246,241 @@
                         get-next-long-register)
                   (send (convert-register ?dest)
                         get-next-long-register))))
+
+(defmethod MAIN::*norl
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-long-register ?current-argument)))
+  (create$ (*nor (convert-register ?src1)
+                 (convert-register ?src2)
+                 (convert-register ?dest))
+           (*nor (send (convert-register ?src1)
+                       get-next-register)
+                 (send (convert-register ?src2)
+                       get-next-register)
+                 (send (convert-register ?dest)
+                       get-next-register))))
+
+(defmethod MAIN::*nort
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-triple-register ?current-argument)))
+  (create$ (*norl ?src1
+                  ?src2
+                  ?dest)
+           (*nor (send (convert-register ?src1)
+                       get-next-long-register)
+                 (send (convert-register ?src2)
+                       get-next-long-register)
+                 (send (convert-register ?dest)
+                       get-next-long-register))))
+
+(defmethod MAIN::*norq
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-quad-register ?current-argument)))
+  (create$ (*norl ?src1
+                  ?src2
+                  ?dest)
+           (*norl (send (convert-register ?src1)
+                        get-next-long-register)
+                  (send (convert-register ?src2)
+                        get-next-long-register)
+                  (send (convert-register ?dest)
+                        get-next-long-register))))
+
+(defmethod MAIN::*nandl
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-long-register ?current-argument)))
+  (create$ (*nand (convert-register ?src1)
+                  (convert-register ?src2)
+                  (convert-register ?dest))
+           (*nand (send (convert-register ?src1)
+                        get-next-register)
+                  (send (convert-register ?src2)
+                        get-next-register)
+                  (send (convert-register ?dest)
+                        get-next-register))))
+
+(defmethod MAIN::*nandt
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-triple-register ?current-argument)))
+  (create$ (*nandl ?src1
+                   ?src2
+                   ?dest)
+           (*nand (send (convert-register ?src1)
+                        get-next-long-register)
+                  (send (convert-register ?src2)
+                        get-next-long-register)
+                  (send (convert-register ?dest)
+                        get-next-long-register))))
+
+(defmethod MAIN::*nandq
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-quad-register ?current-argument)))
+  (create$ (*nandl ?src1
+                   ?src2
+                   ?dest)
+           (*nandl (send (convert-register ?src1)
+                         get-next-long-register)
+                   (send (convert-register ?src2)
+                         get-next-long-register)
+                   (send (convert-register ?dest)
+                         get-next-long-register))))
+(defmethod MAIN::*andl
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-long-register ?current-argument)))
+  (create$ (*and (convert-register ?src1)
+                  (convert-register ?src2)
+                  (convert-register ?dest))
+           (*and (send (convert-register ?src1)
+                        get-next-register)
+                  (send (convert-register ?src2)
+                        get-next-register)
+                  (send (convert-register ?dest)
+                        get-next-register))))
+
+(defmethod MAIN::*andt
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-triple-register ?current-argument)))
+  (create$ (*andl ?src1
+                   ?src2
+                   ?dest)
+           (*and (send (convert-register ?src1)
+                        get-next-long-register)
+                  (send (convert-register ?src2)
+                        get-next-long-register)
+                  (send (convert-register ?dest)
+                        get-next-long-register))))
+
+(defmethod MAIN::*andq
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-quad-register ?current-argument)))
+  (create$ (*andl ?src1
+                   ?src2
+                   ?dest)
+           (*andl (send (convert-register ?src1)
+                         get-next-long-register)
+                   (send (convert-register ?src2)
+                         get-next-long-register)
+                   (send (convert-register ?dest)
+                         get-next-long-register))))
+(defmethod MAIN::*orl
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-long-register ?current-argument)))
+  (create$ (*or (convert-register ?src1)
+                  (convert-register ?src2)
+                  (convert-register ?dest))
+           (*or (send (convert-register ?src1)
+                        get-next-register)
+                  (send (convert-register ?src2)
+                        get-next-register)
+                  (send (convert-register ?dest)
+                        get-next-register))))
+
+(defmethod MAIN::*ort
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-triple-register ?current-argument)))
+  (create$ (*orl ?src1
+                   ?src2
+                   ?dest)
+           (*or (send (convert-register ?src1)
+                        get-next-long-register)
+                  (send (convert-register ?src2)
+                        get-next-long-register)
+                  (send (convert-register ?dest)
+                        get-next-long-register))))
+
+(defmethod MAIN::*orq
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-quad-register ?current-argument)))
+  (create$ (*orl ?src1
+                   ?src2
+                   ?dest)
+           (*orl (send (convert-register ?src1)
+                         get-next-long-register)
+                   (send (convert-register ?src2)
+                         get-next-long-register)
+                   (send (convert-register ?dest)
+                         get-next-long-register))))
