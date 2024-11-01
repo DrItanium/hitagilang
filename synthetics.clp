@@ -494,3 +494,46 @@
        ?src))
 (defmethod MAIN::*nop () (*nop r15))
 
+(defmethod MAIN::*inci 
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (*addi ?src
+         1
+         ?dest))
+
+(defmethod MAIN::*inco
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (*addo ?src
+         1
+         ?dest))
+
+(defmethod MAIN::*deci 
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (*subi ?src
+         1
+         ?dest))
+
+(defmethod MAIN::*deco
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (*subo ?src
+         1
+         ?dest))
