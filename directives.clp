@@ -21,6 +21,43 @@
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (include asmgen.clp)
+(defclass MAIN::string-directive
+  (is-a USER)
+  (role abstract)
+  (pattern-match non-reactive)
+  (slot operation
+        (type SYMBOL)
+        (storage shared)
+        (visibility public)
+        (access read-only)
+        (default ILLEGAL-OPERATION))
+  (slot data
+        (type STRING)
+        (storage local)
+        (visibility public)
+        (default ?NONE))
+  (message-handler to-string primary))
+(defmessage-handler MAIN::string-directive to-string primary
+                    ()
+                    (format nil
+                            "%s \"%s\""
+                            (dynamic-get operation)
+                            (dynamic-get data)))
+(defclass MAIN::asciz-directive
+  (is-a string-directive)
+  (role concrete)
+  (pattern-match reactive)
+  (slot operation
+        (source composite)
+        (default .asciz)))
+(defclass MAIN::ascii-directive
+  (is-a string-directive)
+  (role concrete)
+  (pattern-match reactive)
+  (slot operation
+        (source composite)
+        (default .ascii)))
+
 (defgeneric MAIN::defdirective
             "Define a directive")
 (defmethod MAIN::defdirective
@@ -60,3 +97,27 @@
    $?rest)
   (.word ?target
          ?rest))
+(defmethod MAIN::.align
+  ((?value INTEGER))
+  (defdirective .align
+                ?value))
+(defmethod MAIN::.asciz
+  ((?data STRING))
+  (make-instance of asciz-directive
+                 (data ?data)))
+
+(defmethod MAIN::.ascii
+  ((?data STRING))
+  (make-instance of ascii-directive
+                 (data ?data)))
+
+(defmethod MAIN::.bss () (defdirective .bss))
+(defmethod MAIN::.bss 
+  ((?title SYMBOL)
+   (?size INTEGER
+          SYMBOL)
+   (?alignment INTEGER))
+  (defdirective .bss
+                ?title
+                ?size
+                ?alignment))
