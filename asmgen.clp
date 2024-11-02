@@ -454,7 +454,15 @@
 (defmethod MAIN::mkblock
   ($?contents)
   (mkblock ?contents))
-
+(defmessage-handler MULTIFIELD to-string primary
+                    ()
+                    (bind ?contents 
+                          (create$))
+                    (progn$ (?a ?self)
+                            (bind ?contents
+                                  ?contents
+                                  (send ?a to-string)))
+                    ?contents)
 
 ;synthetic instructions
 ; make this last to be sure

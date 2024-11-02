@@ -76,12 +76,7 @@
              (mkblock (.text)
                       (.align 4)
                       (defglobal-label ?name)
-                      (if (<= 0 ?index 31) then
-                        (*calls ?index)
-                        else
-                        (mkblock (*ldconst ?index
-                                           g13)
-                                 (*calls g13)))
+                      (*calls ?index)
                       (*ret)))
 (deffunction MAIN::declare-segment
              (?a ?b ?c ?d)
