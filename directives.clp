@@ -121,3 +121,8 @@
                 ?title
                 ?size
                 ?alignment))
+
+(defmethod MAIN::.skip
+  ((?count INTEGER))
+  (defdirective .skip
+                ?count))

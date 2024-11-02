@@ -70,3 +70,18 @@
              (create$ (clear-g14)
                       (*callx (make-instance of mem-format-argument
                                              (displacement ?function)))))
+
+(deffunction MAIN::def-system-call
+             (?index ?name)
+             (create$ (.text)
+                      (.align 4)
+                      (.global ?name)
+                      (deflabel ?name)
+                      (if (<= 0 ?index 31) then
+                        (*calls ?index)
+                        else
+                        (create$ (*ldconst ?index
+                                  g13)
+                                 (*calls g13)))
+                      (*ret)))
+

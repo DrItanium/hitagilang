@@ -177,6 +177,14 @@
   ((?targ SYMBOL))
   (definstruction call
                   ?targ))
+(defgeneric MAIN::*calls)
+(defmethod MAIN::*calls
+  ((?targ reg/lit
+            INTEGER
+            SYMBOL
+            (is-valid-reg-literal ?current-argument)))
+  (definstruction calls
+                  (convert-reg/lit ?targ)))
 (defgeneric MAIN::*bal)
 (defmethod MAIN::*bal
   ((?targ SYMBOL))
@@ -227,9 +235,11 @@
   ((?bitpos reg/lit
             INTEGER
             SYMBOL
-            (is-valid-reg-literal ?current-argument)) (?src register
-            SYMBOL
-            (is-valid-register ?current-argument)) (?targ SYMBOL))
+            (is-valid-reg-literal ?current-argument)) 
+   (?src register
+         SYMBOL
+         (is-valid-register ?current-argument)) 
+   (?targ SYMBOL))
   (definstruction bbs
                   (convert-reg/lit ?bitpos)
                   (convert-register ?src)

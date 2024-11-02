@@ -140,6 +140,10 @@
                             "%s:"
                             ?self:title))
 
+(deffunction MAIN::deflabel
+             (?title)
+             (make-instance of label
+                            (title ?title)))
 (defclass MAIN::operand-list
   (is-a USER)
   (multislot contents
