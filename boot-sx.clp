@@ -24,7 +24,7 @@
 (deffunction MAIN::clear-g14 () (*ldconst 0 g14))
 (deffunction MAIN::save-globals
              ()
-             (create$ (*ldconst 64 r4)
+             (mkblock (*ldconst 64 r4)
                       (*addo sp r4 sp)
                       (*stq g0 
                             (make-instance of mem-format-argument 
@@ -44,7 +44,7 @@
                                            (abase sp)))))
 (deffunction MAIN::restore-globals
              ()
-             (create$ (*ldq (make-instance of mem-format-argument 
+             (mkblock (*ldq (make-instance of mem-format-argument 
                                            (displacement -64) 
                                            (abase sp))
                             g0)
@@ -63,23 +63,23 @@
 
 (deffunction MAIN::clear-call
              (?function)
-             (create$ (clear-g14)
+             (mkblock (clear-g14)
                       (*call ?function)))
 (deffunction MAIN::clear-callx
              (?function)
-             (create$ (clear-g14)
+             (mkblock (clear-g14)
                       (*callx (make-instance of mem-format-argument
                                              (displacement ?function)))))
 
 (deffunction MAIN::def-system-call
              (?index ?name)
-             (create$ (.text)
+             (mkblock (.text)
                       (.align 4)
                       (defglobal-label ?name)
                       (if (<= 0 ?index 31) then
                         (*calls ?index)
                         else
-                        (create$ (*ldconst ?index
+                        (mkblock (*ldconst ?index
                                            g13)
                                  (*calls g13)))
                       (*ret)))
@@ -102,14 +102,14 @@
                               0x00fc00a3))
 (deffunction MAIN::paged-region
              (?address ?size)
-             (create$ (.space 8)
+             (mkblock (.space 8)
                       (.word ?address
                              (format nil
                                      "((%d) << 18) | 0x5"
                                      ?size))))
 (deffunction MAIN::bipaged-region
              (?address ?size)
-             (create$ (.space 8)
+             (mkblock (.space 8)
                       (.word ?address
                              (format nil
                                      "((%d) << 18) | 0x7"
@@ -117,7 +117,7 @@
 
 (deffunction MAIN::small-segment-table
              (?address ?size)
-             (create$ (.space 8)
+             (mkblock (.space 8)
                       (.word ?address
                              "(0x3f << 18) | 0xfb")))
 
@@ -132,7 +132,7 @@
                               0x204000fb))
 (deffunction MAIN::def-interrupt-handler
              (?name ?to-call)
-             (create$ (defglobal-label ?name)
+             (mkblock (defglobal-label ?name)
                       (save-globals)
                       (clear-call (sym-cat _vect_ 
                                            ?to-call))

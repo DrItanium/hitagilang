@@ -447,6 +447,13 @@
                       (symbol-to-instance-name ?current-argument))))
   TRUE)
 
+(defgeneric MAIN::mkblock)
+(defmethod MAIN::mkblock
+  ((?contents MULTIFIELD))
+  (create$ ?contents))
+(defmethod MAIN::mkblock
+  ($?contents)
+  (mkblock ?contents))
 
 
 ;synthetic instructions

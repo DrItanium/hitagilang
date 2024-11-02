@@ -177,14 +177,6 @@
   ((?targ SYMBOL))
   (definstruction call
                   ?targ))
-(defgeneric MAIN::*calls)
-(defmethod MAIN::*calls
-  ((?targ reg/lit
-            INTEGER
-            SYMBOL
-            (is-valid-reg-literal ?current-argument)))
-  (definstruction calls
-                  (convert-reg/lit ?targ)))
 (defgeneric MAIN::*bal)
 (defmethod MAIN::*bal
   ((?targ SYMBOL))
@@ -1268,3 +1260,12 @@
   (definstruction stis
                   (convert-register ?src)
                   ?dst))
+
+(defgeneric MAIN::*calls)
+(defmethod MAIN::*calls
+  ((?targ reg/lit
+            INTEGER
+            SYMBOL
+            (is-valid-reg-literal ?current-argument)))
+  (definstruction calls
+                  (convert-reg/lit ?targ)))

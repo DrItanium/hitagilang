@@ -198,14 +198,14 @@
           SYMBOL
           (is-valid-long-register ?current-argument)))
   (create$ (*xnor (convert-register ?src1)
-                 (convert-register ?src2)
-                 (convert-register ?dest))
+                  (convert-register ?src2)
+                  (convert-register ?dest))
            (*xnor (send (convert-register ?src1)
-                       get-next-register)
-                 (send (convert-register ?src2)
-                       get-next-register)
-                 (send (convert-register ?dest)
-                       get-next-register))))
+                        get-next-register)
+                  (send (convert-register ?src2)
+                        get-next-register)
+                  (send (convert-register ?dest)
+                        get-next-register))))
 
 (defmethod MAIN::*xnort
   ((?src1 register
@@ -218,14 +218,14 @@
           SYMBOL
           (is-valid-triple-register ?current-argument)))
   (create$ (*xnorl ?src1
-                  ?src2
-                  ?dest)
+                   ?src2
+                   ?dest)
            (*xnor (send (convert-register ?src1)
-                       get-next-long-register)
-                 (send (convert-register ?src2)
-                       get-next-long-register)
-                 (send (convert-register ?dest)
-                       get-next-long-register))))
+                        get-next-long-register)
+                  (send (convert-register ?src2)
+                        get-next-long-register)
+                  (send (convert-register ?dest)
+                        get-next-long-register))))
 
 (defmethod MAIN::*xnorq
   ((?src1 register
@@ -238,14 +238,14 @@
           SYMBOL
           (is-valid-quad-register ?current-argument)))
   (create$ (*xnorl ?src1
-                  ?src2
-                  ?dest)
+                   ?src2
+                   ?dest)
            (*xnorl (send (convert-register ?src1)
-                        get-next-long-register)
-                  (send (convert-register ?src2)
-                        get-next-long-register)
-                  (send (convert-register ?dest)
-                        get-next-long-register))))
+                         get-next-long-register)
+                   (send (convert-register ?src2)
+                         get-next-long-register)
+                   (send (convert-register ?dest)
+                         get-next-long-register))))
 
 (defmethod MAIN::*norl
   ((?src1 register
@@ -377,14 +377,14 @@
           SYMBOL
           (is-valid-long-register ?current-argument)))
   (create$ (*and (convert-register ?src1)
-                  (convert-register ?src2)
-                  (convert-register ?dest))
+                 (convert-register ?src2)
+                 (convert-register ?dest))
            (*and (send (convert-register ?src1)
-                        get-next-register)
-                  (send (convert-register ?src2)
-                        get-next-register)
-                  (send (convert-register ?dest)
-                        get-next-register))))
+                       get-next-register)
+                 (send (convert-register ?src2)
+                       get-next-register)
+                 (send (convert-register ?dest)
+                       get-next-register))))
 
 (defmethod MAIN::*andt
   ((?src1 register
@@ -397,14 +397,14 @@
           SYMBOL
           (is-valid-triple-register ?current-argument)))
   (create$ (*andl ?src1
-                   ?src2
-                   ?dest)
+                  ?src2
+                  ?dest)
            (*and (send (convert-register ?src1)
-                        get-next-long-register)
-                  (send (convert-register ?src2)
-                        get-next-long-register)
-                  (send (convert-register ?dest)
-                        get-next-long-register))))
+                       get-next-long-register)
+                 (send (convert-register ?src2)
+                       get-next-long-register)
+                 (send (convert-register ?dest)
+                       get-next-long-register))))
 
 (defmethod MAIN::*andq
   ((?src1 register
@@ -417,14 +417,14 @@
           SYMBOL
           (is-valid-quad-register ?current-argument)))
   (create$ (*andl ?src1
-                   ?src2
-                   ?dest)
+                  ?src2
+                  ?dest)
            (*andl (send (convert-register ?src1)
-                         get-next-long-register)
-                   (send (convert-register ?src2)
-                         get-next-long-register)
-                   (send (convert-register ?dest)
-                         get-next-long-register))))
+                        get-next-long-register)
+                  (send (convert-register ?src2)
+                        get-next-long-register)
+                  (send (convert-register ?dest)
+                        get-next-long-register))))
 (defmethod MAIN::*orl
   ((?src1 register
           SYMBOL
@@ -436,14 +436,14 @@
           SYMBOL
           (is-valid-long-register ?current-argument)))
   (create$ (*or (convert-register ?src1)
-                  (convert-register ?src2)
-                  (convert-register ?dest))
+                (convert-register ?src2)
+                (convert-register ?dest))
            (*or (send (convert-register ?src1)
-                        get-next-register)
-                  (send (convert-register ?src2)
-                        get-next-register)
-                  (send (convert-register ?dest)
-                        get-next-register))))
+                      get-next-register)
+                (send (convert-register ?src2)
+                      get-next-register)
+                (send (convert-register ?dest)
+                      get-next-register))))
 
 (defmethod MAIN::*ort
   ((?src1 register
@@ -456,14 +456,14 @@
           SYMBOL
           (is-valid-triple-register ?current-argument)))
   (create$ (*orl ?src1
-                   ?src2
-                   ?dest)
+                 ?src2
+                 ?dest)
            (*or (send (convert-register ?src1)
-                        get-next-long-register)
-                  (send (convert-register ?src2)
-                        get-next-long-register)
-                  (send (convert-register ?dest)
-                        get-next-long-register))))
+                      get-next-long-register)
+                (send (convert-register ?src2)
+                      get-next-long-register)
+                (send (convert-register ?dest)
+                      get-next-long-register))))
 
 (defmethod MAIN::*orq
   ((?src1 register
@@ -476,14 +476,14 @@
           SYMBOL
           (is-valid-quad-register ?current-argument)))
   (create$ (*orl ?src1
-                   ?src2
-                   ?dest)
+                 ?src2
+                 ?dest)
            (*orl (send (convert-register ?src1)
-                         get-next-long-register)
-                   (send (convert-register ?src2)
-                         get-next-long-register)
-                   (send (convert-register ?dest)
-                         get-next-long-register))))
+                       get-next-long-register)
+                 (send (convert-register ?src2)
+                       get-next-long-register)
+                 (send (convert-register ?dest)
+                       get-next-long-register))))
 
 (defmethod MAIN::*nop
   ((?src register
@@ -537,3 +537,10 @@
   (*subo 1
          ?src
          ?dest))
+
+(defmethod MAIN::*calls
+  ((?targ INTEGER
+          (<= 32 ?current-argument 259)))
+  (mkblock (*ldconst ?targ
+                     g13)
+           (*calls g13)))
