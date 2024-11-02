@@ -126,3 +126,13 @@
   ((?count INTEGER))
   (defdirective .skip
                 ?count))
+
+(defmethod MAIN::.space
+  ((?count INTEGER))
+  (defdirective .space
+                ?count))
+
+(defmethod MAIN::defglobal-label
+  ((?name SYMBOL))
+  (create$ (.global ?name)
+           (deflabel ?name)))

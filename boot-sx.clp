@@ -28,8 +28,8 @@
                       (*addo sp r4 sp)
                       (*stq g0 
                             (make-instance of mem-format-argument 
-                                              (displacement -64) 
-                                              (abase sp)))
+                                           (displacement -64) 
+                                           (abase sp)))
                       (*stq g4 
                             (make-instance of mem-format-argument 
                                            (displacement -48) 
@@ -61,11 +61,11 @@
                                            (abase sp))
                             g12)))
 
-(deffunction MAIN:c-call
+(deffunction MAIN::clear-call
              (?function)
              (create$ (clear-g14)
                       (*call ?function)))
-(deffunction MAIN::c-callx
+(deffunction MAIN::clear-callx
              (?function)
              (create$ (clear-g14)
                       (*callx (make-instance of mem-format-argument
@@ -75,13 +75,66 @@
              (?index ?name)
              (create$ (.text)
                       (.align 4)
-                      (.global ?name)
-                      (deflabel ?name)
+                      (defglobal-label ?name)
                       (if (<= 0 ?index 31) then
                         (*calls ?index)
                         else
                         (create$ (*ldconst ?index
-                                  g13)
+                                           g13)
                                  (*calls g13)))
                       (*ret)))
+(deffunction MAIN::declare-segment
+             (?a ?b ?c ?d)
+             (.word ?a 
+                    ?b 
+                    ?c 
+                    ?d))
+(deffunction MAIN::segment-selector
+             (?base)
+             (.word (format nil
+                            "((%d)<<6) | 0x3f"
+                            ?base)))
+(deffunction MAIN::simple-region
+             (?address)
+             (declare-segment 0 
+                              0 
+                              ?address 
+                              0x00fc00a3))
+(deffunction MAIN::paged-region
+             (?address ?size)
+             (create$ (.space 8)
+                      (.word ?address
+                             (format nil
+                                     "((%d) << 18) | 0x5"
+                                     ?size))))
+(deffunction MAIN::bipaged-region
+             (?address ?size)
+             (create$ (.space 8)
+                      (.word ?address
+                             (format nil
+                                     "((%d) << 18) | 0x7"
+                                     ?size))))
 
+(deffunction MAIN::small-segment-table
+             (?address ?size)
+             (create$ (.space 8)
+                      (.word ?address
+                             "(0x3f << 18) | 0xfb")))
+
+(deffunction MAIN::page-entry
+             (?address)
+             (.word (str-cat "((" ?address ") | 0xc7)")))
+(deffunction MAIN::port-segment
+             (?address)
+             (declare-segment 0 
+                              0
+                              ?address
+                              0x204000fb))
+(deffunction MAIN::def-interrupt-handler
+             (?name ?to-call)
+             (create$ (defglobal-label ?name)
+                      (save-globals)
+                      (clear-call (sym-cat _vect_ 
+                                           ?to-call))
+                      (restore-globals)
+                      (*ret)))
