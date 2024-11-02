@@ -424,6 +424,47 @@
                               else
                               "")
                             ))
+(defmethod MAIN::mem-format-args
+  ((?txt-displacement SYMBOL
+                      (eq ?current-argument displacement:))
+   (?displacement SYMBOL
+                  INTEGER))
+  (make-instance of mem-format-instruction
+                 (displacement ?displacement)))
+(defmethod MAIN::mem-format-args
+  ((?txt-abase SYMBOL
+               (eq ?current-argument abase:))
+   (?abase SYMBOL
+           register
+           (is-valid-register ?current-argument)))
+  (make-instance of mem-format-instruction
+                 (abase ?abase)))
+(defmethod MAIN::mem-format-args
+  ((?txt-index SYMBOL
+               (eq ?current-argument index:))
+   (?index SYMBOL
+           register
+           (is-valid-register ?current-argument))
+   (?txt-scale SYMBOL
+               (eq ?current-argument scale:))
+   (?scale INTEGER))
+  (make-instance of mem-format-instruction
+                 (index ?index)
+                 (scale (switch ?scale
+                                (case 2 then ?scale)
+                                (case 4 then ?scale)
+                                (case 8 then ?scale)
+                                (case 16 then ?scale)
+                                (default FALSE)))))
+(defmethod MAIN::mem-format-args
+  ((?txt-index SYMBOL
+               (eq ?current-argument index:))
+   (?index SYMBOL
+           register
+           (is-valid-register ?current-argument)))
+  (mem-format-args ?txt-index
+                   ?index
+                   scale: 1))
 
 
 ; ctrl instructions
