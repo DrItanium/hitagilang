@@ -60,3 +60,13 @@
                                            (displacement -16) 
                                            (abase sp))
                             g12)))
+
+(deffunction MAIN:c-call
+             (?function)
+             (create$ (clear-g14)
+                      (*call ?function)))
+(deffunction MAIN::c-callx
+             (?function)
+             (create$ (clear-g14)
+                      (*callx (make-instance of mem-format-argument
+                                             (displacement ?function)))))
