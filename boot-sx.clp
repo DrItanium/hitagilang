@@ -26,7 +26,37 @@
              ()
              (create$ (*ldconst 64 r4)
                       (*addo sp r4 sp)
-                      (*stq g0 (make-instance of mem-format-argument (displacement -64) (abase sp)))
-                      (*stq g4 (make-instance of mem-format-argument (displacement -48) (abase sp)))
-                      (*stq g8 (make-instance of mem-format-argument (displacement -32) (abase sp)))
-                      (*stt g12 (make-instance of mem-format-argument (displacement -16) (abase sp)))))
+                      (*stq g0 
+                            (make-instance of mem-format-argument 
+                                              (displacement -64) 
+                                              (abase sp)))
+                      (*stq g4 
+                            (make-instance of mem-format-argument 
+                                           (displacement -48) 
+                                           (abase sp)))
+                      (*stq g8 
+                            (make-instance of mem-format-argument 
+                                           (displacement -32) 
+                                           (abase sp)))
+                      (*stt g12 
+                            (make-instance of mem-format-argument 
+                                           (displacement -16) 
+                                           (abase sp)))))
+(deffunction MAIN::restore-globals
+             ()
+             (create$ (*ldq (make-instance of mem-format-argument 
+                                           (displacement -64) 
+                                           (abase sp))
+                            g0)
+                      (*ldq (make-instance of mem-format-argument 
+                                           (displacement -48) 
+                                           (abase sp))
+                            g4)
+                      (*ldq (make-instance of mem-format-argument 
+                                           (displacement -32) 
+                                           (abase sp))
+                            g8)
+                      (*ldt (make-instance of mem-format-argument 
+                                           (displacement -16) 
+                                           (abase sp))
+                            g12)))
