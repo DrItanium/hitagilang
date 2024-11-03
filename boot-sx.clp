@@ -38,14 +38,14 @@
 (deffunction MAIN::transfer-data
              (?size ?src ?dest ?offset)
              (mkblock (*ldconst ?size 
-                              g0)
-                    (*ldconst ?src 
-                              g1)
-                    (*ldconst ?dest
-                              g2)
-                    (*ldconst ?offset
-                              g3)
-                    (*bal move_data)))
+                                g0)
+                      (*ldconst ?src 
+                                g1)
+                      (*ldconst ?dest
+                                g2)
+                      (*ldconst ?offset
+                                g3)
+                      (*bal move_data)))
 
 
 ;(deffunction MAIN::code-body

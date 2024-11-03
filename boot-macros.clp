@@ -24,8 +24,8 @@
 (deffunction MAIN::clear-g14 () (*ldconst 0 g14))
 (deffunction MAIN::save-globals
              ()
-             (mkblock (*ldconst 64 r4)
-                      (*addo sp r4 sp)
+             (mkblock (*ldconst 64 r3)
+                      (*addo sp r3 sp)
                       (*stq g0 
                             (mem-format-arg displacement: -64
                                             abase: sp))
