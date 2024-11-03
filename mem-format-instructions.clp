@@ -343,8 +343,9 @@
    $?rest)
   (*balx ?txt-dest ?dest
          ?rest))
-
-; mem instructions
+; -------------------
+; ldl
+; -------------------
 (defmethod MAIN::*ldl
   ((?src mem-format-argument)
    (?dest register
@@ -353,6 +354,31 @@
   (definstruction ldl
                   ?src
                   (convert-register ?dest)))
+(defmethod MAIN::*ldl
+  ((?txt-dest SYMBOL
+              (eq ?current-argument
+                  dest:))
+   (?dest register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?rest MULTIFIELD))
+  (*ldl (mem-format-arg (expand$ ?rest))
+        ?dest))
+(defmethod MAIN::*ldl
+  ((?txt-dest SYMBOL
+              (eq ?current-argument
+                  dest:))
+   (?dest register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   $?rest)
+  (*ldl ?txt-dest
+        ?dest
+        ?rest))
+
+; -------------------
+; ldt
+; -------------------
 (defmethod MAIN::*ldt
   ((?src mem-format-argument)
    (?dest register
@@ -361,6 +387,31 @@
   (definstruction ldt
                   ?src
                   (convert-register ?dest)))
+(defmethod MAIN::*ldt
+  ((?txt-dest SYMBOL
+              (eq ?current-argument
+                  dest:))
+   (?dest register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?rest MULTIFIELD))
+  (*ldt (mem-format-arg (expand$ ?rest))
+        ?dest))
+(defmethod MAIN::*ldt
+  ((?txt-dest SYMBOL
+              (eq ?current-argument
+                  dest:))
+   (?dest register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   $?rest)
+  (*ldt ?txt-dest
+        ?dest
+        ?rest))
+
+; -------------------
+; ldq
+; -------------------
 (defmethod MAIN::*ldq
   ((?src mem-format-argument)
    (?dest register
@@ -369,6 +420,29 @@
   (definstruction ldq
                   ?src
                   (convert-register ?dest)))
+(defmethod MAIN::*ldq
+  ((?txt-dest SYMBOL
+              (eq ?current-argument
+                  dest:))
+   (?dest register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?rest MULTIFIELD))
+  (*ldq (mem-format-arg (expand$ ?rest))
+        ?dest))
+(defmethod MAIN::*ldq
+  ((?txt-dest SYMBOL
+              (eq ?current-argument
+                  dest:))
+   (?dest register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   $?rest)
+  (*ldq ?txt-dest
+        ?dest
+        ?rest))
+
+; mem instructions
 (defmethod MAIN::*stl
   ((?src register
          SYMBOL
