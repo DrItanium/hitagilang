@@ -125,14 +125,6 @@
                   ?src1
                   ?src2))
 ; mem instructions
-(defmethod MAIN::*balx
-  ((?targ mem-format-argument)
-   (?dst register
-         SYMBOL
-         (is-valid-register ?current-argument)))
-  (definstruction balx
-                  ?targ
-                  (convert-register ?dst)))
 (defmethod MAIN::*ldl
   ((?src mem-format-argument)
    (?dest register
