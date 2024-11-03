@@ -280,6 +280,19 @@
                  (abase ?abase)))
 
 ; -------------------
+(defgeneric MAIN::*bx)
+(defgeneric MAIN::*callx)
+(defgeneric MAIN::*ld)
+(defgeneric MAIN::*lda)
+(defgeneric MAIN::*ld)
+(defgeneric MAIN::*ldl)
+(defgeneric MAIN::*ldt)
+(defgeneric MAIN::*ldq)
+(defgeneric MAIN::*ldos)
+(defgeneric MAIN::*ldis)
+(defgeneric MAIN::*ldob)
+(defgeneric MAIN::*ldib)
+; -------------------
 ; lda
 ; -------------------
 (defmethod MAIN::*lda
@@ -442,7 +455,203 @@
         ?dest
         ?rest))
 
+; -------------------
+; ld
+; -------------------
+(defmethod MAIN::*ld
+  ((?src mem-format-argument)
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (definstruction ld
+                  ?src
+                  (convert-register ?dest)))
+(defmethod MAIN::*ld
+  ((?txt-dest SYMBOL
+              (eq ?current-argument
+                  dest:))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument))
+   (?rest MULTIFIELD))
+  (*ld (mem-format-arg (expand$ ?rest))
+        ?dest))
+(defmethod MAIN::*ld
+  ((?txt-dest SYMBOL
+              (eq ?current-argument
+                  dest:))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument))
+   $?rest)
+  (*ld ?txt-dest
+        ?dest
+        ?rest))
+
+; -------------------
+; ldis
+; -------------------
+(defmethod MAIN::*ldis
+  ((?src mem-format-argument)
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (definstruction ldis
+                  ?src
+                  (convert-register ?dest)))
+(defmethod MAIN::*ldis
+  ((?txt-dest SYMBOL
+              (eq ?current-argument
+                  dest:))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument))
+   (?rest MULTIFIELD))
+  (*ldis (mem-format-arg (expand$ ?rest))
+        ?dest))
+(defmethod MAIN::*ldis
+  ((?txt-dest SYMBOL
+              (eq ?current-argument
+                  dest:))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument))
+   $?rest)
+  (*ldis ?txt-dest
+        ?dest
+        ?rest))
+
+; -------------------
+; ldos
+; -------------------
+(defmethod MAIN::*ldos
+  ((?src mem-format-argument)
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (definstruction ldos
+                  ?src
+                  (convert-register ?dest)))
+(defmethod MAIN::*ldos
+  ((?txt-dest SYMBOL
+              (eq ?current-argument
+                  dest:))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument))
+   (?rest MULTIFIELD))
+  (*ldos (mem-format-arg (expand$ ?rest))
+        ?dest))
+(defmethod MAIN::*ldos
+  ((?txt-dest SYMBOL
+              (eq ?current-argument
+                  dest:))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument))
+   $?rest)
+  (*ldos ?txt-dest
+        ?dest
+        ?rest))
+
+; -------------------
+; ldib
+; -------------------
+(defmethod MAIN::*ldib
+  ((?src mem-format-argument)
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (definstruction ldib
+                  ?src
+                  (convert-register ?dest)))
+(defmethod MAIN::*ldib
+  ((?txt-dest SYMBOL
+              (eq ?current-argument
+                  dest:))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument))
+   (?rest MULTIFIELD))
+  (*ldib (mem-format-arg (expand$ ?rest))
+        ?dest))
+(defmethod MAIN::*ldib
+  ((?txt-dest SYMBOL
+              (eq ?current-argument
+                  dest:))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument))
+   $?rest)
+  (*ldib ?txt-dest
+        ?dest
+        ?rest))
+
+; -------------------
+; ldob
+; -------------------
+(defmethod MAIN::*ldob
+  ((?src mem-format-argument)
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (definstruction ldob
+                  ?src
+                  (convert-register ?dest)))
+(defmethod MAIN::*ldob
+  ((?txt-dest SYMBOL
+              (eq ?current-argument
+                  dest:))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument))
+   (?rest MULTIFIELD))
+  (*ldob (mem-format-arg (expand$ ?rest))
+        ?dest))
+(defmethod MAIN::*ldob
+  ((?txt-dest SYMBOL
+              (eq ?current-argument
+                  dest:))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument))
+   $?rest)
+  (*ldob ?txt-dest
+        ?dest
+        ?rest))
+
+; -------------------
+; bx
+; -------------------
+(defmethod MAIN::*bx
+  ((?targ mem-format-argument))
+  (definstruction bx
+                  ?targ))
+(defmethod MAIN::*bx
+  ((?rest MULTIFIELD))
+  (*bx (mem-format-arg (expand$ ?rest))))
+(defmethod MAIN::*bx
+  ($?rest)
+  (*bx ?rest))
+; -------------------
+; callx
+; -------------------
+(defmethod MAIN::*callx
+  ((?targ mem-format-argument))
+  (definstruction callx
+                  ?targ))
+(defmethod MAIN::*callx
+  ((?rest MULTIFIELD))
+  (*callx (mem-format-arg (expand$ ?rest))))
+(defmethod MAIN::*callx
+  ($?rest)
+  (*callx ?rest))
+
+
 ; mem instructions
+; -------------------
+; stl
+; -------------------
 (defmethod MAIN::*stl
   ((?src register
          SYMBOL
@@ -451,6 +660,25 @@
   (definstruction stl
                   (convert-register ?src)
                   ?dest))
+(defmethod MAIN::*stl
+  ((?src register
+         SYMBOL
+         (is-valid-long-register ?current-argument))
+   (?rest MULTIFIELD))
+  (*stl ?src
+        (mem-format-arg (expand$ ?rest))))
+
+(defmethod MAIN::*stl
+  ((?src register
+         SYMBOL
+         (is-valid-long-register ?current-argument))
+   $?rest)
+  (*stl ?src
+        ?rest))
+
+; -------------------
+; stt
+; -------------------
 (defmethod MAIN::*stt
   ((?src register
          SYMBOL
@@ -459,6 +687,23 @@
   (definstruction stt
                   (convert-register ?src)
                   ?dest))
+(defmethod MAIN::*stt
+  ((?src register
+         SYMBOL
+         (is-valid-triple-register ?current-argument))
+   (?rest MULTIFIELD))
+  (*stt ?src
+        (mem-format-arg (expand$ ?rest))))
+(defmethod MAIN::*stt
+  ((?src register
+         SYMBOL
+         (is-valid-triple-register ?current-argument))
+   $?rest)
+  (*stt ?src
+        ?rest))
+; -------------------
+; stq
+; -------------------
 (defmethod MAIN::*stq
   ((?src register
          SYMBOL
@@ -468,62 +713,25 @@
                   (convert-register ?src)
                   ?dest))
 
-(defgeneric MAIN::*bx)
-(defmethod MAIN::*bx
-  ((?targ mem-format-argument))
-  (definstruction bx
-                  ?targ))
-(defgeneric MAIN::*callx)
-(defmethod MAIN::*callx
-  ((?targ mem-format-argument))
-  (definstruction callx
-                  ?targ))
-(defgeneric MAIN::*ld)
-(defmethod MAIN::*ld
-  ((?src mem-format-argument)
-   (?dst register
+(defmethod MAIN::*stq
+  ((?src register
          SYMBOL
-         (is-valid-register ?current-argument)))
-  (definstruction ld
-                  ?src (convert-register ?dst)
-                  ))
-(defgeneric MAIN::*ldob)
-(defmethod MAIN::*ldob
-  ((?src mem-format-argument)
-   (?dst register
+         (is-valid-quad-register ?current-argument))
+   (?rest MULTIFIELD))
+  (*stq ?src
+        (mem-format-arg (expand$ ?rest))))
+
+(defmethod MAIN::*stq
+  ((?src register
          SYMBOL
-         (is-valid-register ?current-argument)))
-  (definstruction ldob
-                  ?src (convert-register ?dst)
-                  ))
-(defgeneric MAIN::*ldib)
-(defmethod MAIN::*ldib
-  ((?src mem-format-argument)
-   (?dst register
-         SYMBOL
-         (is-valid-register ?current-argument)))
-  (definstruction ldib
-                  ?src (convert-register ?dst)
-                  ))
-(defgeneric MAIN::*ldos)
-(defmethod MAIN::*ldos
-  ((?src mem-format-argument)
-   (?dst register
-         SYMBOL
-         (is-valid-register ?current-argument)))
-  (definstruction ldos
-                  ?src (convert-register ?dst)
-                  ))
-(defgeneric MAIN::*ldis)
-(defmethod MAIN::*ldis
-  ((?src mem-format-argument)
-   (?dst register
-         SYMBOL
-         (is-valid-register ?current-argument)))
-  (definstruction ldis
-                  ?src (convert-register ?dst)
-                  ))
-(defgeneric MAIN::*st)
+         (is-valid-quad-register ?current-argument))
+   $?rest)
+  (*stq ?src
+        (mem-format-arg (expand$ ?rest))))
+
+; -------------------
+; st
+; -------------------
 (defmethod MAIN::*st
   ((?src register
          SYMBOL
@@ -532,7 +740,23 @@
   (definstruction st
                   (convert-register ?src)
                   ?dst))
-(defgeneric MAIN::*stob)
+(defmethod MAIN::*st
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?dst MULTIFIELD))
+  (*st ?src
+       (mem-format-arg (expand$ ?dst))))
+(defmethod MAIN::*st
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   $?dst)
+  (*st ?src
+       ?dst))
+; -------------------
+; stob
+; -------------------
 (defmethod MAIN::*stob
   ((?src register
          SYMBOL
@@ -541,7 +765,23 @@
   (definstruction stob
                   (convert-register ?src)
                   ?dst))
-(defgeneric MAIN::*stib)
+(defmethod MAIN::*stob
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?dst MULTIFIELD))
+  (*stob ?src
+       (mem-format-arg (expand$ ?dst))))
+(defmethod MAIN::*stob
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   $?dst)
+  (*stob ?src
+       ?dst))
+; -------------------
+; stib
+; -------------------
 (defmethod MAIN::*stib
   ((?src register
          SYMBOL
@@ -550,7 +790,23 @@
   (definstruction stib
                   (convert-register ?src)
                   ?dst))
-(defgeneric MAIN::*stos)
+(defmethod MAIN::*stib
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?dst MULTIFIELD))
+  (*stib ?src
+       (mem-format-arg (expand$ ?dst))))
+(defmethod MAIN::*stib
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   $?dst)
+  (*stib ?src
+       ?dst))
+; -------------------
+; stos
+; -------------------
 (defmethod MAIN::*stos
   ((?src register
          SYMBOL
@@ -559,7 +815,23 @@
   (definstruction stos
                   (convert-register ?src)
                   ?dst))
-(defgeneric MAIN::*stis)
+(defmethod MAIN::*stos
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?dst MULTIFIELD))
+  (*stos ?src
+       (mem-format-arg (expand$ ?dst))))
+(defmethod MAIN::*stos
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   $?dst)
+  (*stos ?src
+       ?dst))
+; -------------------
+; stis
+; -------------------
 (defmethod MAIN::*stis
   ((?src register
          SYMBOL
@@ -568,4 +840,17 @@
   (definstruction stis
                   (convert-register ?src)
                   ?dst))
-
+(defmethod MAIN::*stis
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?dst MULTIFIELD))
+  (*stis ?src
+       (mem-format-arg (expand$ ?dst))))
+(defmethod MAIN::*stis
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   $?dst)
+  (*stis ?src
+       ?dst))
