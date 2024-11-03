@@ -718,15 +718,6 @@
   ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
   (definstruction alterbit
                   ?src1 ?src2 ?dst))
-(defgeneric MAIN::*addo)
-(defmethod MAIN::*addo
-  ((?src1 reg/lit) 
-   (?src2 reg/lit) 
-   (?dst register))
-  (definstruction addo
-                  ?src1 
-                  ?src2 
-                  ?dst))
 (defgeneric MAIN::*addi)
 (defmethod MAIN::*addi
   ((?src1 reg/lit) (?src2 reg/lit) (?dst register))

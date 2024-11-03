@@ -20,10 +20,14 @@
 ; ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 (include asmgen.clp)
-(include opcodes.clp)
-(include mem-format-instructions.clp)
-(include reg-format-instructions.clp)
-(include directives.clp)
-(include synthetics.clp)
+
+(defgeneric MAIN::*addo)
+(defmethod MAIN::*addo
+  ((?src1 reg/lit) 
+   (?src2 reg/lit) 
+   (?dst register))
+  (definstruction addo
+                  ?src1 
+                  ?src2 
+                  ?dst))

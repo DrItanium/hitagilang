@@ -28,20 +28,20 @@
 (deffunction MAIN::save-globals
              ()
              (mkblock (*ldconst 64 
-                                at)
-                      (*addo sp at sp)
+                                r3)
+                      (*addo sp r3 sp)
                       (*stq g0 
-                            (mem-format-arg displacement: -64
-                                            abase: sp))
+                            displacement: -64
+                            abase: sp)
                       (*stq g4 
-                            (mem-format-arg displacement: -48
-                                            abase: sp))
+                            displacement: -48
+                            abase: sp)
                       (*stq g8 
-                            (mem-format-arg displacement: -32
-                                            abase: sp))
-                      (*stt g12 
-                            (mem-format-arg displacement: -16
-                                            abase: sp))))
+                            displacement: -32
+                            abase: sp)
+                      (*stt g12
+                            displacement: -16
+                            abase: sp)))
 (deffunction MAIN::restore-globals
              ()
              (mkblock (*ldq (mem-format-arg displacement: -64
