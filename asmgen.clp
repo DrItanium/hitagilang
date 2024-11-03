@@ -427,15 +427,16 @@
 (defgeneric MAIN::mem-format-arg
             "construct the mem-format-argument object in a cleaner way")
 ; MEMA format
-; abase + offset
+; -------------------
+; Register Indirect with Offset { abase + offset }
+; -------------------
 (defmethod MAIN::mem-format-arg
   ((?abase-txt SYMBOL
                (eq ?current-argument
                    abase:))
    (?abase SYMBOL
            register
-           (or (is-valid-register ?current-argument)
-               (not ?current-argument)))
+           (is-valid-register ?current-argument))
    (?offset-txt SYMBOL
                 (eq ?current-argument
                     offset:))
@@ -444,7 +445,9 @@
   (make-instance of mem-format-argument
                  (abase ?abase)
                  (displacement ?offset)))
-; offset only
+; -------------------
+; Absolute Offset { offset }
+; -------------------
 (defmethod MAIN::mem-format-arg
   ((?offset-txt SYMBOL
                 (eq ?current-argument
@@ -453,8 +456,11 @@
             (<= 0 ?current-argument 4095)))
   (make-instance of mem-format-argument
                  (displacement ?offset)))
+; -------------------
 ; MEMB Format
+; -------------------
 ; Register Indirect with Index and Displacement { (abase) + (index) * 2^scale + displacement }
+; -------------------
 (defmethod MAIN::mem-format-arg
   ((?txt-displacement SYMBOL
                       (eq ?current-argument 
@@ -477,8 +483,14 @@
                (eq ?current-argument
                    scale:))
    (?scale INTEGER))
+  ; if displacement is zero then do not include it to save a word
+  ; use Register Indirect with Index form
   (make-instance of mem-format-argument
-                 (displacement ?displacement)
+                 (displacement (if (eq ?displacement 
+                                       0) then 
+                                 FALSE 
+                                 else 
+                                 ?displacement))
                  (abase ?abase)
                  (index ?index)
                  (scale (switch ?scale
@@ -487,7 +499,9 @@
                                 (case 8 then ?scale)
                                 (case 16 then ?scale)
                                 (default FALSE)))))
+; -------------------
 ; Index with Displacement { (index) * 2^scale + displacement }
+; -------------------
 (defmethod MAIN::mem-format-arg
   ((?txt-displacement SYMBOL
                       (eq ?current-argument 
@@ -513,7 +527,9 @@
                                 (case 8 then ?scale)
                                 (case 16 then ?scale)
                                 (default FALSE)))))
+; -------------------
 ; Register Indirect with Displacement { (abase) + displacement }
+; -------------------
 (defmethod MAIN::mem-format-arg
   ((?txt-displacement SYMBOL
                       (eq ?current-argument 
@@ -526,10 +542,18 @@
    (?abase SYMBOL
            register
            (is-valid-register ?current-argument)))
+  ; if displacement is zero then change the form to Register Indirect
+  ; save instruction space
   (make-instance of mem-format-argument
-                 (displacement ?displacement)
+                 (displacement (if (eq ?displacement 
+                                       0) then 
+                                 FALSE 
+                                 else 
+                                 ?displacement))
                  (abase ?abase)))
+; -------------------
 ; Absolute Displacement { displacement } / IP with Displacement  { (IP) + displacement + 8 }
+; -------------------
 (defmethod MAIN::mem-format-arg
   ((?txt-displacement SYMBOL
                       (eq ?current-argument 
@@ -538,7 +562,9 @@
                   INTEGER))
   (make-instance of mem-format-argument
                  (displacement ?displacement)))
+; -------------------
 ; Register Indirect with Index { (abase) + (index) * 2^scale }
+; -------------------
 (defmethod MAIN::mem-format-arg
   ((?txt-abase SYMBOL
                (eq ?current-argument
@@ -565,26 +591,9 @@
                                 (case 8 then ?scale)
                                 (case 16 then ?scale)
                                 (default FALSE)))))
-; Special form of Register Indirect with Index { scale is 1 }
-
-(defmethod MAIN::mem-format-arg
-  ((?txt-abase SYMBOL
-               (eq ?current-argument
-                   abase:))
-   (?abase SYMBOL
-           register
-           (is-valid-register ?current-argument))
-   (?txt-index SYMBOL
-               (eq ?current-argument
-                   index:))
-   (?index SYMBOL
-           register
-           (is-valid-register ?current-argument)))
-  (mem-format-arg abase: ?abase
-                  index: ?index
-                  scale: 1))
-
+; -------------------
 ; Register Indirect { (abase) }
+; -------------------
 (defmethod MAIN::mem-format-arg
   ((?txt-abase SYMBOL
                (eq ?current-argument
@@ -595,7 +604,7 @@
   (make-instance of mem-format-argument
                  (abase ?abase)))
 
-
+; -------------------
 (defmethod MAIN::is-valid-float-literal
   ((?lit FLOAT))
   (not (neq ?lit +1.0 +0.0)))
