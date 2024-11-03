@@ -429,7 +429,7 @@
                       (eq ?current-argument displacement:))
    (?displacement SYMBOL
                   INTEGER))
-  (make-instance of mem-format-instruction
+  (make-instance of mem-format-argument
                  (displacement ?displacement)))
 (defmethod MAIN::mem-format-args
   ((?txt-abase SYMBOL
@@ -437,7 +437,7 @@
    (?abase SYMBOL
            register
            (is-valid-register ?current-argument)))
-  (make-instance of mem-format-instruction
+  (make-instance of mem-format-argument
                  (abase ?abase)))
 (defmethod MAIN::mem-format-args
   ((?txt-index SYMBOL
@@ -448,7 +448,7 @@
    (?txt-scale SYMBOL
                (eq ?current-argument scale:))
    (?scale INTEGER))
-  (make-instance of mem-format-instruction
+  (make-instance of mem-format-argument
                  (index ?index)
                  (scale (switch ?scale
                                 (case 2 then ?scale)
