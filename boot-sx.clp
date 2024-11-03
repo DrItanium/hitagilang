@@ -22,3 +22,64 @@
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (include assembler.clp)
 (include boot-macros.clp)
+(deffunction MAIN::def-table-entry
+             (?name)
+             (.word (format nil 
+                            "(%s + 0x2)"
+                            (str-cat ?name))))
+(deffunction MAIN::reserved-table-entry
+             ()
+             (.word 0))
+(deffunction MAIN::print-text
+             (?name)
+             (mkblock (*ldconst ?name
+                              g0)
+                    (*bal boot_print)))
+(deffunction MAIN::transfer-data
+             (?size ?src ?dest ?offset)
+             (mkblock (*ldconst ?size 
+                              g0)
+                    (*ldconst ?src 
+                              g1)
+                    (*ldconst ?dest
+                              g2)
+                    (*ldconst ?offset
+                              g3)
+                    (*bal move_data)))
+
+
+;(deffunction MAIN::code-body
+;             ()
+;             (block (.global system_address_table)
+;                    (.global prcb_ptr)
+;                    (.global _prcb_ram)
+;                    (.global start_ip)
+;                    (.global cs1)
+;                    (.global STACK_SIZE)
+;                    (.global _user_stack)
+;                    (.global _sup_stack) ; supervisor stack
+;                    (.global _intr_stack)
+;
+;                    ; core initialization block (located at address 0)
+;                    ; 8 words
+;                    (block (.text)
+;                           (.word system_address_table ; SAT pointer
+;                                  prcb_ptr 
+;                                  0
+;                                  start_ip ; pointer to first ip
+;                                  cs1 ; calculated at link time (bind ?cs (- (+ ?SAT ?PRCB ?startIP)))
+;                                  0
+;                                  0
+;                                  -1))
+;                    (block (deflabel start_ip)
+;                           (clear-g14)
+;                           (print-text msg_boot_checksum_passed)
+;                           (transfer-data 1028
+;                                          intr_table
+;                                          intr_ram
+;                                          0)
+;                           (print-text msg_transfer_complete)
+;                           (*ldconst intr_ram 
+;                                     g0)
+;                           ; processor starts execution at this spot upon power-up after self-test
+;
