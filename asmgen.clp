@@ -703,6 +703,10 @@
                    (next-register [fp])
                    (valid-long-register-target TRUE)
                    (title g14))
+              ; link register is a special form of g14
+              ; it is a special form
+              (lr of register
+                   (title g14))
               (fp of register
                   (title fp))
               (pfp of register
@@ -719,6 +723,9 @@
                    (next-register [r3])
                    (title rip))
               (r3 of register
+                  (title r3))
+              ; at is the assembler temporary that I have set
+              (at of register
                   (title r3))
               (r4 of register
                   (next-register [r5])
