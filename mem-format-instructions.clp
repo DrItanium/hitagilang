@@ -20,9 +20,13 @@
 ; ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 (include asmgen.clp)
-(include opcodes.clp)
-(include mem-format-instructions.clp)
-(include directives.clp)
-(include synthetics.clp)
+; lda
+(defmethod MAIN::*lda
+  ((?src mem-format-argument)
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (definstruction lda
+                  ?src
+                  (convert-register ?dest)))
