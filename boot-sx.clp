@@ -101,19 +101,6 @@
                                 (*flushreg)))
 
 
-(deffunction MAIN::make-ibr
-             ()
-             ; core initialization block (located at address 0)
-             ; 8 words
-             (mkblock (.text)
-                      (.word system_address_table ; SAT pointer
-                             prcb_ptr 
-                             0
-                             start_ip ; pointer to first ip
-                             cs1 ; calculated at link time (bind ?cs (- (+ ?SAT ?PRCB ?startIP)))
-                             0
-                             0
-                             -1)))
 (deffunction MAIN::code-body 
              ()
              (mkblock (.global system_address_table)
@@ -125,7 +112,17 @@
                       (.global _user_stack)
                       (.global _sup_stack) ; supervisor stack
                       (.global _intr_stack)
-                      (make-ibr)
+                      ; core initialization block (located at address 0)
+                      ; 8 words
+                      (mkblock (.text)
+                               (.word system_address_table ; SAT pointer
+                                      prcb_ptr 
+                                      0
+                                      start_ip ; pointer to first ip
+                                      cs1 ; calculated at link time (bind ?cs (- (+ ?SAT ?PRCB ?startIP)))
+                                      0
+                                      0
+                                      -1))
                       ; processor starts execution at this spot upon power-up after self-test
                       (defsite start_ip
                                (clear-g14)
@@ -231,14 +228,15 @@
                                (print-comparison msg_g7_g11 g7 g11)
                                (*b exec_fallthrough))
                       (defroutine:leaf print_number_hex
-                                       (slice-digit 28)
-                                       (slice-digit 24)
-                                       (slice-digit 20)
-                                       (slice-digit 16)
-                                       (slice-digit 12)
-                                       (slice-digit 8)
-                                       (slice-digit 4)
-                                       (slice-digit 0))
+                                       (apply-to-each$ slice-digit
+                                                       28
+                                                       24
+                                                       20
+                                                       16
+                                                       12
+                                                       8
+                                                       4
+                                                       0))
                       (defroutine:leaf boot_print
                                        (*cmpobe 0 g1 boot_print_done)
                                        (*addi g0 1 g0) ; increment the counter
@@ -379,12 +377,12 @@
                                (.word 0 0 0 0 0 0 0 0 0 0 0 0)
                                ; mon960 registrations
                                (.word 0 0)
-                               (def-table-entry _hitagi_open)
-                               (def-table-entry _hitagi_read)
-
-                               (def-table-entry _hitagi_write)
-                               (def-table-entry _hitagi_lseek)
-                               (def-table-entry _hitagi_close)
+                               (apply-to-each$ def-table-entry 
+                                               _hitagi_open
+                                               _hitagi_read
+                                               _hitagi_write
+                                               _hitagi_lseek
+                                               _hitagi_close)
                                (.word 0)
 
                                (.word 0 0 0 0 0 0 0 0)
