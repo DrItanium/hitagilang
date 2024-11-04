@@ -537,3 +537,10 @@
   (mkblock (*ldconst ?targ
                      g13)
            (*calls g13)))
+
+(defmethod MAIN::defwindow-function
+  ((?name SYMBOL)
+   (?body MULTIFIELD))
+  (mkblock (deflabel ?name)
+           ?body
+           (*ret)))

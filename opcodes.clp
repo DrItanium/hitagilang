@@ -938,6 +938,9 @@
 (defmethod MAIN::*callx
   ($?rest)
   (*callx ?rest))
+(defmethod MAIN::*callx
+  ((?targ SYMBOL))
+  (*callx displacement: ?targ))
 
 
 ; mem instructions

@@ -48,8 +48,7 @@
                       (*bal move_data)))
 
 
-(deffunction MAIN::code-body
-             ()
+(deffunction MAIN::code-body ()
              (mkblock (.global system_address_table)
                       (.global prcb_ptr)
                       (.global _prcb_ram)
@@ -120,17 +119,22 @@
                                      displacement: 0x40
                                      abase: fp) ; set up current stack pointer
                                (*ldconst msg_stack_fixed g0)
-                               (*callx displacement: boot_print2)
+                               (*callx boot_print2)
                                ; this is the point where your main code is called
                                ; If any IO needs to be set up, you should do it here before your
                                ; call to main. No opens have been done for STDIN, STDOUT, or STDERR
-                               ;(*callx displacement: _init_fp)
-                               (*callx displacement: setupInterruptHandler)
+                               (*callx _init_fp)
+                               (*callx setupInterruptHandler)
                                (*ldconst msg_invoking_main g0)
-                               (*callx displacement: boot_print2)
+                               (*callx boot_print2)
                                (clear-callx _main)
                                (deflabel exec_fallthrough)
                                (*b exec-fallthrough)
                                )
+                      (defwindow-function _init_fp
+                                          (*cvtir 0 [fp0])
+                                          (*movre [fp0] [fp1])
+                                          (*movre [fp1] [fp2])
+                                          (*movre [fp2] [fp3]))
                       )
              )
