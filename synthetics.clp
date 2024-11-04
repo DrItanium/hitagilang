@@ -538,9 +538,206 @@
                      g13)
            (*calls g13)))
 
-(defmethod MAIN::defwindow-function
+(defmethod MAIN::defroutine:window
   ((?name SYMBOL)
    (?body MULTIFIELD))
   (mkblock (deflabel ?name)
            ?body
            (*ret)))
+(defmethod MAIN::defroutine:window
+  ((?name SYMBOL)
+   $?rest)
+  (defroutine:window ?name 
+                     ?rest))
+
+(defmethod MAIN::defroutine:leaf
+  ((?name SYMBOL)
+   (?body MULTIFIELD))
+  (mkblock (deflabel ?name)
+           ?body
+           (*bx abase: lr)))
+(defmethod MAIN::defroutine:leaf
+  ((?name SYMBOL)
+   $?rest)
+  (defroutine:leaf ?name
+                   ?rest))
+
+(defmethod MAIN::*cmpolbne
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpobne (convert-register ?src1)
+                     (convert-register ?src2)
+                     ?targ)
+           (*cmpobne (send (convert-register ?src1)
+                           get-next-register)
+                     (send (convert-register ?src2)
+                           get-next-register)
+                     ?targ)))
+(defmethod MAIN::*cmpotbne
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpolbne ?src1 ?src2 ?targ)
+           (*cmpobne (send (convert-register ?src1)
+                           get-next-long-register)
+                     (send (convert-register ?src2)
+                           get-next-long-register)
+                     ?targ)))
+(defmethod MAIN::*cmpoqbne
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpolbne ?src1 ?src2 ?targ)
+           (*cmpolbne (send (convert-register ?src1)
+                            get-next-long-register)
+                      (send (convert-register ?src2)
+                            get-next-long-register)
+                      ?targ)))
+
+(defmethod MAIN::*cmpolbe
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpobe (convert-register ?src1)
+                    (convert-register ?src2)
+                    ?targ)
+           (*cmpobe (send (convert-register ?src1)
+                          get-next-register)
+                    (send (convert-register ?src2)
+                          get-next-register)
+                    ?targ)))
+(defmethod MAIN::*cmpotbe
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpolbe ?src1 ?src2 ?targ)
+           (*cmpobe (send (convert-register ?src1)
+                          get-next-long-register)
+                    (send (convert-register ?src2)
+                          get-next-long-register)
+                    ?targ)))
+(defmethod MAIN::*cmpoqbe
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpolbe ?src1 ?src2 ?targ)
+           (*cmpolbe (send (convert-register ?src1)
+                           get-next-long-register)
+                     (send (convert-register ?src2)
+                           get-next-long-register)
+                     ?targ)))
+
+(defmethod MAIN::*cmpolble
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpoble (convert-register ?src1)
+                     (convert-register ?src2)
+                     ?targ)
+           (*cmpoble (send (convert-register ?src1)
+                           get-next-register)
+                     (send (convert-register ?src2)
+                           get-next-register)
+                     ?targ)))
+(defmethod MAIN::*cmpotble
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpolble ?src1 ?src2 ?targ)
+           (*cmpoble (send (convert-register ?src1)
+                           get-next-long-register)
+                     (send (convert-register ?src2)
+                           get-next-long-register)
+                     ?targ)))
+(defmethod MAIN::*cmpoqble
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpolble ?src1 ?src2 ?targ)
+           (*cmpolble (send (convert-register ?src1)
+                            get-next-long-register)
+                      (send (convert-register ?src2)
+                            get-next-long-register)
+                      ?targ)))
+
+(defmethod MAIN::*cmpolbl
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpobl (convert-register ?src1)
+                    (convert-register ?src2)
+                    ?targ)
+           (*cmpobl (send (convert-register ?src1)
+                          get-next-register)
+                    (send (convert-register ?src2)
+                          get-next-register)
+                    ?targ)))
+(defmethod MAIN::*cmpotbl
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpolbl ?src1 ?src2 ?targ)
+           (*cmpobl (send (convert-register ?src1)
+                          get-next-long-register)
+                    (send (convert-register ?src2)
+                          get-next-long-register)
+                    ?targ)))
+(defmethod MAIN::*cmpoqbl
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpolbl ?src1 ?src2 ?targ)
+           (*cmpolbl (send (convert-register ?src1)
+                           get-next-long-register)
+                     (send (convert-register ?src2)
+                           get-next-long-register)
+                     ?targ)))

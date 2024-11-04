@@ -474,6 +474,7 @@
                  (abase ?abase)
                  (index ?index)
                  (scale (switch ?scale
+                                (case 1 then ?scale)
                                 (case 2 then ?scale)
                                 (case 4 then ?scale)
                                 (case 8 then ?scale)
@@ -502,6 +503,7 @@
                  (displacement ?displacement)
                  (index ?index)
                  (scale (switch ?scale
+                                (case 1 then ?scale)
                                 (case 2 then ?scale)
                                 (case 4 then ?scale)
                                 (case 8 then ?scale)
@@ -566,6 +568,7 @@
                  (abase ?abase)
                  (index ?index)
                  (scale (switch ?scale
+                                (case 1 then ?scale)
                                 (case 2 then ?scale)
                                 (case 4 then ?scale)
                                 (case 8 then ?scale)

@@ -46,6 +46,21 @@
                       (*ldconst ?offset
                                 g3)
                       (*bal move_data)))
+(deffunction MAIN::print-char
+             (?in)
+             (*st ?in
+                  displacement: 0xFE000008))
+(deffunction MAIN::emit-char
+             (?value)
+             (mkblock (*ldconst ?value 
+                                r3)
+                      (print-char r3)))
+(deffunction MAIN::emit-newline () (emit-char '\n'))
+(deffunction MAIN::emit-tab () (emit-char '\t'))
+(deffunction MAIN::emit-space () (emit-char 0x20))
+(deffunction MAIN::emit-colon () (emit-char ':'))
+
+
 
 
 (deffunction MAIN::code-body ()
@@ -131,10 +146,44 @@
                                (deflabel exec_fallthrough)
                                (*b exec-fallthrough)
                                )
-                      (defwindow-function _init_fp
-                                          (*cvtir 0 [fp0])
-                                          (*movre [fp0] [fp1])
-                                          (*movre [fp1] [fp2])
-                                          (*movre [fp2] [fp3]))
+                      (defroutine:window _init_fp
+                                         (*cvtir 0 [fp0])
+                                         (*movre [fp0] [fp1])
+                                         (*movre [fp1] [fp2])
+                                         (*movre [fp2] [fp3]))
+                      (defroutine:window setupInterruptHandler
+                                         (*ldconst 0xff000004 
+                                                   g5)
+                                         (*ldconst 0xFCFDFEFF
+                                                   g6)
+                                         (*synmov g5 g6))
+                      (defroutine:leaf move_data
+                                       (*ldconst 256 g12)
+                                       (*ldconst 0 g13)
+                                       (mkblock (deflabel move_data_loop)
+                                                (*ldq dest: g4
+                                                      abase: g1
+                                                      index: g3
+                                                      scale: 1)
+                                                (*stq g4
+                                                      abase: g2
+                                                      index: g3
+                                                      scale: 1)
+                                                (*ldq dest: g8
+                                                      abase: g2
+                                                      index: g3
+                                                      scale: 1)
+                                                (*cmpoqbne g4 g8 problem_checksum_failure)
+                                                (*addi g3 16 g3) ; increment index
+                                                (*modi g12 g3 g13) ; check and see if it is a multiple of 256
+                                                (*cmpobne 0 g13 move_data_no_print)
+                                                (emit-char '.'))
+                                       (mkblock (deflabel move_data_no_print)
+                                                (*cmpibg g0 g3 move_data_loop) ; loop until done
+                                                (emit-newline)))
+
+
+
+
                       )
              )
