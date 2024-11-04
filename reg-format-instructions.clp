@@ -397,3 +397,21 @@
   (definstruction concmpi
                   (convert-reg/lit ?src1)
                   (convert-reg/lit ?src2)))
+
+(defmethod MAIN::*condrec
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (definstruction condrec
+                  (convert-register ?src)
+                  (convert-register ?dest)))
+
+(defmethod MAIN::*condwait
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction condwait
+                  (convert-register ?src)))

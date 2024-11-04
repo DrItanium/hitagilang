@@ -524,11 +524,6 @@
   ((?src register) (?dest register))
   (definstruction synld
                   ?src ?dest))
-(defgeneric MAIN::*condrec)
-(defmethod MAIN::*condrec
-  ((?src register) (?dest register))
-  (definstruction condrec
-                  ?src ?dest))
 (defgeneric MAIN::*receive)
 (defmethod MAIN::*receive
   ((?src register) (?dest register))
@@ -899,11 +894,6 @@
   ((?src freg/flit (is-valid-long-register ?current-argument)) (?dst freg (is-valid-long-register ?current-argument)))
   (definstruction tanrl
                   ?src ?dst))
-(defgeneric MAIN::*condwait)
-(defmethod MAIN::*condwait
-  ((?src register))
-  (definstruction condwait
-                  ?src))
 (defgeneric MAIN::*schedprcs)
 (defmethod MAIN::*schedprcs
   ((?src register))
