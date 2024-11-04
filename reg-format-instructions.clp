@@ -180,3 +180,11 @@
                   (convert-register ?src)
                   (convert-reg/lit ?mask)
                   (convert-register ?src/dest)))
+
+(defmethod MAIN::*calls
+  ((?targ reg/lit
+            INTEGER
+            SYMBOL
+            (is-valid-reg-literal ?current-argument)))
+  (definstruction calls
+                  (convert-reg/lit ?targ)))
