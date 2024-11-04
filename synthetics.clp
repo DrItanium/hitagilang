@@ -104,15 +104,29 @@
                                    ?target)
                             (*concmpo ?lo
                                       ?target)))
-
 (defmethod MAIN::*twixti
-  ((?lo reg/lit)
-   (?target reg/lit)
-   (?hi reg/lit))
-  (create$ (*cmpi ?hi 
-                  ?target)
-           (*concmpi ?lo
-                     ?target)))
+  ((?lo reg/lit
+        SYMBOL
+        INTEGER
+        (is-valid-reg-literal ?current-argument))
+   (?target reg/lit
+            SYMBOL
+            INTEGER
+            (is-valid-reg-literal ?current-argument))
+   (?hi reg/lit
+        SYMBOL
+        INTEGER
+        (is-valid-reg-literal ?current-argument)))
+  (defsynthetic-instruction twixti
+                            (apply-to-each$ convert-reg/lit 
+                                            ?lo
+                                            ?target
+                                            ?hi)
+                            (*cmpi ?hi
+                                   ?target)
+                            (*concmpi ?lo
+                                      ?target)))
+
 ; compare with zero
 (defmethod MAIN::*cmpiz ((?src2 reg/lit)) (*cmpi [0l] ?src2))
 (defmethod MAIN::*cmpoz ((?src2 reg/lit)) (*cmpo [0l] ?src2))
@@ -182,15 +196,20 @@
    (?dest register
           SYMBOL
           (is-valid-long-register ?current-argument)))
-  (create$ (*xor (convert-register ?src1)
-                 (convert-register ?src2)
-                 (convert-register ?dest))
-           (*xor (send (convert-register ?src1)
-                       get-next-register)
-                 (send (convert-register ?src2)
-                       get-next-register)
-                 (send (convert-register ?dest)
-                       get-next-register))))
+  (defsynthetic-instruction *xorl
+                            (apply-to-each$ convert-register
+                                            ?src1
+                                            ?src2
+                                            ?dest)
+                            (*xor (convert-register ?src1)
+                                  (convert-register ?src2)
+                                  (convert-register ?dest))
+                            (*xor (send (convert-register ?src1)
+                                        get-next-register)
+                                  (send (convert-register ?src2)
+                                        get-next-register)
+                                  (send (convert-register ?dest)
+                                        get-next-register))))
 
 (defmethod MAIN::*xort
   ((?src1 register
@@ -202,15 +221,20 @@
    (?dest register
           SYMBOL
           (is-valid-triple-register ?current-argument)))
-  (create$ (*xorl ?src1
-                  ?src2
-                  ?dest)
-           (*xor (send (convert-register ?src1)
-                       get-next-long-register)
-                 (send (convert-register ?src2)
-                       get-next-long-register)
-                 (send (convert-register ?dest)
-                       get-next-long-register))))
+  (defsynthetic-instruction *xort
+                            (apply-to-each$ convert-register
+                                            ?src1
+                                            ?src2
+                                            ?dest)
+                            (*xorl ?src1
+                                   ?src2
+                                   ?dest)
+                            (*xor (send (convert-register ?src1)
+                                        get-next-long-register)
+                                  (send (convert-register ?src2)
+                                        get-next-long-register)
+                                  (send (convert-register ?dest)
+                                        get-next-long-register))))
 
 (defmethod MAIN::*xorq
   ((?src1 register
@@ -222,15 +246,20 @@
    (?dest register
           SYMBOL
           (is-valid-quad-register ?current-argument)))
-  (create$ (*xorl ?src1
-                  ?src2
-                  ?dest)
-           (*xorl (send (convert-register ?src1)
-                        get-next-long-register)
-                  (send (convert-register ?src2)
-                        get-next-long-register)
-                  (send (convert-register ?dest)
-                        get-next-long-register))))
+  (defsynthetic-instruction *xorq
+                            (apply-to-each$ convert-register
+                                            ?src1
+                                            ?src2
+                                            ?dest)
+                            (*xorl ?src1
+                                   ?src2
+                                   ?dest)
+                            (*xorl (send (convert-register ?src1)
+                                         get-next-long-register)
+                                   (send (convert-register ?src2)
+                                         get-next-long-register)
+                                   (send (convert-register ?dest)
+                                         get-next-long-register))))
 
 (defmethod MAIN::*xnorl
   ((?src1 register
