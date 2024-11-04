@@ -22,6 +22,60 @@
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (include asmgen.clp)
 
+(defmethod MAIN::*b
+  ((?targ SYMBOL))
+  (definstruction b
+                  ?targ))
+(defmethod MAIN::*call
+  ((?targ SYMBOL))
+  (definstruction call
+                  ?targ))
+(defmethod MAIN::*ret () (definstruction ret))
+(defmethod MAIN::*bal
+  ((?targ SYMBOL))
+  (definstruction bal
+                  ?targ))
+(defmethod MAIN::*bno
+  ((?targ SYMBOL))
+  (definstruction bno
+                  ?targ))
+(defmethod MAIN::*bg
+  ((?targ SYMBOL))
+  (definstruction bg
+                  ?targ))
+(defmethod MAIN::*be
+  ((?targ SYMBOL))
+  (definstruction be
+                  ?targ))
+(defmethod MAIN::*bge
+  ((?targ SYMBOL))
+  (definstruction bge
+                  ?targ))
+(defmethod MAIN::*bl
+  ((?targ SYMBOL))
+  (definstruction bl
+                  ?targ))
+(defmethod MAIN::*bne
+  ((?targ SYMBOL))
+  (definstruction bne
+                  ?targ))
+(defmethod MAIN::*ble
+  ((?targ SYMBOL))
+  (definstruction ble
+                  ?targ))
+(defmethod MAIN::*bo
+  ((?targ SYMBOL))
+  (definstruction bo
+                  ?targ))
+
+(defmethod MAIN::*faultno () (definstruction faultno))
+(defmethod MAIN::*faultg () (definstruction faultg))
+(defmethod MAIN::*faulte () (definstruction faulte))
+(defmethod MAIN::*faultge () (definstruction faultge))
+(defmethod MAIN::*faultl () (definstruction faultl))
+(defmethod MAIN::*faultne () (definstruction faultne))
+(defmethod MAIN::*faultle () (definstruction faultle))
+(defmethod MAIN::*faulto () (definstruction faulto))
 (defmethod MAIN::*bbs
   ((?bitpos reg/lit
             INTEGER
