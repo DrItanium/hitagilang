@@ -22,32 +22,6 @@
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (include asmgen.clp)
 
-
-(defmethod MAIN::*movl
-  ((?src reg/lit
-         (is-valid-long-register ?current-argument))
-   (?dst register
-         (is-valid-long-register ?current-argument)))
-  (definstruction movl
-                  ?src
-                  ?dst))
-(defmethod MAIN::*movt
-  ((?src reg/lit
-         (is-valid-triple-register ?current-argument))
-   (?dst register
-         (is-valid-triple-register ?current-argument)))
-  (definstruction movt
-                  ?src
-                  ?dst))
-(defmethod MAIN::*movq
-  ((?src reg/lit
-         (is-valid-quad-register ?current-argument))
-   (?dst register
-         (is-valid-quad-register ?current-argument)))
-  (definstruction movq
-                  ?src
-                  ?dst))
-
 (defgeneric MAIN::*b)
 (defmethod MAIN::*b
   ((?targ SYMBOL))
@@ -361,42 +335,11 @@
                   (convert-reg/lit ?src1)
                   (convert-register ?src2)
                   ?targ))
-(defgeneric MAIN::*synld)
-(defmethod MAIN::*synld
-  ((?src register) (?dest register))
-  (definstruction synld
-                  ?src ?dest))
-(defgeneric MAIN::*synmov)
-(defmethod MAIN::*synmov
-  ((?src register) (?dest register))
-  (definstruction synmov
-                  ?src ?dest))
-(defgeneric MAIN::*synmovl)
-(defmethod MAIN::*synmovl
-  ((?src register) (?dest register))
-  (definstruction synmovl
-                  ?src ?dest))
-(defgeneric MAIN::*synmovq)
-(defmethod MAIN::*synmovq
-  ((?src register) (?dest register))
-  (definstruction synmovq
-                  ?src ?dest))
-(defgeneric MAIN::*xor)
-(defmethod MAIN::*xor
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction xor
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*xnor)
-(defmethod MAIN::*xnor
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction xnor
-                  ?src1 ?src2 ?dst))
 (defgeneric MAIN::*ret)
 (defmethod MAIN::*ret
   ()
   (definstruction ret
                   ))
-(defmethod MAIN::*syncf () (definstruction syncf))
 (defgeneric MAIN::*faultno)
 (defmethod MAIN::*faultno
   ()
@@ -437,28 +380,3 @@
   ()
   (definstruction faulto
                   ))
-(defgeneric MAIN::*mov)
-(defmethod MAIN::*mov
-  ((?src reg/lit) (?dst register))
-  (definstruction mov
-                  ?src ?dst))
-(defgeneric MAIN::*tanr)
-(defgeneric MAIN::*tanrl)
-(defmethod MAIN::*tanr
-  ((?src freg/flit) (?dst freg))
-  (definstruction tanr
-                  ?src ?dst))
-(defmethod MAIN::*tanrl
-  ((?src freg/flit (is-valid-long-register ?current-argument)) (?dst freg (is-valid-long-register ?current-argument)))
-  (definstruction tanrl
-                  ?src ?dst))
-(defgeneric MAIN::*wait)
-(defmethod MAIN::*wait
-  ((?src register))
-  (definstruction wait
-                  ?src))
-(defgeneric MAIN::*resumprcs)
-(defmethod MAIN::*resumprcs
-  ((?src register))
-  (definstruction resumprcs
-                  ?src))
