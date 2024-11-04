@@ -108,14 +108,6 @@
                   ?mask
                   ?src/dst))
 
-(defmethod MAIN::*atadd
-  ((?src/dst register)
-   (?src reg/lit)
-   (?dst register))
-  (definstruction atadd 
-                  ?src/dst
-                  ?src
-                  ?dst))
 (defmethod MAIN::*send
   ((?dst register)
    (?src1 reg/lit)
@@ -502,30 +494,6 @@
                   (convert-reg/lit ?src1)
                   (convert-reg/lit ?src2)
                   ))
-(defgeneric MAIN::*atanr)
-(defgeneric MAIN::*atanrl)
-(defmethod MAIN::*atanr
-  ((?src1 freg/flit) (?src2 freg/flit) (?dst freg))
-  (definstruction atanr
-                  ?src1 ?src2 ?dst))
-(defmethod MAIN::*atanrl
-  ((?src1 freg/flit (is-valid-long-register ?current-argument)) 
-   (?src2 freg/flit (is-valid-long-register ?current-argument)) 
-   (?dst freg (is-valid-long-register ?current-argument)))
-  (definstruction atanrl
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*addr)
-(defgeneric MAIN::*addrl)
-(defmethod MAIN::*addr
-  ((?src1 freg/flit) (?src2 freg/flit) (?dst freg))
-  (definstruction addr
-                  ?src1 ?src2 ?dst))
-(defmethod MAIN::*addrl
-  ((?src1 freg/flit (is-valid-long-register ?current-argument)) 
-   (?src2 freg/flit (is-valid-long-register ?current-argument)) 
-   (?dst freg (is-valid-long-register ?current-argument)))
-  (definstruction addrl
-                  ?src1 ?src2 ?dst))
 (defgeneric MAIN::*mulr)
 (defgeneric MAIN::*mulrl)
 (defmethod MAIN::*mulr
@@ -653,16 +621,6 @@
   ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
   (definstruction notbit
                   ?src1 ?src2 ?dst))
-(defgeneric MAIN::*and)
-(defmethod MAIN::*and
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction and
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*andnot)
-(defmethod MAIN::*andnot
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction andnot
-                  ?src1 ?src2 ?dst))
 (defgeneric MAIN::*setbit)
 (defmethod MAIN::*setbit
   ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
@@ -712,16 +670,6 @@
 (defmethod MAIN::*nand
   ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
   (definstruction nand
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*alterbit)
-(defmethod MAIN::*alterbit
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction alterbit
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*addi)
-(defmethod MAIN::*addi
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction addi
                   ?src1 ?src2 ?dst))
 (defgeneric MAIN::*subo)
 (defmethod MAIN::*subo
@@ -787,11 +735,6 @@
 (defmethod MAIN::*cmpdeci
   ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
   (definstruction cmpdeci
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*addc)
-(defmethod MAIN::*addc
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction addc
                   ?src1 ?src2 ?dst))
 (defgeneric MAIN::*subc)
 (defmethod MAIN::*subc

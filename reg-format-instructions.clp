@@ -22,7 +22,23 @@
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (include asmgen.clp)
 
-(defgeneric MAIN::*addo)
+(defmethod MAIN::*addc
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction addc
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+
 (defmethod MAIN::*addo
   ((?src1 reg/lit
           SYMBOL
@@ -40,3 +56,127 @@
                   (convert-reg/lit ?src2)
                   (convert-register ?dst)))
 
+(defmethod MAIN::*addi
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction addi
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+
+; @todo real instructions need to be enhanced
+(defmethod MAIN::*addr
+  ((?src1 freg/flit)
+   (?src2 freg/flit) 
+   (?dst freg))
+  (definstruction addr
+                  ?src1 ?src2 ?dst))
+(defmethod MAIN::*addrl
+  ((?src1 freg/flit (is-valid-long-register ?current-argument)) 
+   (?src2 freg/flit (is-valid-long-register ?current-argument)) 
+   (?dst freg (is-valid-long-register ?current-argument)))
+  (definstruction addrl
+                  ?src1 ?src2 ?dst))
+
+(defmethod MAIN::*alterbit
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction alterbit
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+
+(defmethod MAIN::*and
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction and
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+
+(defmethod MAIN::*andnot
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction andnot
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+
+(defmethod MAIN::*atadd
+  ((?src/dst register
+             SYMBOL
+             (is-valid-register ?current-argument))
+   (?src reg/lit
+         SYMBOL
+         INTEGER
+         (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction atadd 
+                  (convert-register ?src/dst)
+                  (convert-reg/lit ?src)
+                  (convert-register ?dst)))
+
+(defmethod MAIN::*atanr
+  ((?src1 freg/flit) (?src2 freg/flit) (?dst freg))
+  (definstruction atanr
+                  ?src1 ?src2 ?dst))
+(defmethod MAIN::*atanrl
+  ((?src1 freg/flit (is-valid-long-register ?current-argument)) 
+   (?src2 freg/flit (is-valid-long-register ?current-argument)) 
+   (?dst freg (is-valid-long-register ?current-argument)))
+  (definstruction atanrl
+                  ?src1 ?src2 ?dst))
+
+(defmethod MAIN::*atadd
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?mask reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src/dest register
+              SYMBOL
+              (is-valid-register ?current-argument)))
+  (definstruction atadd 
+                  (convert-register ?src)
+                  (convert-reg/lit ?mask)
+                  (convert-register ?src/dest)))
