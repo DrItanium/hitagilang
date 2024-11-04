@@ -286,7 +286,8 @@
                      (case float-literal then TRUE)
                      (case float-register then TRUE)
                      (case literal then TRUE)
-                     (case register then (send ?reg get-valid-long-register-target))
+                     (case register then (send ?reg 
+                                               get-valid-long-register-target))
                      (case SYMBOL then
                        (and ?reg
                             (is-valid-register ?reg)

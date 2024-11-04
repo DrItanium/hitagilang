@@ -21,26 +21,7 @@
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (include asmgen.clp)
-(defmethod MAIN::*ediv
-  ((?src1 reg/lit)
-   (?src2 reg/lit
-          (is-valid-long-register ?current-argument))
-   (?dest register
-          (is-valid-long-register ?current-argument)))
-  (definstruction ediv
-                  ?src1
-                  ?src2
-                  ?dest))
 
-(defmethod MAIN::*emul
-  ((?src1 reg/lit)
-   (?src2 reg/lit)
-   (?dest register
-          (is-valid-long-register ?current-argument)))
-  (definstruction emul
-                  ?src1
-                  ?src2
-                  ?dest))
 
 (defmethod MAIN::*movl
   ((?src reg/lit
@@ -457,18 +438,6 @@
    (?dst freg (is-valid-long-register ?current-argument)))
   (definstruction logeprl
                   ?src1 ?src2 ?dst))
-(defgeneric MAIN::*divr)
-(defgeneric MAIN::*divrl)
-(defmethod MAIN::*divr
-  ((?src1 freg/flit) (?src2 freg/flit) (?dst freg))
-  (definstruction divr
-                  ?src1 ?src2 ?dst))
-(defmethod MAIN::*divrl
-  ((?src1 freg/flit (is-valid-long-register ?current-argument)) 
-   (?src2 freg/flit (is-valid-long-register ?current-argument)) 
-   (?dst freg (is-valid-long-register ?current-argument)))
-  (definstruction divrl
-                  ?src1 ?src2 ?dst))
 (defgeneric MAIN::*subr)
 (defgeneric MAIN::*subrl)
 (defmethod MAIN::*subr
@@ -481,11 +450,6 @@
    (?dst freg (is-valid-long-register ?current-argument)))
   (definstruction subrl
                   ?src1 ?src2 ?dst))
-(defgeneric MAIN::*dmovt)
-(defmethod MAIN::*dmovt
-  ((?src register) (?dest register))
-  (definstruction dmovt
-                  ?src ?dest))
 (defgeneric MAIN::*synld)
 (defmethod MAIN::*synld
   ((?src register) (?dest register))
@@ -516,16 +480,6 @@
   ((?src register) (?dest register))
   (definstruction ldphy
                   ?src ?dest))
-(defgeneric MAIN::*daddc)
-(defmethod MAIN::*daddc
-  ((?src1 register) (?src2 register) (?dest register))
-  (definstruction daddc
-                  ?src1 ?src2 ?dest))
-(defgeneric MAIN::*dsubc)
-(defmethod MAIN::*dsubc
-  ((?src1 register) (?src2 register) (?dest register))
-  (definstruction dsubc
-                  ?src1 ?src2 ?dest))
 (defgeneric MAIN::*notbit)
 (defmethod MAIN::*notbit
   ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
@@ -656,11 +610,6 @@
   ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
   (definstruction remo
                   ?src1 ?src2 ?dst))
-(defgeneric MAIN::*divo)
-(defmethod MAIN::*divo
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction divo
-                  ?src1 ?src2 ?dst))
 (defgeneric MAIN::*muli)
 (defmethod MAIN::*muli
   ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
@@ -675,11 +624,6 @@
 (defmethod MAIN::*modi
   ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
   (definstruction modi
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*divi)
-(defmethod MAIN::*divi
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction divi
                   ?src1 ?src2 ?dst))
 (defgeneric MAIN::*ret)
 (defmethod MAIN::*ret
