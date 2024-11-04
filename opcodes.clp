@@ -39,14 +39,6 @@
   (definstruction movt
                   ?src
                   ?dst))
-(defmethod MAIN::*movre
-  ((?src freg/flit
-         (is-valid-triple-register ?current-argument))
-   (?dst freg
-         (is-valid-triple-register ?current-argument)))
-  (definstruction movre
-                  ?src
-                  ?dst))
 (defmethod MAIN::*movq
   ((?src reg/lit
          (is-valid-quad-register ?current-argument))
@@ -56,14 +48,6 @@
                   ?src
                   ?dst))
 
-(defmethod MAIN::*send
-  ((?dst register)
-   (?src1 reg/lit)
-   (?src2 register))
-  (definstruction send
-                  ?dst
-                  ?src1
-                  ?src2))
 (defgeneric MAIN::*b)
 (defmethod MAIN::*b
   ((?targ SYMBOL))
@@ -377,64 +361,10 @@
                   (convert-reg/lit ?src1)
                   (convert-register ?src2)
                   ?targ))
-(defgeneric MAIN::*scanbyte)
-(defmethod MAIN::*scanbyte
-  ((?src1 reg/lit
-          INTEGER
-          SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 reg/lit
-          INTEGER
-          SYMBOL
-          (is-valid-reg-literal ?current-argument)))
-  (definstruction scanbyte
-                  (convert-reg/lit ?src1)
-                  (convert-reg/lit ?src2)
-                  ))
-(defgeneric MAIN::*mulr)
-(defgeneric MAIN::*mulrl)
-(defmethod MAIN::*mulr
-  ((?src1 freg/flit) (?src2 freg/flit) (?dst freg))
-  (definstruction mulr
-                  ?src1 ?src2 ?dst))
-(defmethod MAIN::*mulrl
-  ((?src1 freg/flit (is-valid-long-register ?current-argument)) 
-   (?src2 freg/flit (is-valid-long-register ?current-argument)) 
-   (?dst freg (is-valid-long-register ?current-argument)))
-  (definstruction mulrl
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*remr)
-(defgeneric MAIN::*remrl)
-(defmethod MAIN::*remr
-  ((?src1 freg/flit) (?src2 freg/flit) (?dst freg))
-  (definstruction remr
-                  ?src1 ?src2 ?dst))
-(defmethod MAIN::*remrl
-  ((?src1 freg/flit (is-valid-long-register ?current-argument)) 
-   (?src2 freg/flit (is-valid-long-register ?current-argument)) 
-   (?dst freg (is-valid-long-register ?current-argument)))
-  (definstruction remrl
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*subr)
-(defgeneric MAIN::*subrl)
-(defmethod MAIN::*subr
-  ((?src1 freg/flit) (?src2 freg/flit) (?dst freg))
-  (definstruction subr
-                  ?src1 ?src2 ?dst))
-(defmethod MAIN::*subrl
-  ((?src1 freg/flit (is-valid-long-register ?current-argument)) 
-   (?src2 freg/flit (is-valid-long-register ?current-argument)) 
-   (?dst freg (is-valid-long-register ?current-argument)))
-  (definstruction subrl
-                  ?src1 ?src2 ?dst))
 (defgeneric MAIN::*synld)
 (defmethod MAIN::*synld
   ((?src register) (?dest register))
   (definstruction synld
-                  ?src ?dest))
-(defgeneric MAIN::*receive)
-(defmethod MAIN::*receive
-  ((?src register) (?dest register))
-  (definstruction receive
                   ?src ?dest))
 (defgeneric MAIN::*synmov)
 (defmethod MAIN::*synmov
@@ -451,152 +381,21 @@
   ((?src register) (?dest register))
   (definstruction synmovq
                   ?src ?dest))
-(defgeneric MAIN::*notbit)
-(defmethod MAIN::*notbit
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction notbit
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*setbit)
-(defmethod MAIN::*setbit
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction setbit
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*notand)
-(defmethod MAIN::*notand
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction notand
-                  ?src1 ?src2 ?dst))
 (defgeneric MAIN::*xor)
 (defmethod MAIN::*xor
   ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
   (definstruction xor
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*or)
-(defmethod MAIN::*or
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction or
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*nor)
-(defmethod MAIN::*nor
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction nor
                   ?src1 ?src2 ?dst))
 (defgeneric MAIN::*xnor)
 (defmethod MAIN::*xnor
   ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
   (definstruction xnor
                   ?src1 ?src2 ?dst))
-(defgeneric MAIN::*ornot)
-(defmethod MAIN::*ornot
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction ornot
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*notor)
-(defmethod MAIN::*notor
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction notor
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*nand)
-(defmethod MAIN::*nand
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction nand
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*subo)
-(defmethod MAIN::*subo
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction subo
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*subi)
-(defmethod MAIN::*subi
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction subi
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*shro)
-(defmethod MAIN::*shro
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction shro
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*shrdi)
-(defmethod MAIN::*shrdi
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction shrdi
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*shri)
-(defmethod MAIN::*shri
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction shri
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*shlo)
-(defmethod MAIN::*shlo
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction shlo
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*rotate)
-(defmethod MAIN::*rotate
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction rotate
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*shli)
-(defmethod MAIN::*shli
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction shli
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*subc)
-(defmethod MAIN::*subc
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction subc
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*modac)
-(defmethod MAIN::*modac
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction modac
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*modify)
-(defmethod MAIN::*modify
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction modify
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*modtc)
-(defmethod MAIN::*modtc
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction modtc
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*modpc)
-(defmethod MAIN::*modpc
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction modpc
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*mulo)
-(defmethod MAIN::*mulo
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction mulo
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*remo)
-(defmethod MAIN::*remo
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction remo
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*muli)
-(defmethod MAIN::*muli
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction muli
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*remi)
-(defmethod MAIN::*remi
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction remi
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*modi)
-(defmethod MAIN::*modi
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction modi
-                  ?src1 ?src2 ?dst))
 (defgeneric MAIN::*ret)
 (defmethod MAIN::*ret
   ()
   (definstruction ret
                   ))
-(defmethod MAIN::*mark () (definstruction mark))
 (defmethod MAIN::*syncf () (definstruction syncf))
 (defgeneric MAIN::*faultno)
 (defmethod MAIN::*faultno
@@ -638,70 +437,10 @@
   ()
   (definstruction faulto
                   ))
-(defgeneric MAIN::*saveprcs)
-(defmethod MAIN::*saveprcs
-  ()
-  (definstruction saveprcs
-                  ))
-(defgeneric MAIN::*not)
-(defmethod MAIN::*not
-  ((?src reg/lit) (?dst register))
-  (definstruction not
-                  ?src ?dst))
 (defgeneric MAIN::*mov)
 (defmethod MAIN::*mov
   ((?src reg/lit) (?dst register))
   (definstruction mov
-                  ?src ?dst))
-(defgeneric MAIN::*spanbit)
-(defmethod MAIN::*spanbit
-  ((?src reg/lit) (?dst register))
-  (definstruction spanbit
-                  ?src ?dst))
-(defgeneric MAIN::*scanbit)
-(defmethod MAIN::*scanbit
-  ((?src reg/lit) (?dst register))
-  (definstruction scanbit
-                  ?src ?dst))
-(defgeneric MAIN::*movqstr)
-(defmethod MAIN::*movqstr
-  ((?dst register) (?src register) (?len reg/lit))
-  (definstruction movqstr
-                  ?dst ?src ?len))
-(defgeneric MAIN::*movstr)
-(defmethod MAIN::*movstr
-  ((?dst register) (?src register) (?len reg/lit))
-  (definstruction movstr
-                  ?dst ?src ?len))
-(defgeneric MAIN::*movr)
-(defgeneric MAIN::*movrl)
-(defmethod MAIN::*movr
-  ((?src freg/flit) (?dst freg))
-  (definstruction movr
-                  ?src ?dst))
-(defmethod MAIN::*movrl
-  ((?src freg/flit (is-valid-long-register ?current-argument)) (?dst freg (is-valid-long-register ?current-argument)))
-  (definstruction movrl
-                  ?src ?dst))
-(defgeneric MAIN::*roundr)
-(defgeneric MAIN::*roundrl)
-(defmethod MAIN::*roundr
-  ((?src freg/flit) (?dst freg))
-  (definstruction roundr
-                  ?src ?dst))
-(defmethod MAIN::*roundrl
-  ((?src freg/flit (is-valid-long-register ?current-argument)) (?dst freg (is-valid-long-register ?current-argument)))
-  (definstruction roundrl
-                  ?src ?dst))
-(defgeneric MAIN::*sqrtr)
-(defgeneric MAIN::*sqrtrl)
-(defmethod MAIN::*sqrtr
-  ((?src freg/flit) (?dst freg))
-  (definstruction sqrtr
-                  ?src ?dst))
-(defmethod MAIN::*sqrtrl
-  ((?src freg/flit (is-valid-long-register ?current-argument)) (?dst freg (is-valid-long-register ?current-argument)))
-  (definstruction sqrtrl
                   ?src ?dst))
 (defgeneric MAIN::*tanr)
 (defgeneric MAIN::*tanrl)
@@ -713,21 +452,6 @@
   ((?src freg/flit (is-valid-long-register ?current-argument)) (?dst freg (is-valid-long-register ?current-argument)))
   (definstruction tanrl
                   ?src ?dst))
-(defgeneric MAIN::*schedprcs)
-(defmethod MAIN::*schedprcs
-  ((?src register))
-  (definstruction schedprcs
-                  ?src))
-(defgeneric MAIN::*sendserv)
-(defmethod MAIN::*sendserv
-  ((?src register))
-  (definstruction sendserv
-                  ?src))
-(defgeneric MAIN::*signal)
-(defmethod MAIN::*signal
-  ((?src register))
-  (definstruction signal
-                  ?src))
 (defgeneric MAIN::*wait)
 (defmethod MAIN::*wait
   ((?src register))

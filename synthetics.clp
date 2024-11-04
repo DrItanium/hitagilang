@@ -102,13 +102,6 @@
             [16l]
             ?src/dest))
 
-; according to the manuals, the modpc instruction expects src to be the same as mask. Src is a dummy operand
-(defmethod MAIN::*modpc
-  ((?mask reg/lit)
-   (?src/dest register))
-  (*modpc ?mask
-          ?mask
-          ?src/dest))
 
 (defmethod MAIN::*get-pc
   ((?dest register))

@@ -237,7 +237,8 @@
   ((?src1 reg/lit
           INTEGER
           SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 reg/lit
+          (is-valid-reg-literal ?current-argument)) 
+   (?src2 reg/lit
           INTEGER
           SYMBOL
           (is-valid-reg-literal ?current-argument)))
@@ -249,7 +250,8 @@
   ((?src1 reg/lit
           INTEGER
           SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 reg/lit
+          (is-valid-reg-literal ?current-argument)) 
+   (?src2 reg/lit
           INTEGER
           SYMBOL
           (is-valid-reg-literal ?current-argument)))
@@ -780,6 +782,612 @@
                   ?src2 
                   ?dst))
 
+(defmethod MAIN::*mark 
+  () 
+  (definstruction mark))
+
+
+(defmethod MAIN::*modac
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction modac
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*modi
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction modi
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*modify
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction modify
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+
+(defmethod MAIN::*modpc
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction modpc
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+; according to the manuals, the modpc instruction expects src to be the same as mask. Src is a dummy operand
+(defmethod MAIN::*modpc
+  ((?mask reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (*modpc ?mask
+          ?mask
+          ?dst))
+
+(defmethod MAIN::*modtc
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction modtc
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*movqstr
+  ((?dst register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?len reg/lit
+         SYMBOL
+         INTEGER
+         (is-valid-reg-literal ?current-argument)))
+  (definstruction movqstr
+                  (convert-register ?dst)
+                  (convert-register ?src)
+                  (convert-reg/lit ?len)))
+
+(defmethod MAIN::*muli
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction muli
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*mulo
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction mulo
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*movr
+  ((?src freg/flit) 
+   (?dst freg))
+  (definstruction movr
+                  ?src 
+                  ?dst))
+(defmethod MAIN::*movrl
+  ((?src freg/flit 
+         (is-valid-long-register ?current-argument)) 
+   (?dst freg 
+         (is-valid-long-register ?current-argument)))
+  (definstruction movrl
+                  ?src 
+                  ?dst))
+
+(defmethod MAIN::*movre
+  ((?src freg/flit
+         (is-valid-triple-register ?current-argument))
+   (?dst freg
+         (is-valid-triple-register ?current-argument)))
+  (definstruction movre
+                  ?src
+                  ?dst))
+(defmethod MAIN::*movstr
+  ((?dst register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?len reg/lit
+         SYMBOL
+         INTEGER
+         (is-valid-reg-literal ?current-argument)))
+  (definstruction movstr
+                  (convert-register ?dst)
+                  (convert-register ?src)
+                  (convert-reg/lit ?len)))
+(defmethod MAIN::*mulr
+  ((?src1 freg/flit) 
+   (?src2 freg/flit) 
+   (?dst freg))
+  (definstruction mulr
+                  ?src1 
+                  ?src2 
+                  ?dst))
+(defmethod MAIN::*mulrl
+  ((?src1 freg/flit 
+          (is-valid-long-register ?current-argument)) 
+   (?src2 freg/flit 
+          (is-valid-long-register ?current-argument)) 
+   (?dst freg 
+         (is-valid-long-register ?current-argument)))
+  (definstruction mulrl
+                  ?src1 
+                  ?src2 
+                  ?dst))
+(defmethod MAIN::*nand
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction nand
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*nor
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction nor
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*not
+  ((?src reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction not
+                  (convert-reg/lit ?src)
+                  (convert-register ?dst)))
+(defmethod MAIN::*notand
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction notand
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*notbit
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction notbit
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*notor
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction notor
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*or
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction or
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*ornot
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction ornot
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*receive
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (definstruction receive
+                  (convert-register ?src)
+                  (convert-register ?dest)))
+(defmethod MAIN::*remi
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction remi
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*remo
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction remo
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*remr
+  ((?src1 freg/flit) 
+   (?src2 freg/flit) 
+   (?dst freg))
+  (definstruction remr
+                  ?src1 
+                  ?src2 
+                  ?dst))
+(defmethod MAIN::*remrl
+  ((?src1 freg/flit 
+          (is-valid-long-register ?current-argument)) 
+   (?src2 freg/flit 
+          (is-valid-long-register ?current-argument)) 
+   (?dst freg 
+         (is-valid-long-register ?current-argument)))
+  (definstruction remrl
+                  ?src1 
+                  ?src2 
+                  ?dst))
+(defmethod MAIN::*resumprcs
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction resumprcs
+                  (convert-register ?src)))
+
+(defmethod MAIN::*rotate
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction rotate
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+
+(defmethod MAIN::*roundr
+  ((?src freg/flit) 
+   (?dst freg))
+  (definstruction roundr
+                  ?src 
+                  ?dst))
+(defmethod MAIN::*roundrl
+  ((?src freg/flit 
+         (is-valid-long-register ?current-argument)) 
+   (?dst freg 
+         (is-valid-long-register ?current-argument)))
+  (definstruction roundrl
+                  ?src 
+                  ?dst))
+(defmethod MAIN::*saveprcs
+  ()
+  (definstruction saveprcs))
+(defmethod MAIN::*scaler
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 freg/flit)
+   (?dst freg))
+  (definstruction scaler
+                  (convert-register ?src1)
+                  ?src2
+                  ?dst))
+(defmethod MAIN::*scalerl
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-long-register ?current-argument))
+   (?src2 freg/flit)
+   (?dst freg))
+  (definstruction scalerl
+                  (convert-reg/lit ?src1)
+                  ?src2
+                  ?dst))
+
+(defmethod MAIN::*scanbit
+  ((?src reg/lit
+         SYMBOL
+         INTEGER
+         (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-literal ?current-argument)))
+  (definstruction scanbit
+                  (convert-reg/lit ?src)
+                  (convert-register ?dst)))
+
+(defmethod MAIN::*scanbyte
+  ((?src1 reg/lit
+          INTEGER
+          SYMBOL
+          (is-valid-reg-literal ?current-argument)) 
+   (?src2 reg/lit
+          INTEGER
+          SYMBOL
+          (is-valid-reg-literal ?current-argument)))
+  (definstruction scanbyte
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)))
+(defmethod MAIN::*schedprcs
+  ((?src register
+         SYMBOL
+         (is-valid-reg-literal ?current-argument)))
+  (definstruction schedprcs
+                  (convert-register ?src)))
+
+(defmethod MAIN::*send
+  ((?dst register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (definstruction send
+                  (convert-register ?dst)
+                  (convert-reg/lit ?src1)
+                  (convert-register ?src2)))
+(defmethod MAIN::*sendserv
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction sendserv
+                  (convert-register ?src)))
+(defmethod MAIN::*setbit
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction setbit 
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*shlo
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction shlo 
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*shro
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction shro 
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*shli
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction shli 
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*shri
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction shri 
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*shrdi
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction shrdi 
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*signal
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction signal
+                  (convert-register ?src)))
 (defmethod MAIN::*sinr
   ((?src freg/flit) 
    (?dst freg))
@@ -795,3 +1403,101 @@
                   ?src 
                   ?dst))
 
+(defmethod MAIN::*spanbit
+  ((?src reg/lit
+         SYMBOL
+         INTEGER
+         (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-literal ?current-argument)))
+  (definstruction spanbit
+                  (convert-reg/lit ?src)
+                  (convert-register ?dst)))
+
+(defmethod MAIN::*sqrtr
+  ((?src freg/flit) 
+   (?dst freg))
+  (definstruction sqrtr
+                  ?src 
+                  ?dst))
+(defmethod MAIN::*sqrtrl
+  ((?src freg/flit 
+         (is-valid-long-register ?current-argument)) 
+   (?dst freg 
+         (is-valid-long-register ?current-argument)))
+  (definstruction sqrtrl
+                  ?src 
+                  ?dst))
+
+(defmethod MAIN::*subc
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction subc
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+
+(defmethod MAIN::*subi
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction subi
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+
+(defmethod MAIN::*subo
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction subo
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+
+(defmethod MAIN::*subr
+  ((?src1 freg/flit) 
+   (?src2 freg/flit) 
+   (?dst freg))
+  (definstruction subr
+                  ?src1 
+                  ?src2 
+                  ?dst))
+
+(defmethod MAIN::*subrl
+  ((?src1 freg/flit 
+          (is-valid-long-register ?current-argument)) 
+   (?src2 freg/flit 
+          (is-valid-long-register ?current-argument)) 
+   (?dst freg 
+         (is-valid-long-register ?current-argument)))
+  (definstruction subrl
+                  ?src1 
+                  ?src2 
+                  ?dst))
