@@ -70,12 +70,7 @@
                     (format nil
                             "%s%s%s"
                             (if ?self:displacement then
-                              (if (integerp ?self:displacement) then
-                                (format nil
-                                        "0x%x"
-                                        ?self:displacement)
-                                else
-                                ?self:displacement)
+                              (str-cat ?self:displacement)
                               else
                               "")
                             (if ?self:abase then
