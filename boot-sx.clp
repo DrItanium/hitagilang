@@ -59,8 +59,31 @@
 (deffunction MAIN::emit-tab () (emit-char '\t'))
 (deffunction MAIN::emit-space () (emit-char 0x20))
 (deffunction MAIN::emit-colon () (emit-char ':'))
-
-
+(deffunction MAIN::pnum 
+             (?in)
+             (mkblock (*mov ?in g0)
+                      (*bal print_number_hex)))
+(deffunction MAIN::print-comparison
+             (?prefix ?a ?b)
+             (mkblock (print-text ?prefix)
+                      (pnum ?a)
+                      (emit-space)
+                      (pnum ?b)
+                      (emit-newline)))
+(deffunction MAIN::print-single-register
+             (?prefix ?value)
+             (mkblock (print-text ?prefix)
+                      (pnum ?value)
+                      (emit-newline)))
+(deffunction MAIN::slice-digit
+             (?shift)
+             (mkblock (*shro ?shift g0 g1)
+                      (*and 15 g1 g1) ; @todo implement 0xf for literals
+                      (*ldob dest: g2
+                             displacement: ascii_hex_table
+                             index: g1
+                             scale: 1)
+                      (print-char g2)))
 
 
 (deffunction MAIN::code-body ()
@@ -86,7 +109,7 @@
                                       0
                                       -1))
                       ; processor starts execution at this spot upon power-up after self-test
-                      (mkblock (deflabel start_ip)
+                      (defsite start_ip
                                (clear-g14)
                                (print-text msg_boot_checksum_passed)
                                (transfer-data 1028
@@ -107,8 +130,8 @@
                                          g6)
                                (*synmovq g5
                                          g6))
-                      (mkblock (.align 4)
-                               (deflabel reinitialize_iac)
+                      (.align 4)
+                      (defsite reinitialize_iac
                                (.word 0x93000000 ; reinitialize iac message
                                       system_address_table 
                                       _prcb_ram ; use newly copied PRCB
@@ -116,7 +139,7 @@
                                       ))
                       ; the process will begin execution here after being reinitialized
                       ; We will now setup the stacks and continue
-                      (mkblock (deflabel start_again_ip)
+                      (defsite start_again_ip
                                ; this would be a good place to disable board level interrupts if an interrupt controller is being used
                                ;
                                ; before calling main, we need to take the processor out of the "interrupted" state.
@@ -133,18 +156,14 @@
                                (*lda dest: sp
                                      displacement: 0x40
                                      abase: fp) ; set up current stack pointer
-                               (*ldconst msg_stack_fixed g0)
-                               (*callx boot_print2)
                                ; this is the point where your main code is called
                                ; If any IO needs to be set up, you should do it here before your
                                ; call to main. No opens have been done for STDIN, STDOUT, or STDERR
                                (*callx _init_fp)
                                (*callx setupInterruptHandler)
-                               (*ldconst msg_invoking_main g0)
-                               (*callx boot_print2)
                                (clear-callx _main)
                                (deflabel exec_fallthrough)
-                               (*b exec-fallthrough)
+                               (*b exec_fallthrough)
                                )
                       (defroutine:window _init_fp
                                          (*cvtir 0 [fp0])
@@ -181,8 +200,66 @@
                                        (mkblock (deflabel move_data_no_print)
                                                 (*cmpibg g0 g3 move_data_loop) ; loop until done
                                                 (emit-newline)))
-
-
+                      (defsite problem_checksum_failure
+                               (*movq g0 r12)
+                               (print-text msg_checksum_failures)
+                               (print-single-register msg_g0 r12)
+                               (print-single-register msg_g1 r13)
+                               (print-single-register msg_g2 r14)
+                               (print-single-register msg_g3 r15)
+                               (emit-newline)
+                               (print-comparison msg_g4_g8 g4 g8)
+                               (print-comparison msg_g5_g9 g5 g9)
+                               (print-comparison msg_g6_g10 g6 g10)
+                               (print-comparison msg_g7_g11 g7 g11)
+                               (*b exec_fallthrough))
+                      (defroutine:leaf print_number_hex
+                                       (slice-digit 28)
+                                       (slice-digit 24)
+                                       (slice-digit 20)
+                                       (slice-digit 16)
+                                       (slice-digit 12)
+                                       (slice-digit 8)
+                                       (slice-digit 4)
+                                       (slice-digit 0))
+                      (defroutine:leaf boot_print
+                                       (*cmpobe 0 g1 boot_print_done)
+                                       (*addi g0 1 g0) ; increment the counter
+                                       (print-char g1)
+                                       (*b boot_print)
+                                       (deflabel boot_print_done))
+                      (defroutine:window boot_print2
+                                         (*ldob dest: g1
+                                                abase: g0) ; load the current byte to potentially print out
+                                         (*cmpobe 0 g1 boot_print_done2)
+                                         (*addi g0 1 g0) ; increment the counter
+                                         (print-char g1)
+                                         (*b boot_print2)
+                                         (deflabel boot_print_done2))
+                      (deflabeled-string-newline msg_checksum_failures
+                                                 "Copy Verification Failed")
+                      (deflabeled-string-newline msg_transfer_complete
+                                                 "Done Copying Data/BSS to SRAM from IO Memory")
+                      (deflabeled-string-newline msg_boot_checksum_passed
+                                                 "i960 Boot Checksum Passed!")
+                      (deflabeled-string msg_g4_g8 
+                                         "g4&g8: ")
+                      (deflabeled-string msg_g5_g9 
+                                         "g5&g9: ")
+                      (deflabeled-string msg_g6_g10 
+                                         "g6&g10: ")
+                      (deflabeled-string msg_g7_g11 
+                                         "g7&g11: ")
+                      (deflabeled-string msg_g0
+                                         "g0: ")
+                      (deflabeled-string msg_g1
+                                         "g1: ")
+                      (deflabeled-string msg_g2
+                                         "g2: ")
+                      (deflabeled-string msg_g3
+                                         "g3: ")
+                      (deflabeled-string ascii_hex_table
+                                         "0123456789ABCDEF")
 
 
                       )

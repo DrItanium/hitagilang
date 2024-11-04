@@ -561,6 +561,17 @@
    $?rest)
   (defroutine:leaf ?name
                    ?rest))
+(defmethod MAIN::defsite
+  ((?name SYMBOL)
+   (?body MULTIFIELD))
+  (mkblock (deflabel ?name)
+           ?body))
+(defmethod MAIN::defsite
+  ((?name SYMBOL)
+   $?body)
+  (defsite ?name
+           ?body))
+
 
 (defmethod MAIN::*cmpolbne
   ((?src1 register
@@ -741,3 +752,20 @@
                      (send (convert-register ?src2)
                            get-next-long-register)
                      ?targ)))
+
+
+(defmethod MAIN::.asciznl
+  ((?contents STRING))
+  (.asciz (str-cat ?contents "\n")))
+
+(defmethod MAIN::deflabeled-string
+  ((?title SYMBOL)
+   (?contents STRING))
+  (create$ (deflabel ?title)
+           (.asciz ?contents)))
+
+(defmethod MAIN::deflabeled-string-newline
+  ((?title SYMBOL)
+   (?contents STRING))
+  (create$ (deflabel ?title)
+           (.asciznl ?contents)))
