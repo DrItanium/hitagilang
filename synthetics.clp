@@ -20,9 +20,47 @@
 ; ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+(include utils.clp)
 (include asmgen.clp)
 (include opcodes.clp)
+(defclass MAIN::synthetic-instruction
+  (is-a instruction)
+  (multislot sub-instructions
+             (storage local)
+             (visibility public))
+  (message-handler to-string primary))
+(defmessage-handler MAIN::synthetic-instruction to-string primary
+                    ()
+                    (send ?self:sub-instructions
+                          to-string))
+(defgeneric MAIN::defsynthetic-instruction)
+(defmethod MAIN::defsynthetic-instruction
+  ((?opcode SYMBOL)
+   (?arguments STRING
+               operand-list)
+   (?real-instructions MULTIFIELD))
+  (make-instance of synthetic-instruction
+                 (operation ?opcode)
+                 (operands ?arguments)
+                 (sub-instructions ?real-instructions)))
+(defmethod MAIN::defsynthetic-instruction
+  ((?opcode SYMBOL)
+   (?arguments MULTIFIELD)
+   (?real-instructions MULTIFIELD))
+  (defsynthetic-instruction ?opcode
+                            (make-instance of operand-list
+                                           (contents ?arguments))
+                            ?real-instructions))
+(defmethod MAIN::defsynthetic-instruction
+  ((?opcode SYMBOL)
+   (?arguments STRING
+               operand-list
+               MULTIFIELD)
+   $?real-instructions)
+  (defsynthetic-instruction ?opcode
+                            ?arguments
+                            ?real-instructions))
+
 ; synthetic instructions
 (defmethod MAIN::*ldconst
   ((?value NUMBER
@@ -45,13 +83,27 @@
 ; Is a given register value between two other register values
 ; equivalent to (<= ?lo ?target ?hi) in CLIPS
 (defmethod MAIN::*twixto 
-  ((?lo reg/lit)
-   (?target reg/lit)
-   (?hi reg/lit))
-  (create$ (*cmpo ?hi 
-                  ?target)
-           (*concmpo ?lo
-                     ?target)))
+  ((?lo reg/lit
+        SYMBOL
+        INTEGER
+        (is-valid-reg-literal ?current-argument))
+   (?target reg/lit
+            SYMBOL
+            INTEGER
+            (is-valid-reg-literal ?current-argument))
+   (?hi reg/lit
+        SYMBOL
+        INTEGER
+        (is-valid-reg-literal ?current-argument)))
+  (defsynthetic-instruction twixto
+                            (apply-to-each$ convert-reg/lit 
+                                            ?lo
+                                            ?target
+                                            ?hi)
+                            (*cmpo ?hi
+                                   ?target)
+                            (*concmpo ?lo
+                                      ?target)))
 
 (defmethod MAIN::*twixti
   ((?lo reg/lit)
