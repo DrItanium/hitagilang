@@ -33,8 +33,8 @@
 (deffunction MAIN::print-text
              (?name)
              (mkblock (*ldconst ?name
-                              g0)
-                    (*bal boot_print)))
+                                g0)
+                      (*bal boot_print)))
 (deffunction MAIN::transfer-data
              (?size ?src ?dest ?offset)
              (mkblock (*ldconst ?size 
@@ -48,38 +48,46 @@
                       (*bal move_data)))
 
 
-;(deffunction MAIN::code-body
-;             ()
-;             (block (.global system_address_table)
-;                    (.global prcb_ptr)
-;                    (.global _prcb_ram)
-;                    (.global start_ip)
-;                    (.global cs1)
-;                    (.global STACK_SIZE)
-;                    (.global _user_stack)
-;                    (.global _sup_stack) ; supervisor stack
-;                    (.global _intr_stack)
-;
-;                    ; core initialization block (located at address 0)
-;                    ; 8 words
-;                    (block (.text)
-;                           (.word system_address_table ; SAT pointer
-;                                  prcb_ptr 
-;                                  0
-;                                  start_ip ; pointer to first ip
-;                                  cs1 ; calculated at link time (bind ?cs (- (+ ?SAT ?PRCB ?startIP)))
-;                                  0
-;                                  0
-;                                  -1))
-;                    (block (deflabel start_ip)
-;                           (clear-g14)
-;                           (print-text msg_boot_checksum_passed)
-;                           (transfer-data 1028
-;                                          intr_table
-;                                          intr_ram
-;                                          0)
-;                           (print-text msg_transfer_complete)
-;                           (*ldconst intr_ram 
-;                                     g0)
-;                           ; processor starts execution at this spot upon power-up after self-test
-;
+(deffunction MAIN::code-body
+             ()
+             (mkblock (.global system_address_table)
+                      (.global prcb_ptr)
+                      (.global _prcb_ram)
+                      (.global start_ip)
+                      (.global cs1)
+                      (.global STACK_SIZE)
+                      (.global _user_stack)
+                      (.global _sup_stack) ; supervisor stack
+                      (.global _intr_stack)
+
+                      ; core initialization block (located at address 0)
+                      ; 8 words
+                      (mkblock (.text)
+                               (.word system_address_table ; SAT pointer
+                                      prcb_ptr 
+                                      0
+                                      start_ip ; pointer to first ip
+                                      cs1 ; calculated at link time (bind ?cs (- (+ ?SAT ?PRCB ?startIP)))
+                                      0
+                                      0
+                                      -1))
+                      ; processor starts execution at this spot upon power-up after self-test
+                      (mkblock (deflabel start_ip)
+                               (clear-g14)
+                               (print-text msg_boot_checksum_passed)
+                               (transfer-data 1028
+                                              intr_table
+                                              intr_ram
+                                              0)
+                               (print-text msg_transfer_complete)
+                               (*ldconst intr_ram 
+                                         g0)
+                               (*ldconst _prcb_ram
+                                         g1)
+                               (*st g0 
+                                    abase: g1
+                                    offset: 20)
+                               )
+                      )
+             )
+

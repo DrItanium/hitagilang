@@ -44,18 +44,18 @@
                             abase: sp)))
 (deffunction MAIN::restore-globals
              ()
-             (mkblock (*ldq (mem-format-arg displacement: -64
-                                            abase: sp)
-                            g0)
-                      (*ldq (mem-format-arg displacement: -48
-                                            abase: sp)
-                            g4)
-                      (*ldq (mem-format-arg displacement: -32
-                                            abase: sp)
-                            g8)
-                      (*ldt (mem-format-arg displacement: -16
-                                            abase: sp)
-                            g12)))
+             (mkblock (*ldq dest: g0
+                        displacement: -64
+                            abase: sp)
+                      (*ldq dest: g4
+                            displacement: -48
+                            abase: sp)
+                      (*ldq dest: g8
+                            displacement: -32
+                            abase: sp)
+                      (*ldt dest: g12
+                            displacement: -16
+                            abase: sp)))
 
 (deffunction MAIN::clear-call
              (?function)
@@ -64,7 +64,7 @@
 (deffunction MAIN::clear-callx
              (?function)
              (mkblock (clear-g14)
-                      (*callx (mem-format-arg displacement: ?function))))
+                      (*callx displacement: ?function)))
 
 (deffunction MAIN::def-system-call
              (?index ?name)
