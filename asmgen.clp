@@ -128,7 +128,8 @@
 (defclass MAIN::label
   (is-a USER)
   (slot title
-        (type SYMBOL)
+        (type SYMBOL
+              INTEGER)
         (storage local)
         (visibility public)
         (default ?NONE))
