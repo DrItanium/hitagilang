@@ -615,9 +615,11 @@
 (defmethod MAIN::*calls
   ((?targ INTEGER
           (<= 32 ?current-argument 259)))
-  (mkblock (*ldconst ?targ
-                     g13)
-           (*calls g13)))
+  (defsynthetic-instruction *calls
+                            (create$ ?targ)
+                            (*ldconst ?targ
+                                      g13)
+                            (*calls g13)))
 
 (defmethod MAIN::defroutine:window
   ((?name SYMBOL)
@@ -662,14 +664,20 @@
           SYMBOL
           (is-valid-long-register ?current-argument))
    (?targ SYMBOL))
-  (create$ (*cmpobne (convert-register ?src1)
-                     (convert-register ?src2)
-                     ?targ)
-           (*cmpobne (send (convert-register ?src1)
-                           get-next-register)
-                     (send (convert-register ?src2)
-                           get-next-register)
-                     ?targ)))
+  (defsynthetic-instruction cmpolbne
+                            (create$ (bind ?r1
+                                           (convert-register ?src1))
+                                     (bind ?r2
+                                           (convert-register ?src2))
+                                     ?targ)
+                            (*cmpobne ?r1
+                                      ?r2
+                                      ?targ)
+                            (*cmpobne (send ?r1
+                                            get-next-register)
+                                      (send ?r2
+                                            get-next-register)
+                                      ?targ)))
 (defmethod MAIN::*cmpotbne
   ((?src1 register
           SYMBOL
