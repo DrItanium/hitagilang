@@ -80,19 +80,19 @@
   (defdirective .global
                 ?target))
 (defmethod MAIN::.word
-  ((?target SYMBOL
+  ((?target LEXEME
             INTEGER))
   (defdirective .word
                 ?target))
 (defmethod MAIN::.word
-  ((?target SYMBOL
+  ((?target LEXEME
             INTEGER)
    (?rest MULTIFIELD))
   (defdirective .word
                 ?target
                 (expand$ ?rest)))
 (defmethod MAIN::.word
-  ((?target SYMBOL
+  ((?target LEXEME
             INTEGER)
    $?rest)
   (.word ?target

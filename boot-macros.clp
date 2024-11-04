@@ -79,11 +79,12 @@
                     ?b 
                     ?c 
                     ?d))
+(deffunction MAIN::null-segment
+             ()
+             (declare-segment 0 0 0 0))
 (deffunction MAIN::segment-selector
              (?base)
-             (.word (format nil
-                            "((%d)<<6) | 0x3f"
-                            ?base)))
+             (.word (str-cat "((" ?base ")<<6) | 0x3f")))
 (deffunction MAIN::simple-region
              (?address)
              (declare-segment 0 
@@ -105,15 +106,15 @@
                                      "((%d) << 18) | 0x7"
                                      ?size))))
 
-(deffunction MAIN::small-segment-table
-             (?address ?size)
-             (mkblock (.space 8)
-                      (.word ?address
-                             "(0x3f << 18) | 0xfb")))
 
 (deffunction MAIN::page-entry
              (?address)
              (.word (str-cat "((" ?address ") | 0xc7)")))
+(deffunction MAIN::small-segment-table
+             (?address)
+             (mkblock (.space 8)
+                      (.word ?address
+                             "(0x3f << 18) | 0xfb")))
 (deffunction MAIN::port-segment
              (?address)
              (declare-segment 0 

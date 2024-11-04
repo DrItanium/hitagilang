@@ -84,9 +84,24 @@
                              index: g1
                              scale: 1)
                       (print-char g2)))
-
-
-(deffunction MAIN::code-body ()
+(deffunction MAIN::reserved-table-entry
+             ()
+             (.word 0))
+(deffunction MAIN::make-ibr
+             ()
+             ; core initialization block (located at address 0)
+             ; 8 words
+             (mkblock (.text)
+                      (.word system_address_table ; SAT pointer
+                             prcb_ptr 
+                             0
+                             start_ip ; pointer to first ip
+                             cs1 ; calculated at link time (bind ?cs (- (+ ?SAT ?PRCB ?startIP)))
+                             0
+                             0
+                             -1)))
+(deffunction MAIN::code-body 
+             ()
              (mkblock (.global system_address_table)
                       (.global prcb_ptr)
                       (.global _prcb_ram)
@@ -96,18 +111,7 @@
                       (.global _user_stack)
                       (.global _sup_stack) ; supervisor stack
                       (.global _intr_stack)
-
-                      ; core initialization block (located at address 0)
-                      ; 8 words
-                      (mkblock (.text)
-                               (.word system_address_table ; SAT pointer
-                                      prcb_ptr 
-                                      0
-                                      start_ip ; pointer to first ip
-                                      cs1 ; calculated at link time (bind ?cs (- (+ ?SAT ?PRCB ?startIP)))
-                                      0
-                                      0
-                                      -1))
+                      (make-ibr)
                       ; processor starts execution at this spot upon power-up after self-test
                       (defsite start_ip
                                (clear-g14)
@@ -135,8 +139,7 @@
                                (.word 0x93000000 ; reinitialize iac message
                                       system_address_table 
                                       _prcb_ram ; use newly copied PRCB
-                                      start_again_ip ; start here
-                                      ))
+                                      start_again_ip)) ; start here
                       ; the process will begin execution here after being reinitialized
                       ; We will now setup the stacks and continue
                       (defsite start_again_ip
@@ -163,8 +166,7 @@
                                (*callx setupInterruptHandler)
                                (clear-callx _main)
                                (deflabel exec_fallthrough)
-                               (*b exec_fallthrough)
-                               )
+                               (*b exec_fallthrough))
                       (defroutine:window _init_fp
                                          (*cvtir 0 [fp0])
                                          (*movre [fp0] [fp1])
@@ -175,11 +177,12 @@
                                                    g5)
                                          (*ldconst 0xFCFDFEFF
                                                    g6)
-                                         (*synmov g5 g6))
+                                         (*synmov g5 
+                                                  g6))
                       (defroutine:leaf move_data
                                        (*ldconst 256 g12)
                                        (*ldconst 0 g13)
-                                       (mkblock (deflabel move_data_loop)
+                                       (defsite move_data_loop
                                                 (*ldq dest: g4
                                                       abase: g1
                                                       index: g3
@@ -197,7 +200,7 @@
                                                 (*modi g12 g3 g13) ; check and see if it is a multiple of 256
                                                 (*cmpobne 0 g13 move_data_no_print)
                                                 (emit-char '.'))
-                                       (mkblock (deflabel move_data_no_print)
+                                       (defsite move_data_no_print
                                                 (*cmpibg g0 g3 move_data_loop) ; loop until done
                                                 (emit-newline)))
                       (defsite problem_checksum_failure
@@ -281,8 +284,102 @@
                                                    g0) ; setup arithmetic controls
                                          (*st g0 
                                               displacement: -12
-                                              abase: fp) ; store contrived AC
-                                         )
+                                              abase: fp)) ; store contrived AC
+                      (.align 6)
+                      (defsite system_address_table
+                               (null-segment) ; 0
+                               (null-segment) ; 1
+                               (null-segment) ; 2
+                               (null-segment) ; 3
+                               (null-segment) ; 4
+                               (null-segment) ; 5
+                               (null-segment) ; 6
+                               (declare-segment 0 0 sys_proc_table 0x304000fb) ; 7
+                               (small-segment-table system_address_table) ; 8
+                               (declare-segment 0 0 sys_proc_table 0x304000fb) ; 9
+                               (declare-segment 0 0 fault_proc_table 0x304000fb) ; 10
+                               )
+                      ; initial prcb
+                      ; this is our startup prcb. After initialization
+                      ; this will be copied to RAM
+                      (.align 6)
+                      (defsite prcb_ptr
+                               (.word 0x0  ; 0 - reserved
+                                      0xc  ; 4 - process state = executing (no virtual address translation)
+                                      0x0  ; 8 - reserved
+                                      0x0  ; 12 - current process
+                                      0x0  ; 16 - dispatch port
+                                      intr_table ; 20 - interrupt table physical address
+                                      _intr_stack ; 24 - interrupt stack pointer
+                                      0x0)  ; 28 -reserved
+                               (segment-selector 7) ; 32 - pointer to offset zero (region 3 segment selector)
+                               (segment-selector 9) ; 36 - system procedure table pointer
+                               (.word fault_table ; 40 - fault table
+                                      0x0)        ; 44 - reserved
+                               (.space 12)        ; 48 - reserved
+                               (.word 0)          ; 60 - reserved
+                               (.space 8)         ; 64 - idle time
+                               (.word 0)          ; 72 - system error fault
+                               (.word 0)          ; 76 - reserved
+                               (.space 48)        ; 80 - resumption record
+                               (.space 44))        ; 128 - system error fault record
+                      (.align 6)
+                      (.global sys_proc_table)
+                      (defsite sys_proc_table
+                               (.word 0 0 0) ; Reserved
+                               (.word "(_sup_stack + 0x1)") ; Supervisor stack pointer
+                               (.word 0 0 0 0
+                                      0 0 0 0) ; Preserved
+                               ; up to 260 entries!
+                               (.word 0 0 0 0) ; 0 - 3
+                               (.word 0 0 0  ) ; 4-6
+                               (def-table-entry _hitagi_unlink)
+                               (reserved-table-entry) ; _hitagi_getpid
+                               (reserved-table-entry) ; _hitagi_kill
+                               (reserved-table-entry) ; _hitagi_fstat
+                               (reserved-table-entry) ; sbrk
+                               (reserved-table-entry) ; _hitagi_argvlen
+                               (reserved-table-entry) ; _hitagi_argv
+                               (reserved-table-entry) ; _hitagi_chdir
+                               (reserved-table-entry) ; _hitagi_stat
+                               (reserved-table-entry) ; _hitagi_chmod
+                               (reserved-table-entry) ; _hitagi_utime
+                               (reserved-table-entry) ; _hitagi_time
+                               (def-table-entry _hitagi_gettimeofday)
 
+                               (def-table-entry _hitagi_setitimer)
+                               (def-table-entry _hitagi_getrusage)
+                               (.word 0 0) ; 22, 23
+                               (.word 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+                               (.word 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+                               (.word 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+                               (.word 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+                               (.word 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+                               (.word 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+                               (.word 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+                               (.word 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+                               (.word 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+                               (.word 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+                               (.word 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+                               (.word 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+                               (.word 0 0 0 0 0 0 0 0 0 0 0 0)
+                               ; mon960 registrations
+                               (.word 0 0)
+                               (def-table-entry _hitagi_open)
+                               (def-table-entry _hitagi_read)
+
+                               (def-table-entry _hitagi_write)
+                               (def-table-entry _hitagi_lseek)
+                               (def-table-entry _hitagi_close)
+                               (.word 0)
+
+                               (.word 0 0 0 0 0 0 0 0)
+                               (.word 0 0 0 0 0 0 0 0)
+                               (.word 0 0 0 0)
+                               (.word 0)
+                               (def-table-entry _hitagi_exit)
+                               (.word 0 0)
+                               )
                       )
-             )
+                      )
+
