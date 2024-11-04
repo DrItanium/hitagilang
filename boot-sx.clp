@@ -91,8 +91,8 @@
                                          g5)
                                (*ldconst reinitialize_iac 
                                          g6)
-                               (synmovq g5
-                                        g6))
+                               (*synmovq g5
+                                         g6))
                       (mkblock (.align 4)
                                (deflabel reinitialize_iac)
                                (.word 0x93000000 ; reinitialize iac message

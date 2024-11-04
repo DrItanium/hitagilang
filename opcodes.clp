@@ -2704,20 +2704,20 @@
 (defmethod MAIN::*synmovl
   ((?dest register
          SYMBOL
-         (is-valid-long-register ?current-argument))
+         (is-valid-register ?current-argument))
    (?src register
           SYMBOL
-          (is-valid-long-register ?current-argument)))
+          (is-valid-register ?current-argument)))
   (definstruction synmovl
                   (convert-register ?src)
                   (convert-register ?dest)))
 (defmethod MAIN::*synmovq
   ((?dest register
          SYMBOL
-         (is-valid-quad-register ?current-argument))
+         (is-valid-register ?current-argument))
    (?src register
           SYMBOL
-          (is-valid-quad-register ?current-argument)))
+          (is-valid-register ?current-argument)))
   (definstruction synmovq
                   (convert-register ?src)
                   (convert-register ?dest)))
