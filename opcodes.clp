@@ -475,11 +475,6 @@
   ((?src register) (?dest register))
   (definstruction synmovq
                   ?src ?dest))
-(defgeneric MAIN::*ldphy)
-(defmethod MAIN::*ldphy
-  ((?src register) (?dest register))
-  (definstruction ldphy
-                  ?src ?dest))
 (defgeneric MAIN::*notbit)
 (defmethod MAIN::*notbit
   ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
@@ -585,11 +580,6 @@
   ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
   (definstruction modify
                   ?src1 ?src2 ?dst))
-(defgeneric MAIN::*extract)
-(defmethod MAIN::*extract
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction extract
-                  ?src1 ?src2 ?dst))
 (defgeneric MAIN::*modtc)
 (defmethod MAIN::*modtc
   ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
@@ -630,26 +620,8 @@
   ()
   (definstruction ret
                   ))
-(defgeneric MAIN::*fmark)
-(defmethod MAIN::*fmark
-  ()
-  (definstruction fmark
-                  ))
-(defgeneric MAIN::*mark)
-(defmethod MAIN::*mark
-  ()
-  (definstruction mark
-                  ))
-(defgeneric MAIN::*syncf)
-(defmethod MAIN::*syncf
-  ()
-  (definstruction syncf
-                  ))
-(defgeneric MAIN::*flushreg)
-(defmethod MAIN::*flushreg
-  ()
-  (definstruction flushreg
-                  ))
+(defmethod MAIN::*mark () (definstruction mark))
+(defmethod MAIN::*syncf () (definstruction syncf))
 (defgeneric MAIN::*faultno)
 (defmethod MAIN::*faultno
   ()
@@ -735,16 +707,6 @@
   ((?src freg/flit (is-valid-long-register ?current-argument)) (?dst freg (is-valid-long-register ?current-argument)))
   (definstruction movrl
                   ?src ?dst))
-(defgeneric MAIN::*expr)
-(defgeneric MAIN::*exprl)
-(defmethod MAIN::*expr
-  ((?src freg/flit) (?dst freg))
-  (definstruction expr
-                  ?src ?dst))
-(defmethod MAIN::*exprl
-  ((?src freg/flit (is-valid-long-register ?current-argument)) (?dst freg (is-valid-long-register ?current-argument)))
-  (definstruction exprl
-                  ?src ?dst))
 (defgeneric MAIN::*logbnr)
 (defgeneric MAIN::*logbnrl)
 (defmethod MAIN::*logbnr
@@ -804,11 +766,6 @@
 (defmethod MAIN::*wait
   ((?src register))
   (definstruction wait
-                  ?src))
-(defgeneric MAIN::*ldtime)
-(defmethod MAIN::*ldtime
-  ((?src register))
-  (definstruction ldtime
                   ?src))
 (defgeneric MAIN::*resumprcs)
 (defmethod MAIN::*resumprcs

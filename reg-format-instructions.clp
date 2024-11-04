@@ -639,7 +639,91 @@
                   (convert-reg/lit ?src2)
                   (convert-register ?dest)))
 
+(defmethod MAIN::*expr
+  ((?src freg/flit) 
+   (?dst freg))
+  (definstruction expr
+                  ?src 
+                  ?dst))
+(defmethod MAIN::*exprl
+  ((?src freg/flit 
+         (is-valid-long-register ?current-argument)) 
+   (?dst freg 
+         (is-valid-long-register ?current-argument)))
+  (definstruction exprl
+                  ?src 
+                  ?dst))
 
+
+(defmethod MAIN::*extract
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (definstruction extract
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+(defmethod MAIN::*fill
+  ((?dst register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?value reg/lit
+           SYMBOL
+           INTEGER
+           (is-valid-reg-literal ?current-argument))
+   (?len reg/lit
+         SYMBOL
+         INTEGER
+         (is-valid-reg-literal ?current-argument)))
+  (definstruction fill
+                  (convert-register ?dst)
+                  (convert-reg/lit ?value)
+                  (convert-reg/lit ?len)))
+
+(defmethod MAIN::*flushreg 
+  () 
+  (definstruction flushreg))
+
+(defmethod MAIN::*fmark 
+  () 
+  (definstruction fmark))
+
+(defmethod MAIN::*inspacc
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (definstruction inspacc
+                  (convert-register ?src)
+                  (convert-register ?dest)))
+
+(defmethod MAIN::*ldphy
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (definstruction ldphy
+                  (convert-register ?src)
+                  (convert-register ?dest)))
+
+(defmethod MAIN::*ldtime
+  ((?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (definstruction ldtime
+                  (convert-register ?dest)))
 
 (defmethod MAIN::*sinr
   ((?src freg/flit) 
@@ -655,3 +739,4 @@
   (definstruction sinrl
                   ?src 
                   ?dst))
+
