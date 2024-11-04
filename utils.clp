@@ -21,8 +21,25 @@
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(include utils.clp)
-(include asmgen.clp)
-(include opcodes.clp)
-(include directives.clp)
-(include synthetics.clp)
+(deffunction MAIN::apply-to-each$ 
+             (?function $?contents)
+             (bind ?results
+                   (create$))
+             (progn$ (?item ?contents)
+                     (bind ?results
+                           ?results
+                           (funcall ?function
+                                    ?item)))
+             ?results)
+
+(deffunction MAIN::apply-to-each-with-index$ 
+             (?function $?contents)
+             (bind ?results
+                   (create$))
+             (progn$ (?item ?contents)
+                     (bind ?results
+                           ?results
+                           (funcall ?function
+                                    ?item-index
+                                    ?item)))
+             ?results)

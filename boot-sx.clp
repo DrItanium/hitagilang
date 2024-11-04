@@ -20,6 +20,7 @@
 ; ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+(include utils.clp)
 (include assembler.clp)
 (include boot-macros.clp)
 (deffunction MAIN::def-table-entry
@@ -87,6 +88,19 @@
 (deffunction MAIN::reserved-table-entry
              ()
              (.word 0))
+(deffunction MAIN::fault-table-entry
+             (?name)
+             (def-table-entry (sym-cat _user_ ?name _core)))
+(deffunction MAIN::def-fault-dispatcher
+             (?name)
+             (defroutine:window (sym-cat _user_ ?name _core)
+                                (*lda dest: g0
+                                      displacement: -48
+                                      abase: fp)
+                                (*callx (sym-cat _user_ ?name))
+                                (*flushreg)))
+
+
 (deffunction MAIN::make-ibr
              ()
              ; core initialization block (located at address 0)
@@ -378,8 +392,69 @@
                                (.word 0 0 0 0)
                                (.word 0)
                                (def-table-entry _hitagi_exit)
-                               (.word 0 0)
-                               )
+                               (.word 0 0))
+                      (.align 6)
+                      (defsite fault_proc_table
+                               (.word 0 ; Reserved
+                                      0 ; Reserved
+                                      0 ; Reserved
+                                      _sup_stack) ; Supervisor stack pointer
+                               (.word 0 0 0 0
+                                      0 0 0 0) ; preserved
+                               (apply-to-each$ fault-table-entry 
+                                               override
+                                               trace
+                                               operation 
+                                               arithmetic
+                                               floating_point
+                                               constraint
+                                               virtual_memory
+                                               protection
+                                               machine
+                                               structural
+                                               type
+                                               process
+                                               descriptor
+                                               event
+                                               reserved))
+                      (apply-to-each$ def-fault-dispatcher
+                                      override
+                                      trace
+                                      operation
+                                      arithmetic
+                                      floating_point
+                                      constraint
+                                      virtual_memory
+                                      protection
+                                      machine
+                                      structural
+                                      type
+                                      process
+                                      descriptor
+                                      event
+                                      reserved)
+                      (def-system-call 7 _sys_unlink)
+                      ;(def-system-call 8 _sys_getpid)
+                      ;(def-system-call 9 _sys_kill)
+                      ;(def-system-call 10 _sys_fstat)
+                      ;(def-system-call 11 _sys_sbrk)
+                      ;(def-system-call 12 _sys_argvlen)
+                      ;(def-system-call 13 _sys_argv)
+                      ;(def-system-call 14 _sys_chdir)
+                      ;(def-system-call 15 _sys_stat)
+                      ;(def-system-call 16 _sys_chmod)
+                      ;(def-system-call 17 _sys_utime)
+                      ;(def-system-call 18 _sys_time)
+                      (def-system-call 19 _sys_gettimeofday)
+                      (def-system-call 20 _sys_setitimer)
+                      (def-system-call 21 _sys_getrusage)
+
+                      ; define RAM area to copy the PRCB and interrupt table to after initial bootup from EPROM/FLASH
+                      (.bss _user_stack 0x8000 6)
+                      (.bss _intr_stack 0x8000 6)
+                      (.bss _sup_stack 0x8000 6)
+                      (.bss intr_ram 1028 6)
+                      (.bss _prcb_ram 176 6)
                       )
              )
 
