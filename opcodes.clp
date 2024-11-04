@@ -414,30 +414,6 @@
    (?dst freg (is-valid-long-register ?current-argument)))
   (definstruction remrl
                   ?src1 ?src2 ?dst))
-(defgeneric MAIN::*logr)
-(defgeneric MAIN::*logrl)
-(defmethod MAIN::*logr
-  ((?src1 freg/flit) (?src2 freg/flit) (?dst freg))
-  (definstruction logr
-                  ?src1 ?src2 ?dst))
-(defmethod MAIN::*logrl
-  ((?src1 freg/flit (is-valid-long-register ?current-argument)) 
-   (?src2 freg/flit (is-valid-long-register ?current-argument)) 
-   (?dst freg (is-valid-long-register ?current-argument)))
-  (definstruction logrl
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*logepr)
-(defgeneric MAIN::*logeprl)
-(defmethod MAIN::*logepr
-  ((?src1 freg/flit) (?src2 freg/flit) (?dst freg))
-  (definstruction logepr
-                  ?src1 ?src2 ?dst))
-(defmethod MAIN::*logeprl
-  ((?src1 freg/flit (is-valid-long-register ?current-argument)) 
-   (?src2 freg/flit (is-valid-long-register ?current-argument)) 
-   (?dst freg (is-valid-long-register ?current-argument)))
-  (definstruction logeprl
-                  ?src1 ?src2 ?dst))
 (defgeneric MAIN::*subr)
 (defgeneric MAIN::*subrl)
 (defmethod MAIN::*subr
@@ -706,16 +682,6 @@
 (defmethod MAIN::*movrl
   ((?src freg/flit (is-valid-long-register ?current-argument)) (?dst freg (is-valid-long-register ?current-argument)))
   (definstruction movrl
-                  ?src ?dst))
-(defgeneric MAIN::*logbnr)
-(defgeneric MAIN::*logbnrl)
-(defmethod MAIN::*logbnr
-  ((?src freg/flit) (?dst freg))
-  (definstruction logbnr
-                  ?src ?dst))
-(defmethod MAIN::*logbnrl
-  ((?src freg/flit (is-valid-long-register ?current-argument)) (?dst freg (is-valid-long-register ?current-argument)))
-  (definstruction logbnrl
                   ?src ?dst))
 (defgeneric MAIN::*roundr)
 (defgeneric MAIN::*roundrl)

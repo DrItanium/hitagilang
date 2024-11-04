@@ -725,6 +725,61 @@
   (definstruction ldtime
                   (convert-register ?dest)))
 
+(defmethod MAIN::*logbnr
+  ((?src freg/flit) 
+   (?dst freg))
+  (definstruction logbnr
+                  ?src 
+                  ?dst))
+(defmethod MAIN::*logbnrl
+  ((?src freg/flit 
+         (is-valid-long-register ?current-argument)) 
+   (?dst freg 
+         (is-valid-long-register ?current-argument)))
+  (definstruction logbnrl
+                  ?src 
+                  ?dst))
+
+(defmethod MAIN::*logepr
+  ((?src1 freg/flit) 
+   (?src2 freg/flit) 
+   (?dst freg))
+  (definstruction logepr
+                  ?src1 
+                  ?src2 
+                  ?dst))
+(defmethod MAIN::*logeprl
+  ((?src1 freg/flit 
+          (is-valid-long-register ?current-argument)) 
+   (?src2 freg/flit 
+          (is-valid-long-register ?current-argument)) 
+   (?dst freg 
+         (is-valid-long-register ?current-argument)))
+  (definstruction logeprl
+                  ?src1 
+                  ?src2 
+                  ?dst))
+
+(defmethod MAIN::*logr
+  ((?src1 freg/flit) 
+   (?src2 freg/flit) 
+   (?dst freg))
+  (definstruction logr
+                  ?src1 
+                  ?src2 
+                  ?dst))
+(defmethod MAIN::*logrl
+  ((?src1 freg/flit 
+          (is-valid-long-register ?current-argument)) 
+   (?src2 freg/flit 
+          (is-valid-long-register ?current-argument)) 
+   (?dst freg 
+         (is-valid-long-register ?current-argument)))
+  (definstruction logrl
+                  ?src1 
+                  ?src2 
+                  ?dst))
+
 (defmethod MAIN::*sinr
   ((?src freg/flit) 
    (?dst freg))
