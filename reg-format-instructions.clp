@@ -903,8 +903,8 @@
          SYMBOL
          (is-valid-long-register ?current-argument)))
   (definstruction movl
-                  (convert-ret/lit ?src)
-                  (convert-register ?dst))
+                  (convert-reg/lit ?src)
+                  (convert-register ?dst)))
 (defmethod MAIN::*movt
   ((?src reg/lit
          SYMBOL

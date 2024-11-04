@@ -23,7 +23,8 @@
 
 (include asmgen.clp)
 (include opcodes.clp)
-(include mem-format-instructions.clp)
+(include ctrl-instructions.clp)
 (include reg-format-instructions.clp)
+(include mem-format-instructions.clp)
 (include directives.clp)
 (include synthetics.clp)
