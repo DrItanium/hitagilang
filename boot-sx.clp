@@ -87,7 +87,50 @@
                                (*st g0 
                                     abase: g1
                                     offset: 20)
+                               (*ldconst 0xff000010
+                                         g5)
+                               (*ldconst reinitialize_iac 
+                                         g6)
+                               (synmovq g5
+                                        g6))
+                      (mkblock (.align 4)
+                               (deflabel reinitialize_iac)
+                               (.word 0x93000000 ; reinitialize iac message
+                                      system_address_table 
+                                      _prcb_ram ; use newly copied PRCB
+                                      start_again_ip ; start here
+                                      ))
+                      ; the process will begin execution here after being reinitialized
+                      ; We will now setup the stacks and continue
+                      (mkblock (deflabel start_again_ip)
+                               ; this would be a good place to disable board level interrupts if an interrupt controller is being used
+                               ;
+                               ; before calling main, we need to take the processor out of the "interrupted" state.
+                               ; In order to do this, we will execute a call statement, then "fix up" the stack frame
+                               ; to cause an interrupt return to be executed.
+                               (*ldconst 64 g0) ; bump up stack to make
+                               (*addo sp g0 sp) ; room for simulated interrupt frame
+                               (*call fix_stack) ; routine to turn off interrupted state
+                               (*lda dest: fp 
+                                     displacement: _user_stack) ; setup user stack space
+                               (*lda dest: pfp
+                                     displacement: -0x40
+                                     abase: fp) ; load pfp (just in case)
+                               (*lda dest: sp
+                                     displacement: 0x40
+                                     abase: fp) ; set up current stack pointer
+                               (*ldconst msg_stack_fixed g0)
+                               (*callx displacement: boot_print2)
+                               ; this is the point where your main code is called
+                               ; If any IO needs to be set up, you should do it here before your
+                               ; call to main. No opens have been done for STDIN, STDOUT, or STDERR
+                               ;(*callx displacement: _init_fp)
+                               (*callx displacement: setupInterruptHandler)
+                               (*ldconst msg_invoking_main g0)
+                               (*callx displacement: boot_print2)
+                               (clear-callx _main)
+                               (deflabel exec_fallthrough)
+                               (*b exec-fallthrough)
                                )
                       )
              )
-
