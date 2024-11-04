@@ -22,7 +22,6 @@
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (include asmgen.clp)
 
-(defgeneric MAIN::*bbs)
 (defmethod MAIN::*bbs
   ((?bitpos reg/lit
             INTEGER
@@ -36,7 +35,6 @@
                   (convert-reg/lit ?bitpos)
                   (convert-register ?src)
                   ?targ))
-(defgeneric MAIN::*bbc)
 (defmethod MAIN::*bbc
   ((?bitpos reg/lit
             INTEGER
@@ -48,15 +46,15 @@
                   (convert-reg/lit ?bitpos)
                   (convert-register ?src)
                   ?targ))
-(defgeneric MAIN::*cmpibe)
-(defgeneric MAIN::*teste)
 (defmethod MAIN::*cmpibe
   ((?src1 reg/lit
           INTEGER
           SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 register
+          (is-valid-reg-literal ?current-argument)) 
+   (?src2 register
           SYMBOL
-          (is-valid-register ?current-argument)) (?targ SYMBOL))
+          (is-valid-register ?current-argument)) 
+   (?targ SYMBOL))
   (definstruction cmpibe
                   (convert-reg/lit ?src1)
                   (convert-register ?src2)
@@ -66,17 +64,16 @@
          SYMBOL
          (is-valid-register ?current-argument)))
   (definstruction teste
-                  (convert-register ?dst)
-                  ))
-(defgeneric MAIN::*cmpibne)
-(defgeneric MAIN::*testne)
+                  (convert-register ?dst)))
 (defmethod MAIN::*cmpibne
   ((?src1 reg/lit
           INTEGER
           SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 register
+          (is-valid-reg-literal ?current-argument)) 
+   (?src2 register
           SYMBOL
-          (is-valid-register ?current-argument)) (?targ SYMBOL))
+          (is-valid-register ?current-argument)) 
+   (?targ SYMBOL))
   (definstruction cmpibne
                   (convert-reg/lit ?src1)
                   (convert-register ?src2)
@@ -86,17 +83,16 @@
          SYMBOL
          (is-valid-register ?current-argument)))
   (definstruction testne
-                  (convert-register ?dst)
-                  ))
-(defgeneric MAIN::*cmpibl)
-(defgeneric MAIN::*testl)
+                  (convert-register ?dst)))
 (defmethod MAIN::*cmpibl
   ((?src1 reg/lit
           INTEGER
           SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 register
+          (is-valid-reg-literal ?current-argument)) 
+   (?src2 register
           SYMBOL
-          (is-valid-register ?current-argument)) (?targ SYMBOL))
+          (is-valid-register ?current-argument)) 
+   (?targ SYMBOL))
   (definstruction cmpibl
                   (convert-reg/lit ?src1)
                   (convert-register ?src2)
@@ -106,37 +102,37 @@
          SYMBOL
          (is-valid-register ?current-argument)))
   (definstruction testl
-                  (convert-register ?dst)
-                  ))
-(defgeneric MAIN::*cmpible)
-(defgeneric MAIN::*testle)
+                  (convert-register ?dst)))
 (defmethod MAIN::*cmpible
   ((?src1 reg/lit
           INTEGER
           SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 register
+          (is-valid-reg-literal ?current-argument)) 
+   (?src2 register
           SYMBOL
-          (is-valid-register ?current-argument)) (?targ SYMBOL))
+          (is-valid-register ?current-argument)) 
+   (?targ SYMBOL))
   (definstruction cmpible
                   (convert-reg/lit ?src1)
                   (convert-register ?src2)
                   ?targ))
+
 (defmethod MAIN::*testle
   ((?dst register
          SYMBOL
          (is-valid-register ?current-argument)))
   (definstruction testle
-                  (convert-register ?dst)
-                  ))
-(defgeneric MAIN::*cmpibg)
-(defgeneric MAIN::*testg)
+                  (convert-register ?dst)))
+
 (defmethod MAIN::*cmpibg
   ((?src1 reg/lit
           INTEGER
           SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 register
+          (is-valid-reg-literal ?current-argument)) 
+   (?src2 register
           SYMBOL
-          (is-valid-register ?current-argument)) (?targ SYMBOL))
+          (is-valid-register ?current-argument)) 
+   (?targ SYMBOL))
   (definstruction cmpibg
                   (convert-reg/lit ?src1)
                   (convert-register ?src2)
@@ -146,10 +142,7 @@
          SYMBOL
          (is-valid-register ?current-argument)))
   (definstruction testg
-                  (convert-register ?dst)
-                  ))
-(defgeneric MAIN::*cmpibge)
-(defgeneric MAIN::*testge)
+                  (convert-register ?dst)))
 (defmethod MAIN::*cmpibge
   ((?src1 reg/lit
           INTEGER
@@ -166,17 +159,16 @@
          SYMBOL
          (is-valid-register ?current-argument)))
   (definstruction testge
-                  (convert-register ?dst)
-                  ))
-(defgeneric MAIN::*cmpibo)
-(defgeneric MAIN::*testo)
+                  (convert-register ?dst)))
 (defmethod MAIN::*cmpibo
   ((?src1 reg/lit
           INTEGER
           SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 register
+          (is-valid-reg-literal ?current-argument)) 
+   (?src2 register
           SYMBOL
-          (is-valid-register ?current-argument)) (?targ SYMBOL))
+          (is-valid-register ?current-argument)) 
+   (?targ SYMBOL))
   (definstruction cmpibo
                   (convert-reg/lit ?src1)
                   (convert-register ?src2)
@@ -186,17 +178,16 @@
          SYMBOL
          (is-valid-register ?current-argument)))
   (definstruction testo
-                  (convert-register ?dst)
-                  ))
-(defgeneric MAIN::*cmpibno)
-(defgeneric MAIN::*testno)
+                  (convert-register ?dst)))
 (defmethod MAIN::*cmpibno
   ((?src1 reg/lit
           INTEGER
           SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 register
+          (is-valid-reg-literal ?current-argument)) 
+   (?src2 register
           SYMBOL
-          (is-valid-register ?current-argument)) (?targ SYMBOL))
+          (is-valid-register ?current-argument)) 
+   (?targ SYMBOL))
   (definstruction cmpibno
                   (convert-reg/lit ?src1)
                   (convert-register ?src2)
@@ -206,76 +197,81 @@
          SYMBOL
          (is-valid-register ?current-argument)))
   (definstruction testno
-                  (convert-register ?dst)
-                  ))
-(defgeneric MAIN::*cmpobe)
+                  (convert-register ?dst)))
 (defmethod MAIN::*cmpobe
   ((?src1 reg/lit
           INTEGER
           SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 register
+          (is-valid-reg-literal ?current-argument)) 
+   (?src2 register
           SYMBOL
-          (is-valid-register ?current-argument)) (?targ SYMBOL))
+          (is-valid-register ?current-argument)) 
+   (?targ SYMBOL))
   (definstruction cmpobe
                   (convert-reg/lit ?src1)
                   (convert-register ?src2)
                   ?targ))
-(defgeneric MAIN::*cmpobne)
 (defmethod MAIN::*cmpobne
   ((?src1 reg/lit
           INTEGER
           SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 register
+          (is-valid-reg-literal ?current-argument)) 
+   (?src2 register
           SYMBOL
-          (is-valid-register ?current-argument)) (?targ SYMBOL))
+          (is-valid-register ?current-argument)) 
+   (?targ SYMBOL))
   (definstruction cmpobne
                   (convert-reg/lit ?src1)
                   (convert-register ?src2)
                   ?targ))
-(defgeneric MAIN::*cmpobl)
 (defmethod MAIN::*cmpobl
   ((?src1 reg/lit
           INTEGER
           SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 register
+          (is-valid-reg-literal ?current-argument)) 
+   (?src2 register
           SYMBOL
-          (is-valid-register ?current-argument)) (?targ SYMBOL))
+          (is-valid-register ?current-argument)) 
+   (?targ SYMBOL))
   (definstruction cmpobl
                   (convert-reg/lit ?src1)
                   (convert-register ?src2)
                   ?targ))
-(defgeneric MAIN::*cmpoble)
 (defmethod MAIN::*cmpoble
   ((?src1 reg/lit
           INTEGER
           SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 register
+          (is-valid-reg-literal ?current-argument)) 
+   (?src2 register
           SYMBOL
-          (is-valid-register ?current-argument)) (?targ SYMBOL))
+          (is-valid-register ?current-argument)) 
+   (?targ SYMBOL))
   (definstruction cmpoble
                   (convert-reg/lit ?src1)
                   (convert-register ?src2)
                   ?targ))
-(defgeneric MAIN::*cmpobg)
 (defmethod MAIN::*cmpobg
   ((?src1 reg/lit
           INTEGER
           SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 register
+          (is-valid-reg-literal ?current-argument)) 
+   (?src2 register
           SYMBOL
-          (is-valid-register ?current-argument)) (?targ SYMBOL))
+          (is-valid-register ?current-argument)) 
+   (?targ SYMBOL))
   (definstruction cmpobg
                   (convert-reg/lit ?src1)
                   (convert-register ?src2)
                   ?targ))
-(defgeneric MAIN::*cmpobge)
 (defmethod MAIN::*cmpobge
   ((?src1 reg/lit
           INTEGER
           SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 register
+          (is-valid-reg-literal ?current-argument)) 
+   (?src2 register
           SYMBOL
-          (is-valid-register ?current-argument)) (?targ SYMBOL))
+          (is-valid-register ?current-argument)) 
+   (?targ SYMBOL))
   (definstruction cmpobge
                   (convert-reg/lit ?src1)
                   (convert-register ?src2)
