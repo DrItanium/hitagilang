@@ -24,10 +24,19 @@
 
 (defgeneric MAIN::*addo)
 (defmethod MAIN::*addo
-  ((?src1 reg/lit) 
-   (?src2 reg/lit) 
-   (?dst register))
+  ((?src1 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?src2 reg/lit
+          SYMBOL
+          INTEGER
+          (is-valid-reg-literal ?current-argument))
+   (?dst register
+         SYMBOL
+         (is-valid-register ?current-argument)))
   (definstruction addo
-                  ?src1 
-                  ?src2 
-                  ?dst))
+                  (convert-reg/lit ?src1)
+                  (convert-reg/lit ?src2)
+                  (convert-register ?dst)))
+
