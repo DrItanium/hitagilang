@@ -136,3 +136,12 @@
   ((?name SYMBOL))
   (create$ (.global ?name)
            (deflabel ?name)))
+
+(defmethod MAIN::.fill
+  ((?count INTEGER)
+   (?size INTEGER)
+   (?value INTEGER))
+  (defdirective .fill
+                ?count
+                ?size
+                ?value))

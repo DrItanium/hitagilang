@@ -212,8 +212,6 @@
                                     to-string))
                       else
                       ?self:operation))
-(defglobal MAIN
-           ?*format-builder-output* = stdout)
 (defgeneric MAIN::definstruction)
 (defmethod MAIN::definstruction
   ((?opcode SYMBOL))
@@ -238,26 +236,6 @@
    $?rest)
   (definstruction ?opcode
                   ?rest))
-(deffunction MAIN::forward-declare-opcode
-             (?op)
-             (build (format ?*format-builder-output*
-                            "(defgeneric MAIN::*%s)%n"
-                            ?op)))
-(defmethod MAIN::generic-opcode-decl
-  ((?op SYMBOL)
-   (?args STRING)
-   (?body STRING))
-  (build (format ?*format-builder-output*
-                 "(defmethod MAIN::*%s%n (%s)%n (definstruction %s%n%s))%n"
-                 ?op
-                 ?args
-                 ?op
-                 ?body)))
-(defmethod MAIN::generic-opcode-decl
-  ((?op SYMBOL))
-  (generic-opcode-decl ?op
-                       ""
-                       ""))
 (defgeneric MAIN::convert-register)
 (defgeneric MAIN::convert-literal)
 (defgeneric MAIN::convert-reg/lit)

@@ -22,7 +22,8 @@
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ; routines to generate all of the instructions
 (batch* asmgen.clp)
-(defglobal MAIN 
+(defglobal MAIN
+           ?*format-builder-output* = stdout
            ?*ctrl-standard-instructions* = (create$ b
                                                     call
                                                     bal
@@ -165,6 +166,26 @@
            ?*call-convert-reg-lit* = "(convert-reg/lit %s)%n"
            ?*call-convert-register* = "(convert-register %s)%n"
            )
+(deffunction MAIN::forward-declare-opcode
+             (?op)
+             (build (format ?*format-builder-output*
+                            "(defgeneric MAIN::*%s)%n"
+                            ?op)))
+(defmethod MAIN::generic-opcode-decl
+  ((?op SYMBOL)
+   (?args STRING)
+   (?body STRING))
+  (build (format ?*format-builder-output*
+                 "(defmethod MAIN::*%s%n (%s)%n (definstruction %s%n%s))%n"
+                 ?op
+                 ?args
+                 ?op
+                 ?body)))
+(defmethod MAIN::generic-opcode-decl
+  ((?op SYMBOL))
+  (generic-opcode-decl ?op
+                       ""
+                       ""))
 (deffunction MAIN::string-call-convert-reg-lit
              (?arg)
              (format nil
