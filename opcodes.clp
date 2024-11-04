@@ -429,58 +429,6 @@
                   (convert-reg/lit ?src1)
                   (convert-register ?src2)
                   ?targ))
-(defgeneric MAIN::*concmpo)
-(defmethod MAIN::*concmpo
-  ((?src1 reg/lit
-          INTEGER
-          SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 reg/lit
-          INTEGER
-          SYMBOL
-          (is-valid-reg-literal ?current-argument)))
-  (definstruction concmpo
-                  (convert-reg/lit ?src1)
-                  (convert-reg/lit ?src2)
-                  ))
-(defgeneric MAIN::*concmpi)
-(defmethod MAIN::*concmpi
-  ((?src1 reg/lit
-          INTEGER
-          SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 reg/lit
-          INTEGER
-          SYMBOL
-          (is-valid-reg-literal ?current-argument)))
-  (definstruction concmpi
-                  (convert-reg/lit ?src1)
-                  (convert-reg/lit ?src2)
-                  ))
-(defgeneric MAIN::*cmpi)
-(defmethod MAIN::*cmpi
-  ((?src1 reg/lit
-          INTEGER
-          SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 reg/lit
-          INTEGER
-          SYMBOL
-          (is-valid-reg-literal ?current-argument)))
-  (definstruction cmpi
-                  (convert-reg/lit ?src1)
-                  (convert-reg/lit ?src2)
-                  ))
-(defgeneric MAIN::*cmpo)
-(defmethod MAIN::*cmpo
-  ((?src1 reg/lit
-          INTEGER
-          SYMBOL
-          (is-valid-reg-literal ?current-argument)) (?src2 reg/lit
-          INTEGER
-          SYMBOL
-          (is-valid-reg-literal ?current-argument)))
-  (definstruction cmpo
-                  (convert-reg/lit ?src1)
-                  (convert-reg/lit ?src2)
-                  ))
 (defgeneric MAIN::*scanbyte)
 (defmethod MAIN::*scanbyte
   ((?src1 reg/lit
@@ -656,11 +604,6 @@
   ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
   (definstruction ornot
                   ?src1 ?src2 ?dst))
-(defgeneric MAIN::*clrbit)
-(defmethod MAIN::*clrbit
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction clrbit
-                  ?src1 ?src2 ?dst))
 (defgeneric MAIN::*notor)
 (defmethod MAIN::*notor
   ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
@@ -710,31 +653,6 @@
 (defmethod MAIN::*shli
   ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
   (definstruction shli
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*chkbit)
-(defmethod MAIN::*chkbit
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction chkbit
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*cmpinco)
-(defmethod MAIN::*cmpinco
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction cmpinco
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*cmpinci)
-(defmethod MAIN::*cmpinci
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction cmpinci
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*cmpdeco)
-(defmethod MAIN::*cmpdeco
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction cmpdeco
-                  ?src1 ?src2 ?dst))
-(defgeneric MAIN::*cmpdeci)
-(defmethod MAIN::*cmpdeci
-  ((?src1 reg/lit) (?src2 reg/lit) (?dst register))
-  (definstruction cmpdeci
                   ?src1 ?src2 ?dst))
 (defgeneric MAIN::*subc)
 (defmethod MAIN::*subc
@@ -891,26 +809,6 @@
   ((?src reg/lit) (?dst register))
   (definstruction scanbit
                   ?src ?dst))
-(defgeneric MAIN::*cmpr)
-(defmethod MAIN::*cmpr
-  ((?src1 freg/flit) (?src2 freg/flit))
-  (definstruction cmpr
-                  ?src1 ?src2))
-(defgeneric MAIN::*cmprl)
-(defmethod MAIN::*cmprl
-  ((?src1 freg/flit (is-valid-long-register ?current-argument)) (?src2 freg/flit (is-valid-long-register ?current-argument)))
-  (definstruction cmprl
-                  ?src1 ?src2))
-(defgeneric MAIN::*cmpor)
-(defmethod MAIN::*cmpor
-  ((?src1 freg/flit) (?src2 freg/flit))
-  (definstruction cmpor
-                  ?src1 ?src2))
-(defgeneric MAIN::*cmporl)
-(defmethod MAIN::*cmporl
-  ((?src1 freg/flit (is-valid-long-register ?current-argument)) (?src2 freg/flit (is-valid-long-register ?current-argument)))
-  (definstruction cmporl
-                  ?src1 ?src2))
 (defgeneric MAIN::*movqstr)
 (defmethod MAIN::*movqstr
   ((?dst register) (?src register) (?len reg/lit))
@@ -920,11 +818,6 @@
 (defmethod MAIN::*movstr
   ((?dst register) (?src register) (?len reg/lit))
   (definstruction movstr
-                  ?dst ?src ?len))
-(defgeneric MAIN::*cmpstr)
-(defmethod MAIN::*cmpstr
-  ((?dst register) (?src register) (?len reg/lit))
-  (definstruction cmpstr
                   ?dst ?src ?len))
 (defgeneric MAIN::*movr)
 (defgeneric MAIN::*movrl)
@@ -1006,16 +899,6 @@
   ((?src freg/flit (is-valid-long-register ?current-argument)) (?dst freg (is-valid-long-register ?current-argument)))
   (definstruction tanrl
                   ?src ?dst))
-(defgeneric MAIN::*classr)
-(defgeneric MAIN::*classrl)
-(defmethod MAIN::*classr
-  ((?src freg/flit))
-  (definstruction classr
-                  ?src))
-(defmethod MAIN::*classrl
-  ((?src freg/flit (is-valid-long-register ?current-argument)))
-  (definstruction classrl
-                  ?src))
 (defgeneric MAIN::*condwait)
 (defmethod MAIN::*condwait
   ((?src register))
