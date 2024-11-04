@@ -756,7 +756,7 @@
 
 (defmethod MAIN::.asciznl
   ((?contents STRING))
-  (.asciz (str-cat ?contents "\n")))
+  (.asciz (str-cat ?contents "\\n")))
 
 (defmethod MAIN::deflabeled-string
   ((?title SYMBOL)
