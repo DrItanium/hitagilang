@@ -165,7 +165,7 @@
   (definstruction atanrl
                   ?src1 ?src2 ?dst))
 
-(defmethod MAIN::*atadd
+(defmethod MAIN::*atmod
   ((?src register
          SYMBOL
          (is-valid-register ?current-argument))
@@ -176,7 +176,7 @@
    (?src/dest register
               SYMBOL
               (is-valid-register ?current-argument)))
-  (definstruction atadd 
+  (definstruction atmod 
                   (convert-register ?src)
                   (convert-reg/lit ?mask)
                   (convert-register ?src/dest)))
@@ -415,3 +415,57 @@
          (is-valid-register ?current-argument)))
   (definstruction condwait
                   (convert-register ?src)))
+
+(defmethod MAIN::*cosr
+  ((?src freg/flit) 
+   (?dst freg))
+  (definstruction cosr
+                  ?src 
+                  ?dst))
+(defmethod MAIN::*cosrl
+  ((?src freg/flit 
+         (is-valid-long-register ?current-argument)) 
+   (?dst freg 
+         (is-valid-long-register ?current-argument)))
+  (definstruction cosrl
+                  ?src 
+                  ?dst))
+
+(defmethod MAIN::*cpysre
+  ((?src1 freg/flit
+          (is-valid-triple-register ?current-argument))
+   (?src2 freg/flit
+          (is-valid-triple-register ?current-argument))
+   (?dst freg
+         (is-valid-triple-register ?current-argument)))
+  (definstruction cpysre
+                  ?src1
+                  ?src2
+                  ?dst))
+(defmethod MAIN::*cpyrsre
+  ((?src1 freg/flit
+          (is-valid-triple-register ?current-argument))
+   (?src2 freg/flit
+          (is-valid-triple-register ?current-argument))
+   (?dst freg
+         (is-valid-triple-register ?current-argument)))
+  (definstruction cpyrsre
+                  ?src1
+                  ?src2
+                  ?dst))
+
+
+(defmethod MAIN::*sinr
+  ((?src freg/flit) 
+   (?dst freg))
+  (definstruction sinr
+                  ?src 
+                  ?dst))
+(defmethod MAIN::*sinrl
+  ((?src freg/flit 
+         (is-valid-long-register ?current-argument)) 
+   (?dst freg 
+         (is-valid-long-register ?current-argument)))
+  (definstruction sinrl
+                  ?src 
+                  ?dst))

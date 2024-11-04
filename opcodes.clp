@@ -75,39 +75,6 @@
                   ?src
                   ?dst))
 
-
-(defmethod MAIN::*cpysre
-  ((?src1 freg/flit
-          (is-valid-triple-register ?current-argument))
-   (?src2 freg/flit
-          (is-valid-triple-register ?current-argument))
-   (?dst freg
-         (is-valid-triple-register ?current-argument)))
-  (definstruction cpysre
-                  ?src1
-                  ?src2
-                  ?dst))
-(defmethod MAIN::*cpyrsre
-  ((?src1 freg/flit
-          (is-valid-triple-register ?current-argument))
-   (?src2 freg/flit
-          (is-valid-triple-register ?current-argument))
-   (?dst freg
-         (is-valid-triple-register ?current-argument)))
-  (definstruction cpyrsre
-                  ?src1
-                  ?src2
-                  ?dst))
-
-(defmethod MAIN::*atmod
-  ((?src register)
-   (?mask reg/lit)
-   (?src/dst register))
-  (definstruction atmod
-                  ?src
-                  ?mask
-                  ?src/dst))
-
 (defmethod MAIN::*send
   ((?dst register)
    (?src1 reg/lit)
@@ -823,26 +790,6 @@
 (defmethod MAIN::*movrl
   ((?src freg/flit (is-valid-long-register ?current-argument)) (?dst freg (is-valid-long-register ?current-argument)))
   (definstruction movrl
-                  ?src ?dst))
-(defgeneric MAIN::*cosr)
-(defgeneric MAIN::*cosrl)
-(defmethod MAIN::*cosr
-  ((?src freg/flit) (?dst freg))
-  (definstruction cosr
-                  ?src ?dst))
-(defmethod MAIN::*cosrl
-  ((?src freg/flit (is-valid-long-register ?current-argument)) (?dst freg (is-valid-long-register ?current-argument)))
-  (definstruction cosrl
-                  ?src ?dst))
-(defgeneric MAIN::*sinr)
-(defgeneric MAIN::*sinrl)
-(defmethod MAIN::*sinr
-  ((?src freg/flit) (?dst freg))
-  (definstruction sinr
-                  ?src ?dst))
-(defmethod MAIN::*sinrl
-  ((?src freg/flit (is-valid-long-register ?current-argument)) (?dst freg (is-valid-long-register ?current-argument)))
-  (definstruction sinrl
                   ?src ?dst))
 (defgeneric MAIN::*expr)
 (defgeneric MAIN::*exprl)
