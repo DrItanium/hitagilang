@@ -260,7 +260,29 @@
                                          "g3: ")
                       (deflabeled-string ascii_hex_table
                                          "0123456789ABCDEF")
-
+                      ; setup the bss section, so do giant block of writes
+                      ; the routine below fixes up the stack for a false interrupt return
+                      ; We have reserved area on the stack before the call to this routine.
+                      ; We need to build a phony interrupt record here to force the processor
+                      ; to pick up on the return.
+                      ;
+                      ; Also, we will take advantage of the fact that the processor will
+                      ; restore the PC and AC to its registers
+                      (.align 6)
+                      (defroutine:window fix_stack
+                                         (*flushreg)
+                                         (*or pfp 7 pfp) ; put interrupt return code into pfp
+                                         (*ldconst 0x1f0002 
+                                                   g0)
+                                         (*st g0 
+                                              displacement: -16
+                                              abase: fp) ; store contrived pc
+                                         (*ldconst 0x3b001000
+                                                   g0) ; setup arithmetic controls
+                                         (*st g0 
+                                              displacement: -12
+                                              abase: fp) ; store contrived AC
+                                         )
 
                       )
              )
