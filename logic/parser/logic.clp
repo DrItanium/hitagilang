@@ -21,22 +21,3 @@
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-(defmodule parser:generate-files
-           (import MAIN
-                   ?ALL))
-
-(defmodule parser:process-file
-           (import MAIN
-                   ?ALL))
-
-(defmodule parser:sanity-check
-           (import MAIN
-                   ?ALL))
-
-(defmodule parser:hoisting
-           (import MAIN
-                   ?ALL))
-(defmodule parser:identify-structures
-           (import MAIN
-                   ?ALL))
