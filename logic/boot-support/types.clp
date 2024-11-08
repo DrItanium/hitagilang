@@ -20,7 +20,8 @@
 ; ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-(include assembler.clp)
+(include logic/assembler/types.clp)
+
 (deffunction MAIN::clear-g14 
              () 
              (*ldconst 0 
@@ -129,3 +130,12 @@
                                            ?to-call))
                       (restore-globals)
                       (*ret)))
+
+(deffunction MAIN::def-isr
+             (?name $?body)
+             (bind ?real-vector-name
+                   (sym-cat vect_ 
+                            ?name))
+             (mkblock (.global ?real-vector-name)
+                      (defroutine:window ?real-vector-name
+                                         ?body)))
