@@ -25,6 +25,10 @@
            (export ?ALL))
 (include logic/common/utils.clp)
 (include logic/common/to-string.clp)
+(include logic/common/types.clp)
+
 (deffunction MAIN::begin
              ()
              )
+
+(include logic/common/logic.clp)
