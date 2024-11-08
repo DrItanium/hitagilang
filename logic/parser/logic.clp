@@ -21,6 +21,36 @@
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ; code to define all of the different aspects of parsing source files
+(defrule parser:generate-files::generate-file-container
+         ?f <- (parse file ?path)
+         =>
+         (retract ?f)
+         (make-instance of parser
+                        (path ?path)))
+
+(defrule parser:process-file::read-token
+         ?f <- (object (is-a parser)
+                       (current-token)
+                       (state PARSING)
+                       (valid TRUE)
+                       (id ?id))
+         =>
+         (modify-instance ?f
+                          (current-token (next-token ?id))))
+
+(defrule parser:process-file::stop-parsing-file
+         "If we see a stop token then just terminate immediately!"
+         ?f <- (object (is-a parser)
+                       (current-token STOP ?)
+                       (state PARSING)
+                       (valid TRUE)
+                       (id ?id))
+         =>
+         (close ?id)
+         (modify-instance ?f
+                          (current-token)
+                          (state PARSED)))
+; @todo continue here
 ;(defrule parser:generate-files::display-information
 ;         =>
 ;         (printout stdout 

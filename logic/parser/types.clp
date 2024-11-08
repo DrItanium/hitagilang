@@ -74,13 +74,29 @@
         (type SYMBOL)
         (allowed-symbols UNPROCESSED
                          PARSED
-                         PARSING)
+                         PARSING
+                         INVALID)
         (storage local)
         (visibility public))
   (multislot current-token
              (storage local)
              (visibility public))
   (message-handler init after))
+
+(defmessage-handler MAIN::parser init after
+                    ()
+                    (bind ?self:valid
+                          (open ?self:path
+                                ?self:id
+                                "r"))
+                    (bind ?self:state 
+                          (if ?self:valid then PARSING else INVALID))
+                    (bind ?self:top-element
+                          (make-instance of file-container
+                                         (parent FALSE)
+                                         (file-name ?self:path)))
+                    (bind ?self:current-element
+                          ?self:top-element))
 
 (deffacts MAIN::parser-focus-files
           (annotation (kind focus-on-stage)
@@ -93,3 +109,7 @@
                             parser:identify-structures)))
 
 
+(deftemplate MAIN::parser-open-request
+             (slot path
+                   (type LEXEME)
+                   (default ?NONE)))
