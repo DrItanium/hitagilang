@@ -37,3 +37,45 @@
                    (default ?NONE))
              (multislot rest
                         (type SYMBOL)))
+
+(deffunction MAIN::apply-to-each$ 
+             (?function $?contents)
+             (bind ?results
+                   (create$))
+             (progn$ (?item ?contents)
+                     (bind ?results
+                           ?results
+                           (funcall ?function
+                                    ?item)))
+             ?results)
+
+(deffunction MAIN::apply-to-each-with-index$ 
+             (?function $?contents)
+             (bind ?results
+                   (create$))
+             (progn$ (?item ?contents)
+                     (bind ?results
+                           ?results
+                           (funcall ?function
+                                    ?item-index
+                                    ?item)))
+             ?results)
+
+(defmessage-handler STRING to-string primary
+                    ()
+                    ?self)
+(defmessage-handler NUMBER to-string primary
+                    ()
+                    (str-cat ?self))
+(defmessage-handler SYMBOL to-string primary
+                    ()
+                    (str-cat ?self))
+(defmessage-handler MULTIFIELD to-string primary
+                    ()
+                    (bind ?contents 
+                          (create$))
+                    (progn$ (?a ?self)
+                            (bind ?contents
+                                  ?contents
+                                  (send ?a to-string)))
+                    ?contents)

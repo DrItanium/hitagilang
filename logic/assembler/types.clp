@@ -20,7 +20,547 @@
 ; ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-(include asmgen.clp)
+; Generic routines for generating i960 style assembly instructions in gnu syntax
+(include logic/common/types.clp)
+
+(defclass MAIN::reg/lit
+  (is-a USER))
+(defclass MAIN::freg/flit
+  (is-a USER))
+(defclass MAIN::freg
+  (is-a freg/flit))
+(defclass MAIN::literal
+  (is-a reg/lit)
+  (slot value
+        (type INTEGER)
+        (range 0 31)
+        (access initialize-only)
+        (storage local)
+        (visibility public)
+        (default ?NONE))
+  (message-handler to-string primary))
+(defmessage-handler MAIN::literal to-string primary
+                    ()
+                    (str-cat ?self:value))
+(defclass MAIN::float-literal
+  (is-a freg/flit)
+  (slot value
+        (type FLOAT)
+        (allowed-values 0.0
+                        1.0)
+        (access initialize-only)
+        (storage local)
+        (visibility public)
+        (default ?NONE))
+  (message-handler to-string primary))
+
+(defmessage-handler MAIN::float-literal to-string primary
+                    ()
+                    (str-cat ?self:value))
+
+(defclass MAIN::register
+  (is-a reg/lit
+        freg)
+  (slot title
+        (type SYMBOL)
+        (access initialize-only)
+        (storage local)
+        (visibility public)
+        (default ?NONE))
+  (slot valid-long-register-target
+        (type SYMBOL)
+        (access initialize-only)
+        (storage local)
+        (visibility public)
+        (allowed-symbols FALSE
+                         TRUE))
+  (slot valid-triple-register-target 
+        (type SYMBOL)
+        (access initialize-only)
+        (storage local)
+        (visibility public)
+        (allowed-symbols FALSE
+                         TRUE))
+  (slot valid-quad-register-target
+        (type SYMBOL)
+        (access initialize-only)
+        (storage local)
+        (visibility public)
+        (allowed-symbols FALSE
+                         TRUE))
+  (slot next-register
+        (type INSTANCE
+              SYMBOL)
+        (access initialize-only)
+        (storage local)
+        (visibility public)
+        (allowed-symbols FALSE)
+        (default-dynamic FALSE))
+  (message-handler get-next-long-register primary)
+  (message-handler to-string primary))
+(defmessage-handler MAIN::register get-next-long-register primary
+                    ()
+                    (send ?self:next-register
+                          get-next-register))
+(defmessage-handler MAIN::register to-string primary
+                    ()
+                    (str-cat ?self:title))
+(defclass float-register
+  (is-a freg)
+  (slot title
+        (type SYMBOL)
+        (access initialize-only)
+        (storage local)
+        (visibility public)
+        (default ?NONE))
+  (message-handler to-string primary))
+(defmessage-handler MAIN::float-register to-string primary
+                    ()
+                    (str-cat ?self:title))
+
+(defclass MAIN::label
+  (is-a USER)
+  (slot title
+        (type SYMBOL
+              INTEGER)
+        (storage local)
+        (visibility public)
+        (default ?NONE))
+  (message-handler to-string primary))
+
+(defmessage-handler MAIN::label to-string primary
+                    ()
+                    (format nil
+                            "%s:"
+                            ?self:title))
+
+(deffunction MAIN::deflabel
+             (?title)
+             (make-instance of label
+                            (title ?title)))
+(defclass MAIN::operand-list
+  (is-a USER)
+  (multislot contents
+             (storage local)
+             (visibility public)
+             (default ?NONE))
+  (message-handler to-string primary))
+(defmessage-handler MAIN::operand-list to-string primary
+                    ()
+                    (switch (length$ ?self:contents)
+                            (case 0 then "")
+                            (case 1 then (send (nth$ 1 
+                                                     ?self:contents) 
+                                               to-string))
+                            (default (bind ?contents 
+                                           (format nil
+                                                   "%s, %s"
+                                                   (send (nth$ 1 
+                                                               ?self:contents)
+                                                         to-string)
+                                                   (send (nth$ 2 
+                                                               ?self:contents)
+                                                         to-string)))
+                                     (loop-for-count (?idx 3 (length$ ?self:contents)) do
+                                                     (bind ?contents
+                                                           (format nil 
+                                                                   "%s, %s"
+                                                                   ?contents
+                                                                   (send (nth$ ?idx
+                                                                               ?self:contents)
+                                                                         to-string))))
+                                     ?contents)))
+
+(defclass MAIN::instruction
+  (is-a USER)
+  (slot operation
+        (type SYMBOL)
+        (storage local)
+        (visibility public)
+        (default ?NONE))
+  (slot operands 
+        (type INSTANCE
+              SYMBOL
+              STRING)
+        (storage local)
+        (visibility public)
+        (default-dynamic FALSE))
+  (message-handler init after)
+  (message-handler to-string primary))
+
+(defmessage-handler MAIN::instruction init after
+                    ()
+                    (if (and (symbolp ?self:operands)
+                             ?self:operands) then
+                      (dynamic-put operands
+                                   (str-cat ?self:operands)))
+                    )
+
+(defmessage-handler MAIN::instruction to-string primary
+                    ()
+                    (if ?self:operands then
+                      (format nil
+                              "%s %s"
+                              ?self:operation
+                              (send ?self:operands
+                                    to-string))
+                      else
+                      ?self:operation))
+(defgeneric MAIN::definstruction)
+(defmethod MAIN::definstruction
+  ((?opcode SYMBOL))
+  (make-instance of instruction
+                 (operation ?opcode)))
+(defmethod MAIN::definstruction
+  ((?opcode SYMBOL)
+   (?operands STRING
+              operand-list))
+  (make-instance of instruction
+                 (operation ?opcode)
+                 (operands ?operands)))
+
+(defmethod MAIN::definstruction
+  ((?opcode SYMBOL)
+   (?arguments MULTIFIELD))
+  (definstruction ?opcode
+                  (make-instance of operand-list
+                                 (contents ?arguments))))
+(defmethod MAIN::definstruction
+  ((?opcode SYMBOL)
+   $?rest)
+  (definstruction ?opcode
+                  ?rest))
+(defgeneric MAIN::convert-register)
+(defgeneric MAIN::convert-literal)
+(defgeneric MAIN::convert-reg/lit)
+(deffunction MAIN::is-valid-register
+             (?value)
+             (switch (type ?value)
+                     (case register then TRUE)
+                     (case SYMBOL then (and (instance-existp (bind ?inst
+                                                                   (symbol-to-instance-name ?value)))
+                                            (eq (type ?inst)
+                                                register)))
+                     (default FALSE)))
+(deffunction MAIN::is-valid-literal
+             (?value)
+             (switch (type ?value)
+                     (case literal then TRUE)
+                     (case INTEGER then (<= 0 ?value 31))
+                     (default FALSE)))
+(deffunction MAIN::is-valid-reg-literal
+             (?value)
+             (or (is-valid-register ?value)
+                 (is-valid-literal ?value)))
+(deffunction MAIN::is-valid-long-register
+             (?reg)
+             (switch (type ?reg)
+                     (case float-literal then TRUE)
+                     (case float-register then TRUE)
+                     (case literal then TRUE)
+                     (case register then (send ?reg 
+                                               get-valid-long-register-target))
+                     (case SYMBOL then
+                       (and ?reg
+                            (is-valid-register ?reg)
+                            (is-valid-long-register (convert-register ?reg))))
+                     (default FALSE)))
+(deffunction MAIN::is-valid-triple-register
+             (?reg)
+             (switch (type ?reg)
+                     (case float-literal then TRUE)
+                     (case float-register then TRUE)
+                     (case literal then TRUE)
+                     (case register then 
+                       (send ?reg get-valid-triple-register-target))
+                     (case SYMBOL then
+                       (and ?reg
+                            (is-valid-register ?reg)
+                            (is-valid-triple-register (convert-register ?reg))))
+                     (default FALSE)))
+
+(deffunction MAIN::is-valid-quad-register
+             (?reg)
+             (switch (type ?reg)
+                     (case float-literal then TRUE)
+                     (case float-register then TRUE)
+                     (case literal then TRUE)
+                     (case register then (send ?reg get-valid-quad-register-target))
+                     (case SYMBOL then
+                       (and ?reg
+                            (is-valid-register ?reg)
+                            (is-valid-quad-register (convert-register ?reg))))
+                     (default FALSE)))
+
+(defmethod MAIN::convert-register
+  ((?var register))
+  ?var)
+(defmethod MAIN::convert-register
+  ((?var SYMBOL
+         (is-valid-register ?current-argument)))
+  (symbol-to-instance-name ?var))
+
+(defmethod MAIN::convert-literal
+  ((?var literal))
+  ?var)
+(defmethod MAIN::convert-literal
+  ((?var INTEGER
+         (is-valid-literal ?current-argument)))
+  (symbol-to-instance-name (sym-cat ?var l)))
+
+(defmethod MAIN::convert-reg/lit
+  ((?var register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (convert-register ?var))
+(defmethod MAIN::convert-reg/lit
+  ((?var literal
+         INTEGER
+         (is-valid-literal ?current-argument)))
+  (convert-literal ?var))
+
+; -------------------
+(defmethod MAIN::is-valid-float-literal
+  ((?lit FLOAT))
+  (not (neq ?lit +1.0 +0.0)))
+(defmethod MAIN::is-valid-float-literal
+  ((?lit float-literal))
+  TRUE)
+(defmethod MAIN::convert-float-literal
+  ((?lit FLOAT
+         (is-valid-float-literal ?current-argument)))
+  (symbol-to-instance-name (sym-cat ?lit 
+                                    f)))
+(defmethod MAIN::is-valid-float-register 
+  ((?lit freg)) 
+  TRUE)
+(defmethod MAIN::is-valid-float-register
+  ((?lit SYMBOL
+         (superclassp freg 
+                      (symbol-to-instance-name ?current-argument))))
+  TRUE)
+
+(defgeneric MAIN::mkblock)
+(defmethod MAIN::mkblock
+  ((?contents MULTIFIELD))
+  (create$ ?contents))
+(defmethod MAIN::mkblock
+  ($?contents)
+  (mkblock ?contents))
+
+;synthetic instructions
+; make this last to be sure
+(definstances MAIN::literals-and-registers
+              (g0 of register
+                  (valid-long-register-target TRUE)
+                  (valid-triple-register-target TRUE)
+                  (valid-quad-register-target TRUE)
+                  (next-register [g1])
+                  (title g0))
+              (g1 of register
+                  (next-register [g2])
+                  (title g1))
+              (g2 of register
+                  (valid-long-register-target TRUE)
+                  (next-register [g3])
+                  (title g2))
+              (g3 of register
+                  (title g3))
+              (g4 of register
+                  (valid-triple-register-target TRUE)
+                  (valid-quad-register-target TRUE)
+                  (valid-long-register-target TRUE)
+                  (next-register [g5])
+                  (title g4))
+              (g5 of register
+                  (next-register [g6])
+                  (title g5))
+              (g6 of register
+                  (valid-long-register-target TRUE)
+                  (next-register [g7])
+                  (title g6))
+              (g7 of register
+                  (title g7))
+              (g8 of register
+                  (valid-triple-register-target TRUE)
+                  (valid-quad-register-target TRUE)
+                  (valid-long-register-target TRUE)
+                  (next-register [g9])
+                  (title g8))
+              (g9 of register
+                  (next-register [g10])
+                  (title g9))
+              (g10 of register
+                   (valid-long-register-target TRUE)
+                   (next-register [g11])
+                   (title g10))
+              (g11 of register
+                   (title g11))
+              (g12 of register
+                   (valid-triple-register-target TRUE)
+                   (valid-quad-register-target TRUE)
+                   (valid-long-register-target TRUE)
+                   (next-register [g13])
+                   (title g12))
+              (g13 of register
+                   (next-register [g14])
+                   (title g13))
+              (g14 of register
+                   (next-register [fp])
+                   (valid-long-register-target TRUE)
+                   (title g14))
+              ; link register is a special form of g14
+              ; it is a special form
+              (lr of register
+                   (title g14))
+              (fp of register
+                  (title fp))
+              (pfp of register
+                   (valid-long-register-target TRUE)
+                   (valid-triple-register-target TRUE)
+                   (valid-quad-register-target TRUE)
+                   (next-register [sp])
+                   (title pfp))
+              (sp of register
+                  (next-register [rip])
+                  (title sp))
+              (rip of register
+                   (valid-long-register-target TRUE)
+                   (next-register [r3])
+                   (title rip))
+              (r3 of register
+                  (title r3))
+              ; at is the assembler temporary that I have set
+              (at of register
+                  (title r3))
+              (r4 of register
+                  (next-register [r5])
+                  (valid-long-register-target TRUE)
+                  (valid-triple-register-target TRUE)
+                  (valid-quad-register-target TRUE)
+                  (title r4))
+              (r5 of register
+                  (next-register [r6])
+                  (title r5))
+              (r6 of register
+                  (next-register [r7])
+                  (valid-long-register-target TRUE)
+                  (title r6))
+              (r7 of register
+                  (title r7))
+              (r8 of register
+                  (next-register [r9])
+                  (valid-long-register-target TRUE)
+                  (valid-triple-register-target TRUE)
+                  (valid-quad-register-target TRUE)
+                  (title r8))
+              (r9 of register
+                  (next-register [r10])
+                  (title r9))
+              (r10 of register
+                   (valid-long-register-target TRUE)
+                   (next-register [r11])
+                   (title r10))
+              (r11 of register
+                   (title r11))
+              (r12 of register
+                   (next-register [r13])
+                   (valid-long-register-target TRUE)
+                   (valid-triple-register-target TRUE)
+                   (valid-quad-register-target TRUE)
+                   (title r12))
+              (r13 of register
+                   (next-register [r14])
+                   (title r13))
+              (r14 of register
+                   (next-register [r15])
+                   (valid-long-register-target TRUE)
+                   (title r14))
+              (r15 of register
+                   (title r15))
+              (fp0 of float-register
+                   (title fp0))
+              (fp1 of float-register
+                   (title fp1))
+              (fp2 of float-register
+                   (title fp2))
+              (fp3 of float-register
+                   (title fp3))
+              (0l of literal
+               (value 0))
+              (1l of literal
+               (value 1))
+              (2l of literal
+               (value 2))
+              (3l of literal
+               (value 3))
+              (4l of literal
+               (value 4))
+              (5l of literal
+               (value 5))
+              (6l of literal
+               (value 6))
+              (7l of literal
+               (value 7))
+              (8l of literal
+               (value 8))
+              (9l of literal
+               (value 9))
+              (10l of literal
+               (value 10))
+              (11l of literal
+               (value 11))
+              (12l of literal
+               (value 12))
+              (13l of literal
+               (value 13))
+              (14l of literal
+               (value 14))
+              (15l of literal
+               (value 15))
+              (16l of literal
+               (value 16))
+              (17l of literal
+               (value 17))
+              (18l of literal
+               (value 18))
+              (19l of literal
+               (value 19))
+              (20l of literal
+               (value 20))
+              (21l of literal
+               (value 21))
+              (22l of literal
+               (value 22))
+              (23l of literal
+               (value 23))
+              (24l of literal
+               (value 24))
+              (25l of literal
+               (value 25))
+              (26l of literal
+               (value 26))
+              (27l of literal
+               (value 27))
+              (28l of literal
+               (value 28))
+              (29l of literal
+               (value 29))
+              (30l of literal
+               (value 30))
+              (31l of literal
+               (value 31))
+              ; different ways to view the same thing so that dynamic type construction will work right
+              (+0.0f of float-literal 
+                     (value +0.0))
+              (+1.0f of float-literal 
+                     (value +1.0))
+              (0.0f of float-literal
+               (value +0.0))
+              (1.0f of float-literal
+               (value +1.0))
+              )
+
 
 (defmethod MAIN::*b
   ((?targ SYMBOL))
@@ -2782,3 +3322,965 @@
                   (convert-reg/lit ?src1)
                   (convert-reg/lit ?src2)
                   (convert-register ?dst)))
+
+(defclass MAIN::string-directive
+  (is-a USER)
+  (role abstract)
+  (pattern-match non-reactive)
+  (slot operation
+        (type SYMBOL)
+        (storage shared)
+        (visibility public)
+        (access read-only)
+        (default ILLEGAL-OPERATION))
+  (slot data
+        (type STRING)
+        (storage local)
+        (visibility public)
+        (default ?NONE))
+  (message-handler to-string primary))
+(defmessage-handler MAIN::string-directive to-string primary
+                    ()
+                    (format nil
+                            "%s \"%s\""
+                            (dynamic-get operation)
+                            (dynamic-get data)))
+(defclass MAIN::asciz-directive
+  (is-a string-directive)
+  (role concrete)
+  (pattern-match reactive)
+  (slot operation
+        (source composite)
+        (default .asciz)))
+(defclass MAIN::ascii-directive
+  (is-a string-directive)
+  (role concrete)
+  (pattern-match reactive)
+  (slot operation
+        (source composite)
+        (default .ascii)))
+
+(defgeneric MAIN::defdirective
+            "Define a directive")
+(defmethod MAIN::defdirective
+  ((?operation SYMBOL)
+   (?args MULTIFIELD))
+  (definstruction ?operation
+                  (expand$ ?args)))
+
+
+(defmethod MAIN::defdirective
+  ((?operation SYMBOL)
+   $?args)
+  (defdirective ?operation
+                ?args))
+
+(defmethod MAIN::.text () (defdirective .text))
+(defmethod MAIN::.data () (defdirective .data))
+(defmethod MAIN::.global
+  ((?target SYMBOL))
+  (defdirective .global
+                ?target))
+(defmethod MAIN::.word
+  ((?target LEXEME
+            INTEGER))
+  (defdirective .word
+                ?target))
+(defmethod MAIN::.word
+  ((?target LEXEME
+            INTEGER)
+   (?rest MULTIFIELD))
+  (defdirective .word
+                ?target
+                (expand$ ?rest)))
+(defmethod MAIN::.word
+  ((?target LEXEME
+            INTEGER)
+   $?rest)
+  (.word ?target
+         ?rest))
+(defmethod MAIN::.align
+  ((?value INTEGER))
+  (defdirective .align
+                ?value))
+(defmethod MAIN::.asciz
+  ((?data STRING))
+  (make-instance of asciz-directive
+                 (data ?data)))
+
+(defmethod MAIN::.ascii
+  ((?data STRING))
+  (make-instance of ascii-directive
+                 (data ?data)))
+
+(defmethod MAIN::.bss () (defdirective .bss))
+(defmethod MAIN::.bss 
+  ((?title SYMBOL)
+   (?size INTEGER
+          SYMBOL)
+   (?alignment INTEGER))
+  (defdirective .bss
+                ?title
+                ?size
+                ?alignment))
+
+(defmethod MAIN::.skip
+  ((?count INTEGER))
+  (defdirective .skip
+                ?count))
+
+(defmethod MAIN::.space
+  ((?count INTEGER))
+  (defdirective .space
+                ?count))
+
+(defmethod MAIN::defglobal-label
+  ((?name SYMBOL))
+  (create$ (.global ?name)
+           (deflabel ?name)))
+
+(defmethod MAIN::.fill
+  ((?count INTEGER)
+   (?size INTEGER)
+   (?value INTEGER))
+  (defdirective .fill
+                ?count
+                ?size
+                ?value))
+
+
+(defclass MAIN::synthetic-instruction
+  (is-a instruction)
+  (multislot sub-instructions
+             (storage local)
+             (visibility public))
+  (message-handler to-string primary))
+(defmessage-handler MAIN::synthetic-instruction to-string primary
+                    ()
+                    (send ?self:sub-instructions
+                          to-string))
+(defgeneric MAIN::defsynthetic-instruction)
+(defmethod MAIN::defsynthetic-instruction
+  ((?opcode SYMBOL)
+   (?arguments STRING
+               operand-list)
+   (?real-instructions MULTIFIELD))
+  (make-instance of synthetic-instruction
+                 (operation ?opcode)
+                 (operands ?arguments)
+                 (sub-instructions ?real-instructions)))
+(defmethod MAIN::defsynthetic-instruction
+  ((?opcode SYMBOL)
+   (?arguments MULTIFIELD)
+   (?real-instructions MULTIFIELD))
+  (defsynthetic-instruction ?opcode
+                            (make-instance of operand-list
+                                           (contents ?arguments))
+                            ?real-instructions))
+(defmethod MAIN::defsynthetic-instruction
+  ((?opcode SYMBOL)
+   (?arguments STRING
+               operand-list
+               MULTIFIELD)
+   $?real-instructions)
+  (defsynthetic-instruction ?opcode
+                            ?arguments
+                            ?real-instructions))
+
+; synthetic instructions
+(defmethod MAIN::*ldconst
+  ((?value NUMBER
+           SYMBOL)
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (definstruction ldconst
+                  ?value
+                  (convert-register ?dest)))
+
+(defmethod MAIN::*cmpibez ((?src2 register) (?targ SYMBOL)) (*cmpibe [0l] ?src2 ?targ))
+(defmethod MAIN::*cmpobez ((?src2 register) (?targ SYMBOL)) (*cmpobe [0l] ?src2 ?targ))
+(defmethod MAIN::*cmpibnez ((?src2 register) (?targ SYMBOL)) (*cmpibne [0l] ?src2 ?targ))
+(defmethod MAIN::*cmpobnez ((?src2 register) (?targ SYMBOL)) (*cmpobne [0l] ?src2 ?targ))
+(defmethod MAIN::*cmpiblz ((?src2 register) (?targ SYMBOL)) (*cmpibl [0l] ?src2 ?targ))
+(defmethod MAIN::*cmpiblez ((?src2 register) (?targ SYMBOL)) (*cmpible [0l] ?src2 ?targ))
+(defmethod MAIN::*cmpibgz ((?src2 register) (?targ SYMBOL)) (*cmpibg [0l] ?src2 ?targ))
+(defmethod MAIN::*cmpibgez ((?src2 register) (?targ SYMBOL)) (*cmpibge [0l] ?src2 ?targ))
+; Is a given register value between two other register values
+; equivalent to (<= ?lo ?target ?hi) in CLIPS
+(defmethod MAIN::*twixto 
+  ((?lo reg/lit
+        SYMBOL
+        INTEGER
+        (is-valid-reg-literal ?current-argument))
+   (?target reg/lit
+            SYMBOL
+            INTEGER
+            (is-valid-reg-literal ?current-argument))
+   (?hi reg/lit
+        SYMBOL
+        INTEGER
+        (is-valid-reg-literal ?current-argument)))
+  (defsynthetic-instruction twixto
+                            (apply-to-each$ convert-reg/lit 
+                                            ?lo
+                                            ?target
+                                            ?hi)
+                            (*cmpo ?hi
+                                   ?target)
+                            (*concmpo ?lo
+                                      ?target)))
+(defmethod MAIN::*twixti
+  ((?lo reg/lit
+        SYMBOL
+        INTEGER
+        (is-valid-reg-literal ?current-argument))
+   (?target reg/lit
+            SYMBOL
+            INTEGER
+            (is-valid-reg-literal ?current-argument))
+   (?hi reg/lit
+        SYMBOL
+        INTEGER
+        (is-valid-reg-literal ?current-argument)))
+  (defsynthetic-instruction twixti
+                            (apply-to-each$ convert-reg/lit 
+                                            ?lo
+                                            ?target
+                                            ?hi)
+                            (*cmpi ?hi
+                                   ?target)
+                            (*concmpi ?lo
+                                      ?target)))
+
+; compare with zero
+(defmethod MAIN::*cmpiz ((?src2 reg/lit)) (*cmpi [0l] ?src2))
+(defmethod MAIN::*cmpoz ((?src2 reg/lit)) (*cmpo [0l] ?src2))
+
+(defmethod MAIN::*extract-byte
+  ((?bitpos literal)
+   (?src/dest register))
+  (*extract ?bitpos
+            [8l]
+            ?src/dest))
+(defmethod MAIN::*extract-lowest-byte
+  ((?src/dest register))
+  (*extract-byte [0l]
+                 ?src/dest))
+
+(defmethod MAIN::*extract-lower-byte
+  ((?src/dest register))
+  (*extract-byte [8l]
+                 ?src/dest))
+
+(defmethod MAIN::*extract-higher-byte
+  ((?src/dest register))
+  (*extract-byte [16l]
+                 ?src/dest))
+
+(defmethod MAIN::*extract-highest-byte
+  ((?src/dest register))
+  (*extract-byte [24l]
+                 ?src/dest))
+(defmethod MAIN::*extract-lower-half
+  ((?src/dest register))
+  (*extract [0l]
+            [16l]
+            ?src/dest))
+
+(defmethod MAIN::*extract-upper-half
+  ((?src/dest register))
+  (*extract [16l]
+            [16l]
+            ?src/dest))
+
+
+(defmethod MAIN::*get-pc
+  ((?dest register))
+  (*modpc [0l] 
+          ?dest))
+
+(defmethod MAIN::*get-ac
+  ((?dest register))
+  (*modac [0l]
+          [0l]
+          ?dest))
+
+(defmethod MAIN::*get-tc
+  ((?dest register))
+  (*modtc [0l]
+          [0l]
+          ?dest))
+
+(defmethod MAIN::*xorl
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-long-register ?current-argument)))
+  (defsynthetic-instruction *xorl
+                            (apply-to-each$ convert-register
+                                            ?src1
+                                            ?src2
+                                            ?dest)
+                            (*xor (convert-register ?src1)
+                                  (convert-register ?src2)
+                                  (convert-register ?dest))
+                            (*xor (send (convert-register ?src1)
+                                        get-next-register)
+                                  (send (convert-register ?src2)
+                                        get-next-register)
+                                  (send (convert-register ?dest)
+                                        get-next-register))))
+
+(defmethod MAIN::*xort
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-triple-register ?current-argument)))
+  (defsynthetic-instruction *xort
+                            (apply-to-each$ convert-register
+                                            ?src1
+                                            ?src2
+                                            ?dest)
+                            (*xorl ?src1
+                                   ?src2
+                                   ?dest)
+                            (*xor (send (convert-register ?src1)
+                                        get-next-long-register)
+                                  (send (convert-register ?src2)
+                                        get-next-long-register)
+                                  (send (convert-register ?dest)
+                                        get-next-long-register))))
+
+(defmethod MAIN::*xorq
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-quad-register ?current-argument)))
+  (defsynthetic-instruction *xorq
+                            (apply-to-each$ convert-register
+                                            ?src1
+                                            ?src2
+                                            ?dest)
+                            (*xorl ?src1
+                                   ?src2
+                                   ?dest)
+                            (*xorl (send (convert-register ?src1)
+                                         get-next-long-register)
+                                   (send (convert-register ?src2)
+                                         get-next-long-register)
+                                   (send (convert-register ?dest)
+                                         get-next-long-register))))
+
+(defmethod MAIN::*xnorl
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-long-register ?current-argument)))
+  (create$ (*xnor (convert-register ?src1)
+                  (convert-register ?src2)
+                  (convert-register ?dest))
+           (*xnor (send (convert-register ?src1)
+                        get-next-register)
+                  (send (convert-register ?src2)
+                        get-next-register)
+                  (send (convert-register ?dest)
+                        get-next-register))))
+
+(defmethod MAIN::*xnort
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-triple-register ?current-argument)))
+  (create$ (*xnorl ?src1
+                   ?src2
+                   ?dest)
+           (*xnor (send (convert-register ?src1)
+                        get-next-long-register)
+                  (send (convert-register ?src2)
+                        get-next-long-register)
+                  (send (convert-register ?dest)
+                        get-next-long-register))))
+
+(defmethod MAIN::*xnorq
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-quad-register ?current-argument)))
+  (create$ (*xnorl ?src1
+                   ?src2
+                   ?dest)
+           (*xnorl (send (convert-register ?src1)
+                         get-next-long-register)
+                   (send (convert-register ?src2)
+                         get-next-long-register)
+                   (send (convert-register ?dest)
+                         get-next-long-register))))
+
+(defmethod MAIN::*norl
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-long-register ?current-argument)))
+  (create$ (*nor (convert-register ?src1)
+                 (convert-register ?src2)
+                 (convert-register ?dest))
+           (*nor (send (convert-register ?src1)
+                       get-next-register)
+                 (send (convert-register ?src2)
+                       get-next-register)
+                 (send (convert-register ?dest)
+                       get-next-register))))
+
+(defmethod MAIN::*nort
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-triple-register ?current-argument)))
+  (create$ (*norl ?src1
+                  ?src2
+                  ?dest)
+           (*nor (send (convert-register ?src1)
+                       get-next-long-register)
+                 (send (convert-register ?src2)
+                       get-next-long-register)
+                 (send (convert-register ?dest)
+                       get-next-long-register))))
+
+(defmethod MAIN::*norq
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-quad-register ?current-argument)))
+  (create$ (*norl ?src1
+                  ?src2
+                  ?dest)
+           (*norl (send (convert-register ?src1)
+                        get-next-long-register)
+                  (send (convert-register ?src2)
+                        get-next-long-register)
+                  (send (convert-register ?dest)
+                        get-next-long-register))))
+
+(defmethod MAIN::*nandl
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-long-register ?current-argument)))
+  (create$ (*nand (convert-register ?src1)
+                  (convert-register ?src2)
+                  (convert-register ?dest))
+           (*nand (send (convert-register ?src1)
+                        get-next-register)
+                  (send (convert-register ?src2)
+                        get-next-register)
+                  (send (convert-register ?dest)
+                        get-next-register))))
+
+(defmethod MAIN::*nandt
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-triple-register ?current-argument)))
+  (create$ (*nandl ?src1
+                   ?src2
+                   ?dest)
+           (*nand (send (convert-register ?src1)
+                        get-next-long-register)
+                  (send (convert-register ?src2)
+                        get-next-long-register)
+                  (send (convert-register ?dest)
+                        get-next-long-register))))
+
+(defmethod MAIN::*nandq
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-quad-register ?current-argument)))
+  (create$ (*nandl ?src1
+                   ?src2
+                   ?dest)
+           (*nandl (send (convert-register ?src1)
+                         get-next-long-register)
+                   (send (convert-register ?src2)
+                         get-next-long-register)
+                   (send (convert-register ?dest)
+                         get-next-long-register))))
+(defmethod MAIN::*andl
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-long-register ?current-argument)))
+  (create$ (*and (convert-register ?src1)
+                 (convert-register ?src2)
+                 (convert-register ?dest))
+           (*and (send (convert-register ?src1)
+                       get-next-register)
+                 (send (convert-register ?src2)
+                       get-next-register)
+                 (send (convert-register ?dest)
+                       get-next-register))))
+
+(defmethod MAIN::*andt
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-triple-register ?current-argument)))
+  (create$ (*andl ?src1
+                  ?src2
+                  ?dest)
+           (*and (send (convert-register ?src1)
+                       get-next-long-register)
+                 (send (convert-register ?src2)
+                       get-next-long-register)
+                 (send (convert-register ?dest)
+                       get-next-long-register))))
+
+(defmethod MAIN::*andq
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-quad-register ?current-argument)))
+  (create$ (*andl ?src1
+                  ?src2
+                  ?dest)
+           (*andl (send (convert-register ?src1)
+                        get-next-long-register)
+                  (send (convert-register ?src2)
+                        get-next-long-register)
+                  (send (convert-register ?dest)
+                        get-next-long-register))))
+(defmethod MAIN::*orl
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-long-register ?current-argument)))
+  (create$ (*or (convert-register ?src1)
+                (convert-register ?src2)
+                (convert-register ?dest))
+           (*or (send (convert-register ?src1)
+                      get-next-register)
+                (send (convert-register ?src2)
+                      get-next-register)
+                (send (convert-register ?dest)
+                      get-next-register))))
+
+(defmethod MAIN::*ort
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-triple-register ?current-argument)))
+  (create$ (*orl ?src1
+                 ?src2
+                 ?dest)
+           (*or (send (convert-register ?src1)
+                      get-next-long-register)
+                (send (convert-register ?src2)
+                      get-next-long-register)
+                (send (convert-register ?dest)
+                      get-next-long-register))))
+
+(defmethod MAIN::*orq
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-quad-register ?current-argument)))
+  (create$ (*orl ?src1
+                 ?src2
+                 ?dest)
+           (*orl (send (convert-register ?src1)
+                       get-next-long-register)
+                 (send (convert-register ?src2)
+                       get-next-long-register)
+                 (send (convert-register ?dest)
+                       get-next-long-register))))
+
+(defmethod MAIN::*nop
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument)))
+  (*or 0 
+       ?src 
+       ?src))
+(defmethod MAIN::*nop () (*nop r15))
+
+(defmethod MAIN::*inci 
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (*addi 1
+         ?src
+         ?dest))
+
+(defmethod MAIN::*inco
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (*addo 1
+         ?src
+         ?dest))
+
+(defmethod MAIN::*deci 
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (*subi 1
+         ?src
+         ?dest))
+
+(defmethod MAIN::*deco
+  ((?src register
+         SYMBOL
+         (is-valid-register ?current-argument))
+   (?dest register
+          SYMBOL
+          (is-valid-register ?current-argument)))
+  (*subo 1
+         ?src
+         ?dest))
+
+(defmethod MAIN::*calls
+  ((?targ INTEGER
+          (<= 32 ?current-argument 259)))
+  (defsynthetic-instruction *calls
+                            (create$ ?targ)
+                            (*ldconst ?targ
+                                      g13)
+                            (*calls g13)))
+
+(defmethod MAIN::defroutine:window
+  ((?name SYMBOL)
+   (?body MULTIFIELD))
+  (mkblock (deflabel ?name)
+           ?body
+           (*ret)))
+(defmethod MAIN::defroutine:window
+  ((?name SYMBOL)
+   $?rest)
+  (defroutine:window ?name 
+                     ?rest))
+
+(defmethod MAIN::defroutine:leaf
+  ((?name SYMBOL)
+   (?body MULTIFIELD))
+  (mkblock (deflabel ?name)
+           ?body
+           (*bx abase: lr)))
+(defmethod MAIN::defroutine:leaf
+  ((?name SYMBOL)
+   $?rest)
+  (defroutine:leaf ?name
+                   ?rest))
+(defmethod MAIN::defsite
+  ((?name SYMBOL)
+   (?body MULTIFIELD))
+  (mkblock (deflabel ?name)
+           ?body))
+(defmethod MAIN::defsite
+  ((?name SYMBOL)
+   $?body)
+  (defsite ?name
+           ?body))
+
+
+(defmethod MAIN::*cmpolbne
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?targ SYMBOL))
+  (defsynthetic-instruction cmpolbne
+                            (create$ (bind ?r1
+                                           (convert-register ?src1))
+                                     (bind ?r2
+                                           (convert-register ?src2))
+                                     ?targ)
+                            (*cmpobne ?r1
+                                      ?r2
+                                      ?targ)
+                            (*cmpobne (send ?r1
+                                            get-next-register)
+                                      (send ?r2
+                                            get-next-register)
+                                      ?targ)))
+(defmethod MAIN::*cmpotbne
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpolbne ?src1 ?src2 ?targ)
+           (*cmpobne (send (convert-register ?src1)
+                           get-next-long-register)
+                     (send (convert-register ?src2)
+                           get-next-long-register)
+                     ?targ)))
+(defmethod MAIN::*cmpoqbne
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpolbne ?src1 ?src2 ?targ)
+           (*cmpolbne (send (convert-register ?src1)
+                            get-next-long-register)
+                      (send (convert-register ?src2)
+                            get-next-long-register)
+                      ?targ)))
+
+(defmethod MAIN::*cmpolbe
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpobe (convert-register ?src1)
+                    (convert-register ?src2)
+                    ?targ)
+           (*cmpobe (send (convert-register ?src1)
+                          get-next-register)
+                    (send (convert-register ?src2)
+                          get-next-register)
+                    ?targ)))
+(defmethod MAIN::*cmpotbe
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpolbe ?src1 ?src2 ?targ)
+           (*cmpobe (send (convert-register ?src1)
+                          get-next-long-register)
+                    (send (convert-register ?src2)
+                          get-next-long-register)
+                    ?targ)))
+(defmethod MAIN::*cmpoqbe
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpolbe ?src1 ?src2 ?targ)
+           (*cmpolbe (send (convert-register ?src1)
+                           get-next-long-register)
+                     (send (convert-register ?src2)
+                           get-next-long-register)
+                     ?targ)))
+
+(defmethod MAIN::*cmpolble
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpoble (convert-register ?src1)
+                     (convert-register ?src2)
+                     ?targ)
+           (*cmpoble (send (convert-register ?src1)
+                           get-next-register)
+                     (send (convert-register ?src2)
+                           get-next-register)
+                     ?targ)))
+(defmethod MAIN::*cmpotble
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpolble ?src1 ?src2 ?targ)
+           (*cmpoble (send (convert-register ?src1)
+                           get-next-long-register)
+                     (send (convert-register ?src2)
+                           get-next-long-register)
+                     ?targ)))
+(defmethod MAIN::*cmpoqble
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpolble ?src1 ?src2 ?targ)
+           (*cmpolble (send (convert-register ?src1)
+                            get-next-long-register)
+                      (send (convert-register ?src2)
+                            get-next-long-register)
+                      ?targ)))
+
+(defmethod MAIN::*cmpolbl
+  ((?src1 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-long-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpobl (convert-register ?src1)
+                    (convert-register ?src2)
+                    ?targ)
+           (*cmpobl (send (convert-register ?src1)
+                          get-next-register)
+                    (send (convert-register ?src2)
+                          get-next-register)
+                    ?targ)))
+(defmethod MAIN::*cmpotbl
+  ((?src1 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-triple-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpolbl ?src1 ?src2 ?targ)
+           (*cmpobl (send (convert-register ?src1)
+                          get-next-long-register)
+                    (send (convert-register ?src2)
+                          get-next-long-register)
+                    ?targ)))
+(defmethod MAIN::*cmpoqbl
+  ((?src1 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?src2 register
+          SYMBOL
+          (is-valid-quad-register ?current-argument))
+   (?targ SYMBOL))
+  (create$ (*cmpolbl ?src1 ?src2 ?targ)
+           (*cmpolbl (send (convert-register ?src1)
+                           get-next-long-register)
+                     (send (convert-register ?src2)
+                           get-next-long-register)
+                     ?targ)))
+
+
+(defmethod MAIN::.asciznl
+  ((?contents STRING))
+  (.asciz (str-cat ?contents "\\n")))
+
+(defmethod MAIN::deflabeled-string
+  ((?title SYMBOL)
+   (?contents STRING))
+  (create$ (deflabel ?title)
+           (.asciz ?contents)))
+
+(defmethod MAIN::deflabeled-string-newline
+  ((?title SYMBOL)
+   (?contents STRING))
+  (create$ (deflabel ?title)
+           (.asciznl ?contents)))

@@ -23,9 +23,8 @@
 
 (defmodule MAIN
            (export ?ALL))
-(include logic/common/utils.clp)
-(include logic/common/to-string.clp)
 (include logic/common/types.clp)
+(include logic/assembler/types.clp)
 
 (deffunction MAIN::begin
              ()
