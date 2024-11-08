@@ -60,9 +60,11 @@
 
 (defclass MAIN::register
   (is-a reg/lit
-        freg)
+        freg
+        has-title)
   (slot title
         (type SYMBOL)
+        (source composite)
         (access initialize-only)
         (storage local)
         (visibility public)
@@ -106,9 +108,11 @@
                     ()
                     (str-cat ?self:title))
 (defclass float-register
-  (is-a freg)
+  (is-a freg
+        has-title)
   (slot title
         (type SYMBOL)
+        (source composite)
         (access initialize-only)
         (storage local)
         (visibility public)
@@ -119,8 +123,9 @@
                     (str-cat ?self:title))
 
 (defclass MAIN::label
-  (is-a USER)
+  (is-a has-title)
   (slot title
+        (source composite)
         (type SYMBOL
               INTEGER)
         (storage local)
@@ -139,10 +144,9 @@
              (make-instance of label
                             (title ?title)))
 (defclass MAIN::operand-list
-  (is-a USER)
+  (is-a has-contents)
   (multislot contents
-             (storage local)
-             (visibility public)
+             (source composite)
              (default ?NONE))
   (message-handler to-string primary))
 (defmessage-handler MAIN::operand-list to-string primary

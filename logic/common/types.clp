@@ -31,6 +31,27 @@
         (visibility public)
         (default-dynamic FALSE)))
 
+(defclass MAIN::has-title
+  (is-a USER)
+  (slot title
+        (type SYMBOL)
+        (storage local)
+        (visibility public)
+        (default ?NONE)))
+
+(defclass MAIN::has-description
+  (is-a USER)
+  (slot description
+        (type LEXEME)
+        (storage local)
+        (visibility public)))
+
+(defclass MAIN::has-contents
+  (is-a USER)
+  (multislot contents
+             (storage local)
+             (visibility public)))
+
 (deftemplate MAIN::stage
              (slot current
                    (type SYMBOL)
