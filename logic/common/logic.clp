@@ -21,19 +21,11 @@
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(defclass MAIN::has-parent
-  (is-a USER)
-  (slot parent
-        (type INSTANCE
-              SYMBOL)
-        (allowed-symbols FALSE)
-        (storage local)
-        (visibility public)
-        (default-dynamic FALSE)))
+(defrule MAIN::next-stage
+         (declare (salience -10000))
+         ?f <- (stage (rest ?next $?rest))
+         =>
+         (modify ?f
+                 (current ?next)
+                 (rest ?rest)))
 
-(deftemplate MAIN::stage
-             (slot current
-                   (type SYMBOL)
-                   (default ?NONE))
-             (multislot rest
-                        (type SYMBOL)))
