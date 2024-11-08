@@ -20,4 +20,32 @@
 ; ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+; code to define all of the different aspects of parsing source files
+;(defrule parser:generate-files::display-information
+;         =>
+;         (printout stdout 
+;                   (get-current-module) 
+;                   crlf))
+;
+;(defrule parser:process-file::display-information
+;         =>
+;         (printout stdout 
+;                   (get-current-module) 
+;                   crlf))
+;
+;(defrule parser:sanity-check::display-information
+;         =>
+;         (printout stdout 
+;                   (get-current-module) 
+;                   crlf))
+;(defrule parser:hoisting::display-information
+;         =>
+;         (printout stdout 
+;                   (get-current-module) 
+;                   crlf))
+;
+;(defrule parser:identify-structures::display-information
+;         =>
+;         (printout stdout 
+;                   (get-current-module) 
+;                   crlf))

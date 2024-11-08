@@ -35,3 +35,4 @@
              )
 
 (include logic/common/logic.clp)
+(include logic/parser/logic.clp)

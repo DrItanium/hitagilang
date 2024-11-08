@@ -82,9 +82,14 @@
              (visibility public))
   (message-handler init after))
 
-(deffacts parser::parsing-stages
-          (stage (current generate-files)
-                 (rest process-file
-                       sanity-check
-                       hoisting
-                       identify-structures)))
+(deffacts MAIN::parser-focus-files
+          (annotation (kind focus-on-stage)
+                      (target parse-files)
+                      (reversible FALSE)
+                      (args parser:generate-files
+                            parser:process-file
+                            parser:sanity-check
+                            parser:hoisting
+                            parser:identify-structures)))
+
+
