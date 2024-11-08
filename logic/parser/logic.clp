@@ -50,32 +50,104 @@
          (modify-instance ?f
                           (current-token)
                           (state PARSED)))
-; @todo continue here
-;(defrule parser:generate-files::display-information
-;         =>
-;         (printout stdout 
-;                   (get-current-module) 
-;                   crlf))
-;
-;(defrule parser:process-file::display-information
-;         =>
-;         (printout stdout 
-;                   (get-current-module) 
-;                   crlf))
-;
-;(defrule parser:sanity-check::display-information
-;         =>
-;         (printout stdout 
-;                   (get-current-module) 
-;                   crlf))
-;(defrule parser:hoisting::display-information
-;         =>
-;         (printout stdout 
-;                   (get-current-module) 
-;                   crlf))
-;
-;(defrule parser:identify-structures::display-information
-;         =>
-;         (printout stdout 
-;                   (get-current-module) 
-;                   crlf))
+(defrule parser:process-file::make-new-list
+         ?f <- (object (is-a parser)
+                       (current-token LEFT_PARENTHESIS ?)
+                       (state PARSING)
+                       (valid TRUE)
+                       (id ?id)
+                       (current-element ?target))
+         ?k <- (object (is-a list)
+                       (name ?target)
+                       (contents $?prior))
+         =>
+         (bind ?ncurr
+               (make-instance of list
+                              (parent ?target)))
+         (modify-instance ?f
+                          (current-token)
+                          (current-element ?ncurr))
+         (modify-instance ?k
+                          (contents ?prior
+                                    ?ncurr)))
+(defrule parser:process-file::leave-current-element:valid
+         ?f <- (object (is-a parser)
+                       (current-token RIGHT_PARENTHESIS ?)
+                       (state PARSING)
+                       (valid TRUE)
+                       (id ?id)
+                       (current-element ?target))
+         (object (is-a list)
+                 (name ?target)
+                 (parent ?parent&~FALSE))
+         =>
+         (modify-instance ?f
+                          (current-token)
+                          (current-element ?parent)))
+
+
+(defrule parser:process-file::leave-current-element:invalid-noparent
+         ?f <- (object (is-a parser)
+                       (current-token RIGHT_PARENTHESIS ?)
+                       (state PARSING)
+                       (valid TRUE)
+                       (id ?id)
+                       (path ?path)
+                       (current-element ?target)
+                       (name ?name))
+         (object (is-a list)
+                 (name ?target)
+                 (parent FALSE))
+         =>
+         (printout stderr
+                   "ERROR: mismatched parens, found a right paren without a matching left paren" crlf
+                   "Target file: " ?path crlf
+                   "Target parser: " ?name crlf)
+         (halt))
+
+(defrule parser:process-file::make-atomic-value
+         ?f <- (object (is-a parser)
+                       (current-token ?kind&~LEFT_PARENTHESIS&~RIGHT_PARENTHESIS&~STOP ?value)
+                       (state PARSING)
+                       (valid TRUE)
+                       (id ?id)
+                       (current-element ?target))
+         ?k <- (object (is-a list)
+                       (name ?target)
+                       (contents $?prior))
+         =>
+         (modify-instance ?f
+                          (current-token))
+         (modify-instance ?k
+                          (contents ?prior
+                                    (make-instance of atom
+                                                   (parent ?target)
+                                                   (kind ?kind)
+                                                   (value ?value)))))
+(defrule parser:sanity-check::found-lparen-mismatch-at-end
+         ?f <- (object (is-a parser)
+                       (state PARSED)
+                       (valid TRUE)
+                       (path ?path)
+                       (top-element ?top)
+                       (current-element ?v&~?top)
+                       (name ?name))
+         =>
+         (printout stderr
+                   "ERROR: mismatched parens, found a left paren without a matching right paren after finishing parsing" crlf
+                   "Target file: " ?path crlf
+                   "Target parser: " ?name crlf
+                   "Mismatched container: " ?v crlf)
+         (halt))
+(defrule parser:hoisting::raise-symbols-out-of-atoms
+         ?f <- (object (is-a list)
+                       (parent ~FALSE)
+                       (contents $?a ?sym-ref $?b))
+         ?k <- (object (is-a atom)
+                       (name ?sym-ref)
+                       (kind SYMBOL)
+                       (value ?sym))
+         =>
+         (unmake-instance ?k)
+         (modify-instance ?f
+                          (contents ?a ?sym ?b)))
