@@ -25,6 +25,7 @@
            (export ?ALL))
 (include logic/common/types.clp)
 (include logic/assembler/types.clp)
+(include logic/boot-support/types.clp)
 
 (deffunction MAIN::begin
              ()
