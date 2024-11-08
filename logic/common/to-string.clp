@@ -21,10 +21,21 @@
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(defmodule MAIN
-           (export ?ALL))
-(include logic/common/utils.clp)
-(include logic/common/to-string.clp)
-(deffunction MAIN::begin
-             ()
-             )
+(defmessage-handler STRING to-string primary
+                    ()
+                    ?self)
+(defmessage-handler NUMBER to-string primary
+                    ()
+                    (str-cat ?self))
+(defmessage-handler SYMBOL to-string primary
+                    ()
+                    (str-cat ?self))
+(defmessage-handler MULTIFIELD to-string primary
+                    ()
+                    (bind ?contents 
+                          (create$))
+                    (progn$ (?a ?self)
+                            (bind ?contents
+                                  ?contents
+                                  (send ?a to-string)))
+                    ?contents)

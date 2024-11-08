@@ -21,15 +21,6 @@
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ; Generic routines for generating i960 style assembly instructions in gnu syntax
-(defmessage-handler STRING to-string primary
-                    ()
-                    ?self)
-(defmessage-handler NUMBER to-string primary
-                    ()
-                    (str-cat ?self))
-(defmessage-handler SYMBOL to-string primary
-                    ()
-                    (str-cat ?self))
 (defclass MAIN::reg/lit
   (is-a USER))
 (defclass MAIN::freg/flit
@@ -354,15 +345,6 @@
 (defmethod MAIN::mkblock
   ($?contents)
   (mkblock ?contents))
-(defmessage-handler MULTIFIELD to-string primary
-                    ()
-                    (bind ?contents 
-                          (create$))
-                    (progn$ (?a ?self)
-                            (bind ?contents
-                                  ?contents
-                                  (send ?a to-string)))
-                    ?contents)
 
 ;synthetic instructions
 ; make this last to be sure
