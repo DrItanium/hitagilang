@@ -21,8 +21,14 @@
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ; code to define all of the different aspects of parsing source files
-(defrule parser:generate-files::generate-file-container
+(defrule MAIN::convert-parser-fact-to-template
+         (declare (salience 10000))
          ?f <- (parse file ?path)
+         =>
+         (retract ?f)
+         (assert (parser-open-request (path ?path))))
+(defrule parser:generate-files::generate-file-container
+         ?f <- (parser-open-request (path ?path))
          =>
          (retract ?f)
          (make-instance of parser

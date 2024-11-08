@@ -50,7 +50,13 @@
   (is-a USER)
   (multislot contents
              (storage local)
-             (visibility public)))
+             (visibility public))
+  (message-handler to-string primary))
+(defmessage-handler MAIN::has-contents to-string primary
+                    ()
+                    (send ?self:contents 
+                          to-string))
+
 
 (deftemplate MAIN::stage
              (slot current
@@ -82,13 +88,10 @@
                                     ?item)))
              ?results)
 
-(defmessage-handler STRING to-string primary
+(defmessage-handler LEXEME to-string primary
                     ()
                     ?self)
 (defmessage-handler NUMBER to-string primary
-                    ()
-                    (str-cat ?self))
-(defmessage-handler SYMBOL to-string primary
                     ()
                     (str-cat ?self))
 (defmessage-handler MULTIFIELD to-string primary

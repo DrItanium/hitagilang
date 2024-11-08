@@ -33,6 +33,9 @@
 (deffunction MAIN::begin
              ()
              )
-
+(deffacts MAIN::stage-parse-facts
+          (stage (current parse-files)
+                 (rest))
+          )
 (include logic/common/logic.clp)
 (include logic/parser/logic.clp)

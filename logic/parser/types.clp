@@ -21,6 +21,7 @@
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (include logic/common/types.clp)
+; reconstruction is hard
 (defclass MAIN::atom
   (is-a has-parent)
   (slot kind
@@ -31,7 +32,12 @@
   (slot value
         (storage local)
         (visibility public)
-        (default ?NONE)))
+        (default ?NONE))
+  (message-handler to-string primary))
+(defmessage-handler MAIN::atom to-string primary
+                    ()
+                    (send ?self:value
+                          to-string))
 (defclass MAIN::list
   (is-a has-parent
         has-contents))
@@ -81,7 +87,8 @@
   (multislot current-token
              (storage local)
              (visibility public))
-  (message-handler init after))
+  (message-handler init after)
+  (message-handler to-string primary))
 
 (defmessage-handler MAIN::parser init after
                     ()
