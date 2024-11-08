@@ -29,3 +29,57 @@
                  (current ?next)
                  (rest ?rest)))
 
+(defrule MAIN::merge-redundant-annotations
+         ?a <- (annotation (target ?target)
+                           (kind ?k)
+                           (args $?args0))
+         ?b <- (annotation (target ?target)
+                           (kind ?k)
+                           (args $?args1))
+         (test (neq ?a ?b))
+         =>
+         (modify ?a
+                 (args ?args0
+                       ?args1))
+         (retract ?b))
+
+(defrule MAIN::define-reverse-annotation
+         "In the cases where args is non empty then we can do a reverse back channel easily"
+         ?f <- (annotation (target ?target)
+                           (kind ?kind)
+                           (reversible TRUE)
+                           (args $?args))
+         =>
+         (progn$ (?a ?args)
+                 (duplicate ?f
+                            (target ?a)
+                            (reversible FALSE)
+                            (kind (sym-cat reverse-
+                                           ?kind))
+                            (args ?target))))
+
+(defrule MAIN::settify-annotation-args
+         "If the annotation isn't order dependent then it means you want it to only contain unique entries"
+         ?f <- (annotation (treat-as-set TRUE)
+                           (args $?a ?b $?c ?b $?d))
+         =>
+         (modify ?f
+                 (args ?a ?b ?c ?d)))
+
+(defrule MAIN::fulfill-clone-request
+         (annotation-close-request (target-kind ?kind)
+                                   (new-name ?new-kind))
+         ?f <- (annotation (kind ?kind))
+         =>
+         (duplicate ?f
+                    (kind ?new-kind)))
+
+(defrule MAIN::go-to-focus
+         "Use the annotation system to cause modules to be focused on during a given execution stage"
+         (stage (current ?stage))
+         (annotation (target ?stage)
+                     (kind focus-on-stage)
+                     (args $?modules))
+         =>
+         (focus (expand$ ?modules)))
+

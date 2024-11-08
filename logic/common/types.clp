@@ -100,3 +100,30 @@
                                   ?contents
                                   (send ?a to-string)))
                     ?contents)
+
+(deftemplate MAIN::annotation
+             "A template fact one attaches to instances indirectly to describe more information about them"
+             (slot target
+                   (default ?NONE))
+             (slot kind
+                   (type SYMBOL)
+                   (default ?NONE))
+             (slot reversible
+                   (type SYMBOL)
+                   (allowed-symbols TRUE
+                                    FALSE))
+             (slot treat-as-set
+                   (type SYMBOL)
+                   (allowed-symbols TRUE
+                                    FALSE))
+             (multislot args
+                        (default ?NONE)))
+
+(deftemplate MAIN::annotation-close-request
+             "When generating reverse kind annotations, we can hook into doing name replacements"
+             (slot target-kind
+                   (type SYMBOL)
+                   (default ?NONE))
+             (slot new-name
+                   (type SYMBOL)
+                   (default ?NONE)))
