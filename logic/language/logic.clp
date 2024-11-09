@@ -113,3 +113,19 @@
                         (condition ?condition)
                         (then $?then)
                         (else)))
+
+(defrule parser:identify-structures::identify-bind-expression
+         ?obj <- (object (is-a expression)
+                         (name ?name)
+                         (parent ?p)
+                         (title bind)
+                         (contents ?variable
+                                   $?contents))
+         =>
+         (unmake-instance ?obj)
+         (make-instance ?name of bind-expression
+                        (parent ?p)
+                        (title ?variable)
+                        (contents ?contents)))
+
+

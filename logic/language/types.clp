@@ -106,3 +106,15 @@
         (visibility public)
         (default ?NONE)))
 
+(defclass MAIN::block-expression
+  "Like a list or expression but _just_ a list of subexpressions"
+  (is-a has-parent
+        has-contents))
+  
+(defclass MAIN::bind-expression
+  (is-a expression)
+  (slot title
+        (source composite)
+        (type INSTANCE)
+        (default ?NONE)))
+

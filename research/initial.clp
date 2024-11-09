@@ -44,3 +44,11 @@
                (?b LONG-ORDINAL))
          (+ ?a 
             ?b))
+
+(defleaf address-plus-offset
+         (args (?address ADDRESS)
+               (?b ORDINAL))
+         (bind ?base-address 
+               ?a)
+         (+ ?base-address
+            ?b))
