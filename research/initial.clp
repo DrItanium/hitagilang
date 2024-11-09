@@ -22,17 +22,17 @@
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (defleaf foo
-      ((?a ORDINAL)
-       (?b ORDINAL))
-      (+ ?a ?b))
+         (args (?a ORDINAL)
+               (?b ORDINAL))
+         (+ ?a ?b))
 (defleaf foo
-      ((?a INTEGER)
-       (?b INTEGER))
-      (+ ?a ?b))
+         (args (?a INTEGER)
+               (?b INTEGER))
+         (+ ?a ?b))
 
 (defleaf foo
-         ((?a INTEGER)
-          (?b ORDINAL))
+         (args (?a INTEGER)
+               (?b ORDINAL))
          (if (< ?a 0) then
            (- ?b ?a)
            else
@@ -40,7 +40,7 @@
               ?b)))
 
 (defleaf foo
-         ((?a LONG-ORDINAL)
-          (?b LONG-ORDINAL))
+         (args (?a LONG-ORDINAL)
+               (?b LONG-ORDINAL))
          (+ ?a 
             ?b))

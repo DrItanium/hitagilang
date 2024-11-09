@@ -23,3 +23,65 @@
 
 (include logic/common/types.clp)
 (include logic/parser/types.clp)
+
+(defclass MAIN::individual-argument
+  (is-a has-parent
+        has-contents
+        has-title))
+(defclass MAIN::argument-block
+  (is-a has-parent
+        has-contents))
+(defclass MAIN::execution-block-declaration
+  (is-a has-parent
+        has-contents
+        has-title)
+  ;(slot mangled-title
+  ;      (type SYMBOL)
+  ;      (storage local)
+  ;      (visibility public)
+  ;      (default-dynamic FALSE))
+  (slot kind
+        (type SYMBOL)
+        (storage shared)
+        (visibility public)
+        (access read-only)
+        (default FALSE))
+(defclass MAIN::function-declaration
+  (is-a execution-block-declaration)
+  (slot arguments
+        (type INSTANCE)
+        (storage local)
+        (visibility public)
+        (default ?NONE))))
+(defclass MAIN::leaf-function-declaration
+  (is-a function-declaration)
+  (slot kind
+        (source composite)
+        (default leaf)))
+
+(defclass MAIN::window-function-declaration
+  (is-a function-declaration)
+  (slot kind
+        (source composite)
+        (default window)))
+
+(defclass MAIN::site-declaration
+  (is-a function-declaration)
+  (slot kind
+        (source composite)
+        (default site)))
+(deftemplate MAIN::execution-block-translation
+             (slot keyword
+                   (type SYMBOL)
+                   (default ?NONE))
+             (slot class-kind
+                   (type SYMBOL)
+                   (default ?NONE)))
+(deffacts MAIN::important-declaration-setups
+          (execution-block-translation (keyword defleaf)
+                                       (class-kind leaf-function-declaration))
+          (execution-block-translation (keyword defwindow)
+                                       (class-kind windows-function-declaration))
+          (execution-block-translation (keywords defsite)
+                                       (class-kind site-declaration)))
+
