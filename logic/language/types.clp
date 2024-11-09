@@ -45,14 +45,14 @@
         (storage shared)
         (visibility public)
         (access read-only)
-        (default FALSE))
+        (default FALSE)))
 (defclass MAIN::function-declaration
   (is-a execution-block-declaration)
   (slot arguments
         (type INSTANCE)
         (storage local)
         (visibility public)
-        (default ?NONE))))
+        (default ?NONE)))
 (defclass MAIN::leaf-function-declaration
   (is-a function-declaration)
   (slot kind
@@ -82,6 +82,6 @@
                                        (class-kind leaf-function-declaration))
           (execution-block-translation (keyword defwindow)
                                        (class-kind windows-function-declaration))
-          (execution-block-translation (keywords defsite)
+          (execution-block-translation (keyword defsite)
                                        (class-kind site-declaration)))
 

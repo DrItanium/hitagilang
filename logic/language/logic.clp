@@ -49,7 +49,7 @@
 
 (defrule parser:identify-structures::construct-function-declaration-generic
          (execution-block-translation (keyword ?keyword)
-                                      (construction-type ?type))
+                                      (class-kind ?type))
          ?obj <- (object (is-a list)
                          (name ?name)
                          (parent ?p)

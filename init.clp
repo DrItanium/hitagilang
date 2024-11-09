@@ -24,10 +24,12 @@
 (defmodule MAIN
            (export ?ALL))
 (include logic/parser/module.clp)
+(include logic/language/module.clp)
 (include logic/common/types.clp)
 (include logic/assembler/types.clp)
 (include logic/boot-support/types.clp)
 (include logic/parser/types.clp)
+(include logic/language/types.clp)
 
 
 (deffunction MAIN::begin
@@ -39,3 +41,4 @@
           )
 (include logic/common/logic.clp)
 (include logic/parser/logic.clp)
+(include logic/language/logic.clp)
