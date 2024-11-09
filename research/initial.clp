@@ -52,3 +52,12 @@
                ?a)
          (+ ?base-address
             ?b))
+
+(defwindow address-plus-offset
+           (args (?address ADDRESS)
+                 (?b ORDINAL))
+           (bind ?base-address 
+                 (cast ?a ORDINAL))
+           (call foo 
+                 ?base-address
+                 ?b))

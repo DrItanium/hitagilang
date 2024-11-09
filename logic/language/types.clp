@@ -81,7 +81,7 @@
           (execution-block-translation (keyword defleaf)
                                        (class-kind leaf-function-declaration))
           (execution-block-translation (keyword defwindow)
-                                       (class-kind windows-function-declaration))
+                                       (class-kind window-function-declaration))
           (execution-block-translation (keyword defsite)
                                        (class-kind site-declaration)))
 
@@ -118,3 +118,10 @@
         (type INSTANCE)
         (default ?NONE)))
 
+(defclass MAIN::call-expression
+  (is-a expression)
+  (slot title
+        (source composite)
+        (type INSTANCE
+              SYMBOL)
+        (default ?NONE)))

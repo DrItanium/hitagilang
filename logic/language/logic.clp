@@ -116,9 +116,9 @@
 
 (defrule parser:identify-structures::identify-bind-expression
          ?obj <- (object (is-a expression)
+                         (title bind)
                          (name ?name)
                          (parent ?p)
-                         (title bind)
                          (contents ?variable
                                    $?contents))
          =>
@@ -128,4 +128,18 @@
                         (title ?variable)
                         (contents ?contents)))
 
+
+(defrule parser:identify-structures::identify-call-expression
+         ?obj <- (object (is-a expression)
+                         (title call)
+                         (name ?name)
+                         (parent ?p)
+                         (contents ?function
+                                   $?args))
+         =>
+         (unmake-instance ?obj)
+         (make-instance ?name of call-expression
+                        (parent ?p)
+                        (title ?function)
+                        (contents ?args)))
 
