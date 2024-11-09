@@ -80,4 +80,36 @@
                         (arguments ?args)
                         (contents ?rest)))
 
-
+(defrule parser:identify-structures::identify-if-then-else-statement
+         "An if statement with then and else components"
+         ?obj <- (object (is-a expression)
+                         (name ?name)
+                         (parent ?p)
+                         (title if)
+                         (contents ?condition 
+                                   then 
+                                   $?then
+                                   else 
+                                   $?else))
+         =>
+         (unmake-instance ?obj)
+         (make-instance ?name of if-expression
+                        (condition ?condition)
+                        (then $?then)
+                        (else $?else)))
+(defrule parser:identify-structures::identify-if-then-statement
+         "An if statement without an else found in the list of then expressions"
+         ?obj <- (object (is-a expression)
+                         (name ?name)
+                         (parent ?p)
+                         (title if)
+                         (contents ?condition 
+                                   then 
+                                   $?then&:(not (member$ else 
+                                                         ?then))))
+         =>
+         (unmake-instance ?obj)
+         (make-instance ?name of if-expression
+                        (condition ?condition)
+                        (then $?then)
+                        (else)))

@@ -89,3 +89,20 @@
   (is-a has-parent
         has-contents
         has-title))
+
+(defclass MAIN::if-expression
+  (is-a has-parent)
+  (slot condition 
+        (type INSTANCE)
+        (storage local)
+        (visibility public)
+        (default ?NONE))
+  (multislot then
+        (storage local)
+        (visibility public)
+        (default ?NONE))
+  (multislot else 
+        (storage local)
+        (visibility public)
+        (default ?NONE)))
+
