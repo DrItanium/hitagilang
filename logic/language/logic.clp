@@ -21,12 +21,27 @@
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-(defrule parser:identify-structures::identify-argument-blocks
+(defrule parser:identify-structures::construct-expressions
+         "If the first element of a list is a symbol then it is most likely an expression of some kind, even if it isn't then it is at least safe to do the conversion"
          ?obj <- (object (is-a list)
                          (name ?name)
                          (parent ?p)
-                         (contents args $?rest))
+                         (contents ?first&:(symbolp ?first)
+                                   $?rest))
+         =>
+         (unmake-instance ?obj)
+         (make-instance ?name of expression
+                        (parent ?p)
+                        (title ?first)
+                        (contents ?rest)))
+
+
+(defrule parser:identify-structures::identify-argument-blocks
+         ?obj <- (object (is-a expression)
+                         (name ?name)
+                         (parent ?p)
+                         (title args)
+                         (contents $?rest))
          =>
          (unmake-instance ?obj)
          (make-instance ?name of argument-block
@@ -50,10 +65,11 @@
 (defrule parser:identify-structures::construct-function-declaration-generic
          (execution-block-translation (keyword ?keyword)
                                       (class-kind ?type))
-         ?obj <- (object (is-a list)
+         ?obj <- (object (is-a expression)
                          (name ?name)
                          (parent ?p)
-                         (contents ?keyword ?title ?args $?rest))
+                         (title ?keyword)
+                         (contents ?title ?args $?rest))
          (object (is-a argument-block)
                  (name ?args))
          =>

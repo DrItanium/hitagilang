@@ -85,3 +85,7 @@
           (execution-block-translation (keyword defsite)
                                        (class-kind site-declaration)))
 
+(defclass MAIN::expression
+  (is-a has-parent
+        has-contents
+        has-title))
