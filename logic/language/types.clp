@@ -31,9 +31,30 @@
   (is-a has-parent
         has-contents
         has-title))
+(defclass MAIN::returns-expression
+  (is-a has-parent
+        has-title
+        has-contents)
+  (slot title
+        (source composite)
+        (storage shared)
+        (default returns)))
+(defclass MAIN::body-expression
+  (is-a has-parent
+        has-contents))
+
+(defclass MAIN::has-body
+  (is-a USER)
+  (slot body
+        (type INSTANCE)
+        (allowed-classes body-expression)
+        (storage local)
+        (visibility public)
+        (default ?NONE)))
 (defclass MAIN::execution-block-declaration
   (is-a has-parent
-        has-title)
+        has-title
+        has-body)
   (slot kind
         (type SYMBOL)
         (storage shared)
@@ -42,7 +63,7 @@
         (default FALSE))
   (slot body
         (type INSTANCE)
-        (storage shared)
+        (storage local)
         (visibility public)
         (default ?NONE)))
 (defclass MAIN::function-declaration
@@ -79,14 +100,21 @@
   (is-a has-parent
         has-contents
         has-title))
+(defclass MAIN::conditional-expression
+  (is-a has-parent
+        has-contents))
 
-(defclass MAIN::if-expression
-  (is-a has-parent)
-  (slot condition 
+(defclass MAIN::has-condition
+  (is-a USER)
+  (slot condition
         (type INSTANCE)
+        (allowed-classes conditional-expression)
         (storage local)
         (visibility public)
-        (default ?NONE))
+        (default ?NONE)))
+(defclass MAIN::if-expression
+  (is-a has-parent
+        has-condition)
   (slot then
         (storage local)
         (visibility public)
@@ -144,17 +172,6 @@
              (visibility public)
              (default ?NONE)))
 
-(defclass MAIN::returns-expression
-  (is-a has-parent
-        has-title
-        has-contents)
-  (slot title
-        (source composite)
-        (storage shared)
-        (default returns)))
-(defclass MAIN::body-expression
-  (is-a has-parent
-        has-contents))
 
 (deftemplate MAIN::root-expression-match
              (slot keyword
@@ -262,3 +279,23 @@
                                  (keyword store))
           )
 
+(defclass MAIN::while-expression
+  (is-a has-parent
+        has-body
+        has-condition))
+
+
+(deffacts MAIN::container-expressions-decls
+          (annotation (kind expression-conversion-decl)
+                      (target returns)
+                      (reversible FALSE)
+                      (args returns-expression))
+          (annotation (kind expression-conversion-decl)
+                      (target body)
+                      (reversible FALSE)
+                      (args body-expression))
+          (annotation (kind expression-conversion-decl)
+                      (target condition)
+                      (reversible FALSE)
+                      (args conditional-expression))
+          )

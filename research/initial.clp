@@ -36,7 +36,7 @@
          (args (?a INTEGER)
                (?b ORDINAL))
          (returns ORDINAL)
-         (body (if (< ?a 0) 
+         (body (if (condition (< ?a 0))
                  (body (- ?b 
                           ?a))
                  (body (+ (cast ?a 

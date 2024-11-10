@@ -21,28 +21,21 @@
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(defrule parser:identify-structures::make-returns-expression
+(defrule parser:identify-structures::expression->specific-type
+         (annotation (kind expression-conversion-decl)
+                     (target ?title)
+                     (args ?type))
          ?obj <- (object (is-a expression)
                          (name ?name)
                          (parent ?p)
-                         (title returns)
+                         (title ?title)
                          (contents $?conditions))
          =>
          (unmake-instance ?obj)
-         (make-instance ?name of returns-expression
+         (make-instance ?name of ?type
                         (parent ?p)
                         (contents $?conditions)))
-(defrule parser:identify-structures::make-body-expression
-         ?obj <- (object (is-a expression)
-                         (name ?name)
-                         (parent ?p)
-                         (title body)
-                         (contents $?contents))
-         =>
-         (unmake-instance ?obj)
-         (make-instance ?name of body-expression
-                        (parent ?p)
-                        (contents ?contents)))
+
 (defrule parser:identify-structures::construct-expressions
          "If the first element of a list is a symbol then it is most likely an expression of some kind, even if it isn't then it is at least safe to do the conversion"
          ?obj <- (object (is-a list)
@@ -120,6 +113,9 @@
                          (contents ?condition 
                                    ?then
                                    ?else))
+         (object (is-a conditional-expression)
+                 (name ?condition))
+
          (object (is-a body-expression)
                  (name ?then))
          (object (is-a body-expression)
@@ -254,3 +250,4 @@
                                                                          ?rest)))))
 
 
+;(defrule parser:identify-structures::identify-while-expression
