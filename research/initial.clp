@@ -36,11 +36,12 @@
          (args (?a INTEGER)
                (?b ORDINAL))
          (returns ORDINAL)
-         (body (if (< ?a 0) then
-                 (- ?b ?a)
-                 else
-                 (+ (cast ?a ORDINAL)
-                    ?b))))
+         (body (if (< ?a 0) 
+                 (body (- ?b 
+                          ?a))
+                 (body (+ (cast ?a 
+                                ORDINAL)
+                          ?b)))))
 
 (defleaf foo
          (args (?a LONG-ORDINAL)
@@ -57,6 +58,12 @@
                      ?a)
                (+ ?base-address
                   ?b)))
+
+(defleaf goo
+         (args (?a BOOLEAN))
+         (returns BOOLEAN)
+         (body (not ?a)))
+
 
 (defwindow address-plus-offset
            (args (?address ADDRESS)

@@ -118,16 +118,18 @@
                          (parent ?p)
                          (title if)
                          (contents ?condition 
-                                   then 
-                                   $?then
-                                   else 
-                                   $?else))
+                                   ?then
+                                   ?else))
+         (object (is-a body-expression)
+                 (name ?then))
+         (object (is-a body-expression)
+                 (name ?else))
          =>
          (unmake-instance ?obj)
          (make-instance ?name of if-expression
                         (condition ?condition)
-                        (then $?then)
-                        (else $?else)))
+                        (then ?then)
+                        (else ?else)))
 (defrule parser:identify-structures::identify-if-then-statement
          "An if statement without an else found in the list of then expressions"
          ?obj <- (object (is-a expression)
@@ -135,15 +137,16 @@
                          (parent ?p)
                          (title if)
                          (contents ?condition 
-                                   then 
-                                   $?then&:(not (member$ else 
-                                                         ?then))))
+                                   ?then))
+         (object (is-a body-expression)
+                 (name ?then))
+
          =>
          (unmake-instance ?obj)
          (make-instance ?name of if-expression
                         (condition ?condition)
-                        (then $?then)
-                        (else)))
+                        (then ?then)
+                        (else FALSE)))
 
 (defrule parser:identify-structures::identify-bind-expression
          ?obj <- (object (is-a expression)
@@ -197,8 +200,9 @@
                         (body ?body)))
 
 (defrule parser:identify-structures::identify-unary-expressions
-         (root-expression-match (class-kind unary-expression)
-                                (keyword ?keyword))
+         (annotation (kind unary-expression-match)
+                     (target ?keyword)
+                     (args ?class-name))
          ?obj <- (object (is-a expression)
                          (name ?expr)
                          (parent ?p)
@@ -206,7 +210,7 @@
                          (contents ?value))
          =>
          (unmake-instance ?obj)
-         (make-instance ?expr of unary-expression
+         (make-instance ?expr of ?class-name 
                         (parent ?p)
                         (title ?keyword)
                         (argument ?value)))

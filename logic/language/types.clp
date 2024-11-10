@@ -87,14 +87,14 @@
         (storage local)
         (visibility public)
         (default ?NONE))
-  (multislot then
-             (storage local)
-             (visibility public)
-             (default ?NONE))
-  (multislot else 
-             (storage local)
-             (visibility public)
-             (default ?NONE)))
+  (slot then
+        (storage local)
+        (visibility public)
+        (default ?NONE))
+  (slot else 
+        (storage local)
+        (visibility public)
+        (default ?NONE)))
 
 (defclass MAIN::block-expression
   "Like a list or expression but _just_ a list of subexpressions"
@@ -185,12 +185,19 @@
                       (reversible FALSE)
                       (target defsite)
                       (args site-declaration)))
-
+(defclass MAIN::not-expression
+  (is-a unary-expression))
+(defclass MAIN::load-expression
+  (is-a unary-expression))
 (deffacts MAIN::unary-expressions-to-match
-          (root-expression-match (class-kind unary-expression)
-                                 (keyword not))
-          (root-expression-match (class-kind unary-expression)
-                                 (keyword load))
+          (annotation (kind unary-expression-match)
+                      (reversible FALSE)
+                      (target not)
+                      (args not-expression))
+          (annotation (kind unary-expression-match)
+                      (reversible FALSE)
+                      (target load)
+                      (args load-expression))
           )
 (deffacts MAIN::binary-expressions-to-match
           (root-expression-match (class-kind binary-expression)
