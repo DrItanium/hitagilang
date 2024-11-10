@@ -142,4 +142,19 @@
                         (parent ?p)
                         (title ?function)
                         (contents ?args)))
+(defrule parser:identify-structures:identify-lambda-expression
+         ?obj <- (object (is-a expression)
+                         (title lambda)
+                         (name ?name)
+                         (parent ?p)
+                         (contents ?args 
+                                   $?body))
+         (object (is-a argument-block)
+                 (name ?args))
 
+         =>
+         (unmake-instance ?obj)
+         (make-instance ?name of lambda-expression
+                        (parent ?p)
+                        (arguments ?args)
+                        (contents ?body)))

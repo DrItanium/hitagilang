@@ -58,6 +58,9 @@
                  (?b ORDINAL))
            (bind ?base-address 
                  (cast ?a ORDINAL))
-           (call foo 
+           (call (lambda (args (?first ORDINAL)
+                               (?second ORDINAL))
+                   (+ ?first
+                      ?second))
                  ?base-address
                  ?b))

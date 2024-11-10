@@ -24,22 +24,17 @@
 (include logic/common/types.clp)
 (include logic/parser/types.clp)
 
+(defclass MAIN::argument-block
+  (is-a has-parent
+        has-contents))
 (defclass MAIN::individual-argument
   (is-a has-parent
         has-contents
         has-title))
-(defclass MAIN::argument-block
-  (is-a has-parent
-        has-contents))
 (defclass MAIN::execution-block-declaration
   (is-a has-parent
         has-contents
         has-title)
-  ;(slot mangled-title
-  ;      (type SYMBOL)
-  ;      (storage local)
-  ;      (visibility public)
-  ;      (default-dynamic FALSE))
   (slot kind
         (type SYMBOL)
         (storage shared)
@@ -117,7 +112,7 @@
         (source composite)
         (type INSTANCE)
         (default ?NONE)))
-
+; in this language, everything must be explicitly prescribed one way or another for simplicity
 (defclass MAIN::call-expression
   (is-a expression)
   (slot title
@@ -125,3 +120,12 @@
         (type INSTANCE
               SYMBOL)
         (default ?NONE)))
+
+(defclass MAIN::lambda-expression
+  (is-a function-declaration)
+  (slot title
+        (source composite)
+        (default-dynamic (gensym*)))
+  (slot kind
+        (source composite)
+        (default lambda)))
