@@ -24,24 +24,25 @@
 (include logic/common/types.clp)
 (include logic/parser/types.clp)
 
-(defclass MAIN::argument-block
+(defclass MAIN::container-expression
   (is-a has-parent
         has-contents))
+(defclass MAIN::argument-block
+  (is-a container-expression))
 (defclass MAIN::individual-argument
-  (is-a has-parent
-        has-contents
+  (is-a container-expression
         has-title))
 (defclass MAIN::returns-expression
-  (is-a has-parent
-        has-title
-        has-contents)
+  (is-a container-expression 
+        has-title)
   (slot title
         (source composite)
         (storage shared)
         (default returns)))
 (defclass MAIN::body-expression
-  (is-a has-parent
-        has-contents))
+  (is-a container-expression))
+(defclass MAIN::index-expression
+  (is-a container-expression))
 
 (defclass MAIN::has-body
   (is-a USER)
@@ -51,10 +52,20 @@
         (storage local)
         (visibility public)
         (default ?NONE)))
-(defclass MAIN::execution-block-declaration
+(defclass MAIN::has-index
+  (is-a USER)
+  (slot index
+        (type INSTANCE)
+        (allowed-classes index-expression)
+        (storage local)
+        (visibility public)
+        (default ?NONE)))
+(defclass MAIN::generic-body-expression
   (is-a has-parent
-        has-title
-        has-body)
+        has-body))
+(defclass MAIN::execution-block-declaration
+  (is-a generic-body-expression
+        has-title)
   (slot kind
         (type SYMBOL)
         (storage shared)
@@ -97,12 +108,10 @@
         (default site)))
 
 (defclass MAIN::expression
-  (is-a has-parent
-        has-contents
+  (is-a container-expression
         has-title))
 (defclass MAIN::conditional-expression
-  (is-a has-parent
-        has-contents))
+  (is-a container-expression))
 
 (defclass MAIN::has-condition
   (is-a USER)
@@ -126,8 +135,7 @@
 
 (defclass MAIN::block-expression
   "Like a list or expression but _just_ a list of subexpressions"
-  (is-a has-parent
-        has-contents))
+  (is-a container-expression))
 
 (defclass MAIN::bind-expression
   (is-a expression)
@@ -279,10 +287,6 @@
                                  (keyword store))
           )
 
-(defclass MAIN::while-expression
-  (is-a has-parent
-        has-body
-        has-condition))
 
 
 (deffacts MAIN::container-expressions-decls
@@ -302,4 +306,31 @@
                       (target args)
                       (reversible FALSE)
                       (args argument-block))
+          (annotation (kind expression-conversion-decl)
+                      (target index)
+                      (reversible FALSE)
+                      (args index-expression))
+          )
+
+(defclass MAIN::conditional-body-expression
+  (is-a generic-body-expression
+        has-condition))
+(defclass MAIN::while-expression
+  (is-a conditional-body-expression))
+(defclass MAIN::switch-case-expression
+  (is-a conditional-body-expression))
+
+(defclass MAIN::switch-expression
+  (is-a generic-body-expression
+        has-index))
+
+(deffacts MAIN::conditional-body-declarations
+          (annotation (kind conditional-body-decl)
+                      (target case)
+                      (reversible FALSE)
+                      (args switch-case-expression))
+          (annotation (kind conditional-body-decl)
+                      (target while)
+                      (reversible FALSE)
+                      (args while-expression))
           )

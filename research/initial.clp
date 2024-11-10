@@ -110,3 +110,8 @@
               ?b
               ?c
               ?d))
+(defleaf zoo
+         (args (?a ORDINAL))
+         (while (condition (> ?a 1000))
+                (body (bind ?a 
+                            (+ ?a 1)))))

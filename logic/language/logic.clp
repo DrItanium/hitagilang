@@ -238,4 +238,24 @@
                                                                          ?rest)))))
 
 
-;(defrule parser:identify-structures::identify-while-expression
+(defrule parser:identify-structures::identify-conditional-body-expressions
+         (annotation (kind conditional-body-decl)
+                     (target ?keyword)
+                     (args ?type))
+         ?obj <- (object (is-a expression)
+                         (name ?name)
+                         (parent ?p)
+                         (title ?keyword)
+                         (contents ?condition
+                                   ?body))
+         (object (is-a conditional-expression)
+                 (name ?condition))
+         (object (is-a body-expression)
+                 (name ?body))
+         =>
+         (unmake-instance ?obj)
+         (make-instance ?name of ?type
+                        (parent ?p)
+                        (condition ?condition)
+                        (body ?body)))
+
