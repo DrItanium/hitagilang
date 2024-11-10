@@ -85,8 +85,9 @@
                         (contents $?conditions)))
 
 (defrule parser:identify-structures::construct-function-declaration-generic
-         (execution-block-translation (keyword ?keyword)
-                                      (class-kind ?type))
+         (annotation (kind execution-block-translation)
+                     (target ?keyword)
+                     (args ?type))
          ?obj <- (object (is-a expression)
                          (name ?name)
                          (parent ?p)

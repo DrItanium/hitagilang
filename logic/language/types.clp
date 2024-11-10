@@ -74,20 +74,6 @@
   (slot kind
         (source composite)
         (default site)))
-(deftemplate MAIN::execution-block-translation
-             (slot keyword
-                   (type SYMBOL)
-                   (default ?NONE))
-             (slot class-kind
-                   (type SYMBOL)
-                   (default ?NONE)))
-(deffacts MAIN::important-declaration-setups
-          (execution-block-translation (keyword defleaf)
-                                       (class-kind leaf-function-declaration))
-          (execution-block-translation (keyword defwindow)
-                                       (class-kind window-function-declaration))
-          (execution-block-translation (keyword defsite)
-                                       (class-kind site-declaration)))
 
 (defclass MAIN::expression
   (is-a has-parent
@@ -184,9 +170,21 @@
                    (default FALSE))
              (slot combine-using
                    (type SYMBOL)
-
                    (default FALSE))
              )
+(deffacts MAIN::important-declaration-setups
+          (annotation (kind execution-block-translation)
+                      (reversible FALSE)
+                      (target defleaf)
+                      (args leaf-function-declaration))
+          (annotation (kind execution-block-translation)
+                      (reversible FALSE)
+                      (target defwindow)
+                      (args window-function-declaration))
+          (annotation (kind execution-block-translation)
+                      (reversible FALSE)
+                      (target defsite)
+                      (args site-declaration)))
 
 (deffacts MAIN::unary-expressions-to-match
           (root-expression-match (class-kind unary-expression)
