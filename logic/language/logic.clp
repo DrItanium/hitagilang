@@ -158,3 +158,35 @@
                         (parent ?p)
                         (arguments ?args)
                         (contents ?body)))
+
+(defrule parser:identify-structures:identify-unary-expressions
+         (root-expression-match (class-kind unary-expression)
+                                (keyword ?keyword))
+         ?obj <- (object (is-a expression)
+                         (name ?expr)
+                         (parent ?p)
+                         (title ?keyword)
+                         (contents ?value))
+         =>
+         (unmake-instance ?obj)
+         (make-instance ?expr of unary-expression
+                        (parent ?p)
+                        (title ?keyword)
+                        (argument ?value)))
+
+(defrule parser:identify-structures:identify-binary-expressions
+         (root-expression-match (class-kind binary-expression)
+                                (keyword ?keyword))
+         ?obj <- (object (is-a expression)
+                         (name ?expr)
+                         (parent ?p)
+                         (title ?keyword)
+                         (contents ?left
+                                   ?right))
+         =>
+         (unmake-instance ?obj)
+         (make-instance ?expr of binary-expression
+                        (parent ?p)
+                        (title ?keyword)
+                        (left-argument ?left)
+                        (right-argument ?right)))

@@ -93,19 +93,19 @@
         (visibility public)
         (default ?NONE))
   (multislot then
-        (storage local)
-        (visibility public)
-        (default ?NONE))
+             (storage local)
+             (visibility public)
+             (default ?NONE))
   (multislot else 
-        (storage local)
-        (visibility public)
-        (default ?NONE)))
+             (storage local)
+             (visibility public)
+             (default ?NONE)))
 
 (defclass MAIN::block-expression
   "Like a list or expression but _just_ a list of subexpressions"
   (is-a has-parent
         has-contents))
-  
+
 (defclass MAIN::bind-expression
   (is-a expression)
   (slot title
@@ -129,3 +129,79 @@
   (slot kind
         (source composite)
         (default lambda)))
+
+(defclass MAIN::unary-expression
+  (is-a has-parent
+        has-title)
+  (slot argument
+        (storage local)
+        (visibility public)
+        (default ?NONE)))
+(defclass MAIN::binary-expression
+  (is-a has-parent
+        has-title)
+  (slot left-argument
+        (storage local)
+        (visibility public)
+        (default ?NONE))
+  (slot right-argument
+        (storage local)
+        (visibility public)
+        (default ?NONE)))
+
+(deftemplate MAIN::root-expression-match
+             (slot keyword
+                   (type SYMBOL)
+                   (default ?NONE))
+             (slot class-kind
+                   (type SYMBOL)
+                   (default ?NONE)))
+
+(deffacts MAIN::unary-expressions-to-match
+          (root-expression-match (class-kind unary-expression)
+                                 (keyword not))
+          (root-expression-match (class-kind unary-expression)
+                                 (keyword load))
+          )
+(deffacts MAIN::binary-expressions-to-match
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword +))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword -))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword *))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword /))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword eq))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword neq))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword and))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword or))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword xor))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword nand))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword nor))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword xnor))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword <))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword >))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword <=))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword >=))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword left-shift))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword right-shift))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword remainder))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword store))
+          )
