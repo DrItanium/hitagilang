@@ -64,3 +64,31 @@
                       ?second))
                  ?base-address
                  ?b))
+
+(defleaf foo
+         (args (?a ORDINAL)
+               (?b ORDINAL)
+               (?c ORDINAL))
+         (+ ?a
+            ?b
+            ?c))
+
+(defleaf foo
+         (args (?a ORDINAL)
+               (?b ORDINAL)
+               (?c ORDINAL)
+               (?d ORDINAL))
+         (+ ?a
+            ?b
+            ?c
+            ?d))
+
+(defleaf goo
+         (args (?a ORDINAL)
+               (?b ORDINAL)
+               (?c ORDINAL)
+               (?d ORDINAL))
+         (and ?a
+              ?b
+              ?c
+              ?d))

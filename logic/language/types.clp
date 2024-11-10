@@ -144,10 +144,20 @@
         (storage local)
         (visibility public)
         (default ?NONE))
-  (slot right-argument
-        (storage local)
-        (visibility public)
-        (default ?NONE)))
+  (multislot right-argument
+             (storage local)
+             (visibility public)
+             (default ?NONE)))
+
+(defclass MAIN::combinatorial-binary-expression
+             (is-a has-parent
+                   has-title
+                   has-contents)
+             (slot combine-expression
+                   (type SYMBOL)
+                   (storage local)
+                   (visibility public)
+                   (default ?NONE)))
 
 (deftemplate MAIN::root-expression-match
              (slot keyword
@@ -155,7 +165,17 @@
                    (default ?NONE))
              (slot class-kind
                    (type SYMBOL)
-                   (default ?NONE)))
+                   (default ?NONE))
+             (slot variable-length
+                   (type SYMBOL)
+                   (allowed-symbols FALSE
+                                    TRUE)
+                   (default FALSE))
+             (slot combine-using
+                   (type SYMBOL)
+
+                   (default FALSE))
+             )
 
 (deffacts MAIN::unary-expressions-to-match
           (root-expression-match (class-kind unary-expression)
@@ -165,20 +185,32 @@
           )
 (deffacts MAIN::binary-expressions-to-match
           (root-expression-match (class-kind binary-expression)
+                                 (variable-length TRUE)
+                                 (combine-using +)
                                  (keyword +))
           (root-expression-match (class-kind binary-expression)
+                                 (variable-length TRUE)
+                                 (combine-using -)
                                  (keyword -))
           (root-expression-match (class-kind binary-expression)
+                                 (variable-length TRUE)
+                                 (combine-using *)
                                  (keyword *))
           (root-expression-match (class-kind binary-expression)
+                                 (variable-length TRUE)
+                                 (combine-using /)
                                  (keyword /))
           (root-expression-match (class-kind binary-expression)
                                  (keyword eq))
           (root-expression-match (class-kind binary-expression)
                                  (keyword neq))
           (root-expression-match (class-kind binary-expression)
+                                 (variable-length TRUE)
+                                 (combine-using and)
                                  (keyword and))
           (root-expression-match (class-kind binary-expression)
+                                 (variable-length TRUE)
+                                 (combine-using or)
                                  (keyword or))
           (root-expression-match (class-kind binary-expression)
                                  (keyword xor))
@@ -189,12 +221,20 @@
           (root-expression-match (class-kind binary-expression)
                                  (keyword xnor))
           (root-expression-match (class-kind binary-expression)
+                                 (variable-length TRUE)
+                                 (combine-using and)
                                  (keyword <))
           (root-expression-match (class-kind binary-expression)
+                                 (variable-length TRUE)
+                                 (combine-using and)
                                  (keyword >))
           (root-expression-match (class-kind binary-expression)
+                                 (variable-length TRUE)
+                                 (combine-using and)
                                  (keyword <=))
           (root-expression-match (class-kind binary-expression)
+                                 (variable-length TRUE)
+                                 (combine-using and)
                                  (keyword >=))
           (root-expression-match (class-kind binary-expression)
                                  (keyword left-shift))

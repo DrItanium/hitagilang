@@ -142,7 +142,7 @@
                         (parent ?p)
                         (title ?function)
                         (contents ?args)))
-(defrule parser:identify-structures:identify-lambda-expression
+(defrule parser:identify-structures::identify-lambda-expression
          ?obj <- (object (is-a expression)
                          (title lambda)
                          (name ?name)
@@ -159,7 +159,7 @@
                         (arguments ?args)
                         (contents ?body)))
 
-(defrule parser:identify-structures:identify-unary-expressions
+(defrule parser:identify-structures::identify-unary-expressions
          (root-expression-match (class-kind unary-expression)
                                 (keyword ?keyword))
          ?obj <- (object (is-a expression)
@@ -174,7 +174,7 @@
                         (title ?keyword)
                         (argument ?value)))
 
-(defrule parser:identify-structures:identify-binary-expressions
+(defrule parser:identify-structures::identify-binary-expressions
          (root-expression-match (class-kind binary-expression)
                                 (keyword ?keyword))
          ?obj <- (object (is-a expression)
@@ -182,11 +182,33 @@
                          (parent ?p)
                          (title ?keyword)
                          (contents ?left
-                                   ?right))
+                                   ?right
+                                   $?rest))
          =>
          (unmake-instance ?obj)
          (make-instance ?expr of binary-expression
                         (parent ?p)
                         (title ?keyword)
                         (left-argument ?left)
-                        (right-argument ?right)))
+                        (right-argument ?right
+                                        $?rest)))
+(defrule parser:identify-structures::expand-right-argument-in-binary-expression
+         (root-expression-match (class-kind binary-expression)
+                                (keyword ?keyword)
+                                (variable-length TRUE)
+                                (combine-using ?combine))
+         ?obj <- (object (is-a binary-expression)
+                         (name ?name)
+                         (title ?keyword)
+                         (right-argument ?left
+                                         ?right
+                                         $?rest))
+         =>
+         (modify-instance ?obj
+                          (right-argument (make-instance of binary-expression
+                                                         (parent ?name)
+                                                         (title ?combine)
+                                                         (left-argument ?left)
+                                                         (right-argument ?right
+                                                                         ?rest)))))
+
