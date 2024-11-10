@@ -50,18 +50,6 @@
                         (title ?first)
                         (contents ?rest)))
 
-
-(defrule parser:identify-structures::identify-argument-blocks
-         ?obj <- (object (is-a expression)
-                         (name ?name)
-                         (parent ?p)
-                         (title args)
-                         (contents $?rest))
-         =>
-         (unmake-instance ?obj)
-         (make-instance ?name of argument-block
-                        (parent ?p)
-                        (contents $?rest)))
 (defrule parser:identify-structures::identify-individual-arguments
          ?obj <- (object (is-a list)
                          (name ?name)

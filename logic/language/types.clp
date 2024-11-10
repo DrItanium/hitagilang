@@ -298,4 +298,8 @@
                       (target condition)
                       (reversible FALSE)
                       (args conditional-expression))
+          (annotation (kind expression-conversion-decl)
+                      (target args)
+                      (reversible FALSE)
+                      (args argument-block))
           )
