@@ -21,6 +21,28 @@
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+(defrule parser:identify-structures::make-returns-expression
+         ?obj <- (object (is-a expression)
+                         (name ?name)
+                         (parent ?p)
+                         (title returns)
+                         (contents $?conditions))
+         =>
+         (unmake-instance ?obj)
+         (make-instance ?name of returns-expression
+                        (parent ?p)
+                        (contents $?conditions)))
+(defrule parser:identify-structures::make-body-expression
+         ?obj <- (object (is-a expression)
+                         (name ?name)
+                         (parent ?p)
+                         (title body)
+                         (contents $?contents))
+         =>
+         (unmake-instance ?obj)
+         (make-instance ?name of body-expression
+                        (parent ?p)
+                        (contents ?contents)))
 (defrule parser:identify-structures::construct-expressions
          "If the first element of a list is a symbol then it is most likely an expression of some kind, even if it isn't then it is at least safe to do the conversion"
          ?obj <- (object (is-a list)
@@ -69,16 +91,24 @@
                          (name ?name)
                          (parent ?p)
                          (title ?keyword)
-                         (contents ?title ?args $?rest))
+                         (contents ?title 
+                                   ?args 
+                                   ?returns
+                                   ?body))
          (object (is-a argument-block)
                  (name ?args))
+         (object (is-a returns-expression)
+                 (name ?returns))
+         (object (is-a body-expression)
+                 (name ?body))
          =>
          (unmake-instance ?obj)
          (make-instance ?name of ?type
                         (parent ?p)
                         (title ?title)
                         (arguments ?args)
-                        (contents ?rest)))
+                        (returns ?returns)
+                        (body ?body)))
 
 (defrule parser:identify-structures::identify-if-then-else-statement
          "An if statement with then and else components"
@@ -148,16 +178,22 @@
                          (name ?name)
                          (parent ?p)
                          (contents ?args 
-                                   $?body))
+                                   ?returns
+                                   ?body))
          (object (is-a argument-block)
                  (name ?args))
+         (object (is-a returns-expression)
+                 (name ?returns))
+         (object (is-a body-expression)
+                 (name ?body))
 
          =>
          (unmake-instance ?obj)
          (make-instance ?name of lambda-expression
                         (parent ?p)
                         (arguments ?args)
-                        (contents ?body)))
+                        (returns ?returns)
+                        (body ?body)))
 
 (defrule parser:identify-structures::identify-unary-expressions
          (root-expression-match (class-kind unary-expression)
@@ -211,4 +247,5 @@
                                                          (left-argument ?left)
                                                          (right-argument ?right
                                                                          ?rest)))))
+
 

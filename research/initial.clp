@@ -24,60 +24,70 @@
 (defleaf foo
          (args (?a ORDINAL)
                (?b ORDINAL))
-         (+ ?a ?b))
+         (returns ORDINAL)
+         (body (+ ?a ?b)))
 (defleaf foo
          (args (?a INTEGER)
                (?b INTEGER))
-         (+ ?a ?b))
+         (returns INTEGER)
+         (body (+ ?a ?b)))
 
 (defleaf foo
          (args (?a INTEGER)
                (?b ORDINAL))
-         (if (< ?a 0) then
-           (- ?b ?a)
-           else
-           (+ (cast ?a ORDINAL)
-              ?b)))
+         (returns ORDINAL)
+         (body (if (< ?a 0) then
+                 (- ?b ?a)
+                 else
+                 (+ (cast ?a ORDINAL)
+                    ?b))))
 
 (defleaf foo
          (args (?a LONG-ORDINAL)
                (?b LONG-ORDINAL))
-         (+ ?a 
-            ?b))
+         (returns LONG-ORDINAL)
+         (body (+ ?a 
+                  ?b)))
 
 (defleaf address-plus-offset
          (args (?address ADDRESS)
                (?b ORDINAL))
-         (bind ?base-address 
-               ?a)
-         (+ ?base-address
-            ?b))
+         (returns ORDINAL)
+         (body (bind ?base-address 
+                     ?a)
+               (+ ?base-address
+                  ?b)))
 
 (defwindow address-plus-offset
            (args (?address ADDRESS)
                  (?b ORDINAL))
-           (bind ?base-address 
-                 (cast ?a ORDINAL))
-           (call (lambda (args (?first ORDINAL)
-                               (?second ORDINAL))
-                   (+ ?first
-                      ?second))
-                 ?base-address
-                 ?b))
+           (returns ADDRESS)
+           (body (bind ?base-address 
+                       (cast ?a ORDINAL))
+                 (cast (call (lambda (args (?first ORDINAL)
+                                           (?second ORDINAL))
+                               (returns ORDINAL)
+                               (body (+ ?first
+                                        ?second)))
+                             ?base-address
+                             ?b) 
+                       ADDRESS)))
 
 (defleaf foo
          (args (?a ORDINAL)
                (?b ORDINAL)
-               (?c ORDINAL))
-         (+ ?a
-            ?b
-            ?c))
+               (?c ORDINAL)) 
+         (returns ORDINAL)
+         (body (+ ?a
+                  ?b
+                  ?c)))
 
 (defleaf foo
          (args (?a ORDINAL)
                (?b ORDINAL)
                (?c ORDINAL)
                (?d ORDINAL))
+         (returns ORDINAL)
          (+ ?a
             ?b
             ?c
@@ -88,6 +98,7 @@
                (?b ORDINAL)
                (?c ORDINAL)
                (?d ORDINAL))
+         (returns ORDINAL)
          (and ?a
               ?b
               ?c

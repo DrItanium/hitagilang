@@ -33,16 +33,25 @@
         has-title))
 (defclass MAIN::execution-block-declaration
   (is-a has-parent
-        has-contents
         has-title)
   (slot kind
         (type SYMBOL)
         (storage shared)
         (visibility public)
         (access read-only)
-        (default FALSE)))
+        (default FALSE))
+  (slot body
+        (type INSTANCE)
+        (storage shared)
+        (visibility public)
+        (default ?NONE)))
 (defclass MAIN::function-declaration
   (is-a execution-block-declaration)
+  (slot returns
+        (type INSTANCE)
+        (storage local)
+        (visibility public)
+        (default ?NONE))
   (slot arguments
         (type INSTANCE)
         (storage local)
@@ -149,15 +158,17 @@
              (visibility public)
              (default ?NONE)))
 
-(defclass MAIN::combinatorial-binary-expression
-             (is-a has-parent
-                   has-title
-                   has-contents)
-             (slot combine-expression
-                   (type SYMBOL)
-                   (storage local)
-                   (visibility public)
-                   (default ?NONE)))
+(defclass MAIN::returns-expression
+  (is-a has-parent
+        has-title
+        has-contents)
+  (slot title
+        (source composite)
+        (storage shared)
+        (default returns)))
+(defclass MAIN::body-expression
+  (is-a has-parent
+        has-contents))
 
 (deftemplate MAIN::root-expression-match
              (slot keyword
@@ -245,3 +256,4 @@
           (root-expression-match (class-kind binary-expression)
                                  (keyword store))
           )
+
