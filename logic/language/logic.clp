@@ -280,4 +280,3 @@
                              (args ?function))))
 
 
-(defrule language:associate
