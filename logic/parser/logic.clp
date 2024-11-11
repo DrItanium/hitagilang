@@ -181,6 +181,7 @@
                         (value ?value)))
 
 (defrule parser:resolve-parent-child-relationships::identify-indirect-parent-child-relationship
+         "Generate one layer indirection facts directly"
          (object (is-a has-parent)
                  (name ?child)
                  (parent ?parent))
@@ -198,5 +199,37 @@
                              (kind indirect-parent-of)
                              (args ?child)
                              (reversible FALSE))))
+(defrule parser:resolve-parent-child-relationships::combine-indirect-parent-with-parent-parent
+         (annotation (target ?child)
+                     (kind indirect-child-of)
+                     (args ?parent))
+         (object (is-a has-parent)
+                 (name ?parent)
+                 (parent ?super-parent&~FALSE))
+         =>
+         (assert (annotation (target ?child)
+                             (kind indirect-child-of)
+                             (args ?super-parent)
+                             (reversible FALSE))
+                 (annotation (target ?super-parent)
+                             (kind indirect-parent-of)
+                             (args ?child)
+                             (reversible FALSE))))
 
+(defrule parser:resolve-parent-child-relationships::combine-indirect-parent-with-indirect-parent
+         (annotation (target ?child)
+                     (kind indirect-child-of)
+                     (args ?parent))
+         (annotation (target ?parent)
+                     (kind indirect-child-of)
+                     (args ?super-parent))
+         =>
+         (assert (annotation (target ?child)
+                             (kind indirect-child-of)
+                             (args ?super-parent)
+                             (reversible FALSE))
+                 (annotation (target ?super-parent)
+                             (kind indirect-parent-of)
+                             (args ?child)
+                             (reversible FALSE))))
 
