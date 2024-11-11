@@ -259,3 +259,23 @@
                         (condition ?condition)
                         (body ?body)))
 
+
+; do we need explicit arguments?
+; If we have enough facts and knowledge about valid operations, is it possible to actually infer the available types?
+; This is something to think about.
+; It is now necessary to associate the declared variables in the arguments block with the associate d function
+(defrule language:associate-variables::associate-individual-arguments-with-function
+         (object (is-a argument-block)
+                 (parent ?function)
+                 (name ?args)
+                 (contents $? ?arg $?))
+         (object (is-a individual-argument)
+                 (name ?arg))
+         (object (is-a function-declaration)
+                 (name ?function)
+                 (arguments ?args))
+         =>
+         (assert (annotation (kind argument-of)
+                             (target ?arg)
+                             (args ?function))))
+

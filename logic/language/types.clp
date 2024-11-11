@@ -324,3 +324,9 @@
                       (reversible FALSE)
                       (args while-expression))
           )
+(deffacts MAIN::language-focus-facts
+          (annotation (kind focus-on-stage)
+                      (target process-language)
+                      (reversible FALSE)
+                      (args language:associate-variables
+                            )))

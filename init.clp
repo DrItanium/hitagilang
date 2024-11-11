@@ -37,7 +37,7 @@
              )
 (deffacts MAIN::stage-parse-facts
           (stage (current parse-files)
-                 (rest))
+                 (rest process-language))
           )
 (include logic/common/logic.clp)
 (include logic/parser/logic.clp)

@@ -23,9 +23,6 @@
 
 (include logic/parser/module.clp)
 
-;(defmodule parser:identify-structures
-;           (import MAIN
-;                   ?ALL))
-(defmodule language
+(defmodule language:associate-variables
            (import MAIN
                    ?ALL))
