@@ -328,5 +328,6 @@
           (annotation (kind focus-on-stage)
                       (target process-language)
                       (reversible FALSE)
-                      (args language:associate-variables
+                      (args language:convert-structures
+                            language:associate-variables
                             )))

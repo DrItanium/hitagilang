@@ -279,4 +279,15 @@
                              (target ?arg)
                              (args ?function))))
 
-
+(defrule language:associate-variables::associate-body-expression-with-parser-variables
+         (annotation (target ?variable)
+                     (kind indirect-child-of)
+                     (args $? ?body $?))
+         (object (is-a parser-variable)
+                 (name ?variable))
+         (object (is-a body-expression)
+                 (name ?body))
+         =>
+         (assert (annotation (target ?variable)
+                             (kind used-by-body)
+                             (args ?body))))
