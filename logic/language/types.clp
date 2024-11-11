@@ -197,7 +197,24 @@
                    (type SYMBOL)
                    (default FALSE))
              )
-(deffacts MAIN::important-declaration-setups
+(defclass MAIN::not-expression
+  (is-a unary-expression))
+(defclass MAIN::load-expression
+  (is-a unary-expression))
+
+(defclass MAIN::conditional-body-expression
+  (is-a generic-body-expression
+        has-condition))
+(defclass MAIN::while-expression
+  (is-a conditional-body-expression))
+(defclass MAIN::switch-case-expression
+  (is-a conditional-body-expression))
+
+(defclass MAIN::switch-expression
+  (is-a generic-body-expression
+        has-index))
+
+(deffacts MAIN::match-annotations
           (annotation (kind execution-block-translation)
                       (reversible FALSE)
                       (target defleaf)
@@ -209,12 +226,7 @@
           (annotation (kind execution-block-translation)
                       (reversible FALSE)
                       (target defsite)
-                      (args site-declaration)))
-(defclass MAIN::not-expression
-  (is-a unary-expression))
-(defclass MAIN::load-expression
-  (is-a unary-expression))
-(deffacts MAIN::unary-expressions-to-match
+                      (args site-declaration))
           (annotation (kind unary-expression-match)
                       (reversible FALSE)
                       (target not)
@@ -223,8 +235,6 @@
                       (reversible FALSE)
                       (target load)
                       (args load-expression))
-          )
-(deffacts MAIN::binary-expressions-to-match
           (root-expression-match (class-kind binary-expression)
                                  (variable-length TRUE)
                                  (combine-using +)
@@ -285,11 +295,6 @@
                                  (keyword remainder))
           (root-expression-match (class-kind binary-expression)
                                  (keyword store))
-          )
-
-
-
-(deffacts MAIN::container-expressions-decls
           (annotation (kind expression-conversion-decl)
                       (target returns)
                       (reversible FALSE)
@@ -310,21 +315,6 @@
                       (target index)
                       (reversible FALSE)
                       (args index-expression))
-          )
-
-(defclass MAIN::conditional-body-expression
-  (is-a generic-body-expression
-        has-condition))
-(defclass MAIN::while-expression
-  (is-a conditional-body-expression))
-(defclass MAIN::switch-case-expression
-  (is-a conditional-body-expression))
-
-(defclass MAIN::switch-expression
-  (is-a generic-body-expression
-        has-index))
-
-(deffacts MAIN::conditional-body-declarations
           (annotation (kind conditional-body-decl)
                       (target case)
                       (reversible FALSE)
