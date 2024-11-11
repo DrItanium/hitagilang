@@ -21,7 +21,7 @@
 ; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(defrule parser:identify-structures::expression->specific-type
+(defrule language:convert-structures::expression->specific-type
          (annotation (kind expression-conversion-decl)
                      (target ?title)
                      (args ?type))
@@ -36,7 +36,7 @@
                         (parent ?p)
                         (contents $?conditions)))
 
-(defrule parser:identify-structures::construct-expressions
+(defrule language:convert-structures::construct-expressions
          "If the first element of a list is a symbol then it is most likely an expression of some kind, even if it isn't then it is at least safe to do the conversion"
          ?obj <- (object (is-a list)
                          (name ?name)
@@ -50,7 +50,7 @@
                         (title ?first)
                         (contents ?rest)))
 
-(defrule parser:identify-structures::identify-individual-arguments
+(defrule language:convert-structures::identify-individual-arguments
          ?obj <- (object (is-a list)
                          (name ?name)
                          (parent ?p)
@@ -65,7 +65,7 @@
                         (title ?var)
                         (contents $?conditions)))
 
-(defrule parser:identify-structures::construct-function-declaration-generic
+(defrule language:convert-structures::construct-function-declaration-generic
          (annotation (kind execution-block-translation)
                      (target ?keyword)
                      (args ?type))
@@ -92,7 +92,7 @@
                         (returns ?returns)
                         (body ?body)))
 
-(defrule parser:identify-structures::identify-if-then-else-statement
+(defrule language:convert-structures::identify-if-then-else-statement
          "An if statement with then and else components"
          ?obj <- (object (is-a expression)
                          (name ?name)
@@ -114,7 +114,7 @@
                         (condition ?condition)
                         (then ?then)
                         (else ?else)))
-(defrule parser:identify-structures::identify-if-then-statement
+(defrule language:convert-structures::identify-if-then-statement
          "An if statement without an else found in the list of then expressions"
          ?obj <- (object (is-a expression)
                          (name ?name)
@@ -132,7 +132,7 @@
                         (then ?then)
                         (else FALSE)))
 
-(defrule parser:identify-structures::identify-bind-expression
+(defrule language:convert-structures::identify-bind-expression
          ?obj <- (object (is-a expression)
                          (title bind)
                          (name ?name)
@@ -147,7 +147,7 @@
                         (contents ?contents)))
 
 
-(defrule parser:identify-structures::identify-call-expression
+(defrule language:convert-structures::identify-call-expression
          ?obj <- (object (is-a expression)
                          (title call)
                          (name ?name)
@@ -160,7 +160,7 @@
                         (parent ?p)
                         (title ?function)
                         (contents ?args)))
-(defrule parser:identify-structures::identify-lambda-expression
+(defrule language:convert-structures::identify-lambda-expression
          ?obj <- (object (is-a expression)
                          (title lambda)
                          (name ?name)
@@ -183,7 +183,7 @@
                         (returns ?returns)
                         (body ?body)))
 
-(defrule parser:identify-structures::identify-unary-expressions
+(defrule language:convert-structures::identify-unary-expressions
          (annotation (kind unary-expression-match)
                      (target ?keyword)
                      (args ?class-name))
@@ -199,7 +199,7 @@
                         (title ?keyword)
                         (argument ?value)))
 
-(defrule parser:identify-structures::identify-binary-expressions
+(defrule language:convert-structures::identify-binary-expressions
          (root-expression-match (class-kind binary-expression)
                                 (keyword ?keyword))
          ?obj <- (object (is-a expression)
@@ -217,7 +217,7 @@
                         (left-argument ?left)
                         (right-argument ?right
                                         $?rest)))
-(defrule parser:identify-structures::expand-right-argument-in-binary-expression
+(defrule language:convert-structures::expand-right-argument-in-binary-expression
          (root-expression-match (class-kind binary-expression)
                                 (keyword ?keyword)
                                 (variable-length TRUE)
@@ -238,7 +238,7 @@
                                                                          ?rest)))))
 
 
-(defrule parser:identify-structures::identify-conditional-body-expressions
+(defrule language:convert-structures::identify-conditional-body-expressions
          (annotation (kind conditional-body-decl)
                      (target ?keyword)
                      (args ?type))
@@ -279,3 +279,5 @@
                              (target ?arg)
                              (args ?function))))
 
+
+(defrule language:associate

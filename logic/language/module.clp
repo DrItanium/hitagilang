@@ -23,6 +23,9 @@
 
 (include logic/parser/module.clp)
 
+(defmodule language:convert-structures
+           (import MAIN
+                   ?ALL))
 (defmodule language:associate-variables
            (import MAIN
                    ?ALL))

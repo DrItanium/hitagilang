@@ -40,6 +40,3 @@
 (defmodule parser:resolve-parent-child-relationships
            (import MAIN
                    ?ALL))
-(defmodule parser:identify-structures
-           (import MAIN
-                   ?ALL))

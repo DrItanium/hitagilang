@@ -158,7 +158,6 @@
                             parser:sanity-check
                             parser:hoisting
                             parser:resolve-parent-child-relationships
-                            parser:identify-structures
                             )))
 
 (deffacts MAIN::atom-to-variable-conversions
