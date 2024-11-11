@@ -264,30 +264,49 @@
 ; If we have enough facts and knowledge about valid operations, is it possible to actually infer the available types?
 ; This is something to think about.
 ; It is now necessary to associate the declared variables in the arguments block with the associate d function
-(defrule language:associate-variables::associate-individual-arguments-with-function
-         (object (is-a argument-block)
-                 (parent ?function)
-                 (name ?args)
-                 (contents $? ?arg $?))
-         (object (is-a individual-argument)
-                 (name ?arg))
+
+;(defrule language:associate-variables::associate-body-expression-with-parser-variables
+;         (object (is-a body-expression)
+;                 (name ?body))
+;         (annotation (target ?body)
+;                     (kind indirect-parent-of)
+;                     (args $? ?variable $?))
+;         (object (is-a parser-variable)
+;                 (name ?variable))
+;         =>
+;         (assert (annotation (target ?variable)
+;                             (kind arguments-used-by-body)
+;                             (args ?body))))
+
+(defrule language:associate-variables::associate-individual-argument-with-body-parser-variable
          (object (is-a function-declaration)
                  (name ?function)
-                 (arguments ?args))
-         =>
-         (assert (annotation (kind argument-of)
-                             (target ?arg)
-                             (args ?function))))
-
-(defrule language:associate-variables::associate-body-expression-with-parser-variables
-         (annotation (target ?variable)
-                     (kind indirect-child-of)
-                     (args $? ?body $?))
-         (object (is-a parser-variable)
-                 (name ?variable))
+                 (arguments ?args)
+                 (body ?body))
+         (object (is-a argument-block)
+                 (name ?args))
          (object (is-a body-expression)
                  (name ?body))
+         (object (is-a individual-argument)
+                 (name ?arg)
+                 (title ?argpv))
+         (object (is-a parser-variable)
+                 (name ?argpv)
+                 (value ?symbol))
+         ; we find that this individual argument is a child of this function
+         (annotation (target ?function)
+                     (kind indirect-parent-of)
+                     (args $? ?argpv $?))
+         (object (is-a parser-variable)
+                 (name ?bodypv&~?argpv)
+                 (value ?symbol))
+         (annotation (target ?body)
+                     (kind indirect-parent-of)
+                     (args $? ?bodypv $?))
          =>
-         (assert (annotation (target ?variable)
-                             (kind used-by-body)
-                             (args ?body))))
+         (assert (annotation (target ?bodypv)
+                             (kind alias:body->arg)
+                             (args ?argpv))))
+
+
+                             

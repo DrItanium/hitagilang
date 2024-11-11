@@ -31,7 +31,13 @@
   (is-a container-expression))
 (defclass MAIN::individual-argument
   (is-a container-expression
-        has-title))
+        has-title)
+  (slot title
+        (source composite)
+        (type SYMBOL
+              INSTANCE)))
+        
+
 (defclass MAIN::returns-expression
   (is-a container-expression 
         has-title)
