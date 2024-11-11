@@ -145,15 +145,37 @@
                    "Target parser: " ?name crlf
                    "Mismatched container: " ?v crlf)
          (halt))
-(defrule parser:hoisting::raise-symbols-out-of-atoms
-         ?f <- (object (is-a list)
-                       (parent ~FALSE)
-                       (contents $?a ?sym-ref $?b))
+(defrule parser:hoisting::raise-elements-out-of-atoms
+          (annotation (kind types-to-raise-out-of-atoms)
+                      (target atoms-to-raise)
+                      (args $? ?target $?))
          ?k <- (object (is-a atom)
+                       (parent ?p)
                        (name ?sym-ref)
-                       (kind SYMBOL)
-                       (value ?sym))
+                       (kind ?target)
+                       (value ?value))
+         ?f <- (object (is-a list)
+                       (name ?p)
+                       (contents $?a ?sym-ref $?b))
          =>
          (unmake-instance ?k)
          (modify-instance ?f
-                          (contents ?a ?sym ?b)))
+                          (contents ?a 
+                                    ?value
+                                    ?b)))
+
+(defrule parser:hoisting::do-atom-to-object-conversion
+          (annotation (kind atom-to-variable-conversion)
+                      (reversible FALSE)
+                      (target ?target)
+                      (args ?type))
+         ?f <- (object (is-a atom)
+                       (kind ?target)
+                       (parent ?p)
+                       (name ?name)
+                       (value ?value))
+         =>
+         (unmake-instance ?f)
+         (make-instance ?name of ?type
+                        (parent ?p)
+                        (value ?value)))

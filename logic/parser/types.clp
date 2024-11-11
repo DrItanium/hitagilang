@@ -38,6 +38,43 @@
                     ()
                     (send ?self:value
                           to-string))
+(defclass MAIN::variable
+  (is-a has-parent)
+  (slot kind
+        (type SYMBOL)
+        (storage shared)
+        (visibility public)
+        (access read-only)
+        (default UNDEFINED))
+  (slot value
+        (storage local)
+        (visibility public)
+        (default ?NONE)))
+(defclass MAIN::single-field-variable
+  (is-a variable)
+  (slot kind
+        (source composite)
+        (default single-field-variable)))
+
+(defclass MAIN::multifield-variable
+  (is-a variable)
+  (slot kind
+        (source composite)
+        (default multifield-variable)))
+
+(defclass MAIN::global-variable
+  (is-a variable)
+  (slot kind
+        (source composite)
+        (default global-variable)))
+
+(defclass MAIN::multifield-global-variable
+  (is-a variable)
+  (slot kind
+        (source composite)
+        (default multifield-global-variable)))
+
+
 (defclass MAIN::list
   (is-a has-parent
         has-contents))
@@ -105,6 +142,13 @@
                     (bind ?self:current-element
                           ?self:top-element))
 
+
+
+(deftemplate MAIN::parser-open-request
+             (slot path
+                   (type LEXEME)
+                   (default ?NONE)))
+
 (deffacts MAIN::parser-focus-files
           (annotation (kind focus-on-stage)
                       (target parse-files)
@@ -115,8 +159,29 @@
                             parser:hoisting
                             parser:identify-structures)))
 
-
-(deftemplate MAIN::parser-open-request
-             (slot path
-                   (type LEXEME)
-                   (default ?NONE)))
+(deffacts MAIN::atom-to-variable-conversions
+          (annotation (kind atom-to-variable-conversion)
+                      (reversible FALSE)
+                      (target SF_VARIABLE)
+                      (args single-field-variable))
+          (annotation (kind atom-to-variable-conversion)
+                      (reversible FALSE)
+                      (target MF_VARIABLE)
+                      (args multifield-variable))
+          (annotation (kind atom-to-variable-conversion)
+                      (reversible FALSE)
+                      (target GBL_VARIABLE)
+                      (args global-variable))
+          (annotation (kind atom-to-variable-conversion)
+                      (reversible FALSE)
+                      (target MF_GBL_VARIABLE)
+                      (args multifield-global-variable))
+          (annotation (kind types-to-raise-out-of-atoms)
+                      (reversible FALSE)
+                      (target atoms-to-raise)
+                      (args SYMBOL
+                            STRING
+                            INSTANCE_NAME
+                            INTEGER
+                            FLOAT))
+          )
