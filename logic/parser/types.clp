@@ -157,7 +157,9 @@
                             parser:process-file
                             parser:sanity-check
                             parser:hoisting
-                            parser:identify-structures)))
+                            parser:resolve-parent-child-relationships
+                            parser:identify-structures
+                            )))
 
 (deffacts MAIN::atom-to-variable-conversions
           (annotation (kind atom-to-variable-conversion)

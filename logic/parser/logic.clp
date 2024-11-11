@@ -179,3 +179,24 @@
          (make-instance ?name of ?type
                         (parent ?p)
                         (value ?value)))
+
+(defrule parser:resolve-parent-child-relationships::identify-indirect-parent-child-relationship
+         (object (is-a has-parent)
+                 (name ?child)
+                 (parent ?parent))
+         (object (is-a has-parent)
+                 (name ?parent)
+                 (parent ?super-parent))
+         (object (is-a has-parent)
+                 (name ?super-parent))
+         =>
+         (assert (annotation (target ?child)
+                             (kind indirect-child-of)
+                             (args ?super-parent)
+                             (reversible FALSE))
+                 (annotation (target ?super-parent)
+                             (kind indirect-parent-of)
+                             (args ?child)
+                             (reversible FALSE))))
+
+
