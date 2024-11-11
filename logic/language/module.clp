@@ -26,3 +26,6 @@
 ;(defmodule parser:identify-structures
 ;           (import MAIN
 ;                   ?ALL))
+(defmodule language
+           (import MAIN
+                   ?ALL))
