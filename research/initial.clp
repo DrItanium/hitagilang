@@ -95,10 +95,10 @@
                (?c ORDINAL)
                (?d ORDINAL))
          (returns ORDINAL)
-         (+ ?a
-            ?b
-            ?c
-            ?d))
+         (body (+ ?a
+                  ?b
+                  ?c
+                  ?d)))
 
 (defleaf goo
          (args (?a ORDINAL)
@@ -106,12 +106,14 @@
                (?c ORDINAL)
                (?d ORDINAL))
          (returns ORDINAL)
-         (and ?a
+         (body (and ?a
               ?b
               ?c
-              ?d))
+              ?d)))
 (defleaf zoo
          (args (?a ORDINAL))
-         (while (condition (> ?a 1000))
+         (returns ANY)
+         (body (while (condition (> ?a 1000))
                 (body (bind ?a 
                             (+ ?a 1)))))
+         )

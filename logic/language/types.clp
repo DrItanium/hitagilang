@@ -219,6 +219,12 @@
 (defclass MAIN::switch-expression
   (is-a generic-body-expression
         has-index))
+(defclass MAIN::variable-alias
+  (is-a has-parent)
+  (slot linkage
+        (storage local)
+        (visibility public)
+        (default ?NONE)))
 
 (deffacts MAIN::match-annotations
           (annotation (kind execution-block-translation)
@@ -301,6 +307,8 @@
                                  (keyword remainder))
           (root-expression-match (class-kind binary-expression)
                                  (keyword store))
+          (root-expression-match (class-kind binary-expression)
+                                 (keyword cast))
           (annotation (kind expression-conversion-decl)
                       (target returns)
                       (reversible FALSE)
@@ -330,12 +338,6 @@
                       (reversible FALSE)
                       (args while-expression))
           )
-(defclass MAIN::variable-alias
-  (is-a has-parent)
-  (slot linkage
-        (storage local)
-        (visibility public)
-        (default ?NONE)))
         
 (deffacts MAIN::language-focus-facts
           (annotation (kind focus-on-stage)

@@ -285,10 +285,11 @@
                  (name ?argpv)
                  (value ?target)
                  (parent ?target-argument))
-         ; make sure that this is actually an appropriate individual argument
+         ; make sure that this is actually an appropriate individual argument and that it is not a sub-expression
          (object (is-a individual-argument)
                  (name ?target-argument)
-                 (parent ?args))
+                 (parent ?args)
+                 (title ?argpv))
          ; replace the body parser-variable with an alias to the individual argument
          ?obj <- (object (is-a parser-variable)
                          (name ?bodypv)
@@ -303,3 +304,4 @@
 
 
 
+; now that we have updated for aliases back to the list of individual arguments, we want to be able
