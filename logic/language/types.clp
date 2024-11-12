@@ -330,6 +330,13 @@
                       (reversible FALSE)
                       (args while-expression))
           )
+(defclass MAIN::variable-alias
+  (is-a has-parent)
+  (slot linkage
+        (storage local)
+        (visibility public)
+        (default ?NONE)))
+        
 (deffacts MAIN::language-focus-facts
           (annotation (kind focus-on-stage)
                       (target process-language)

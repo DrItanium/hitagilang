@@ -265,48 +265,41 @@
 ; This is something to think about.
 ; It is now necessary to associate the declared variables in the arguments block with the associate d function
 
-;(defrule language:associate-variables::associate-body-expression-with-parser-variables
-;         (object (is-a body-expression)
-;                 (name ?body))
-;         (annotation (target ?body)
-;                     (kind indirect-parent-of)
-;                     (args $? ?variable $?))
-;         (object (is-a parser-variable)
-;                 (name ?variable))
-;         =>
-;         (assert (annotation (target ?variable)
-;                             (kind arguments-used-by-body)
-;                             (args ?body))))
 
 (defrule language:associate-variables::associate-individual-argument-with-body-parser-variable
+         ; select the function object we want to scan
          (object (is-a function-declaration)
                  (name ?function)
                  (arguments ?args)
                  (body ?body))
-         (object (is-a argument-block)
-                 (name ?args))
-         (object (is-a body-expression)
-                 (name ?body))
-         (object (is-a individual-argument)
-                 (name ?arg)
-                 (title ?argpv))
-         (object (is-a parser-variable)
-                 (name ?argpv)
-                 (value ?symbol))
-         ; we find that this individual argument is a child of this function
-         (annotation (target ?function)
+         ; select an argument parser-variable
+         (annotation (target ?args)
                      (kind indirect-parent-of)
                      (args $? ?argpv $?))
-         (object (is-a parser-variable)
-                 (name ?bodypv&~?argpv)
-                 (value ?symbol))
+         ; select a body parser-variable
          (annotation (target ?body)
                      (kind indirect-parent-of)
                      (args $? ?bodypv $?))
+         ; we look for parser-variables which have the same matching value
+         (object (is-a parser-variable)
+                 (name ?argpv)
+                 (value ?target)
+                 (parent ?target-argument))
+         ; make sure that this is actually an appropriate individual argument
+         (object (is-a individual-argument)
+                 (name ?target-argument)
+                 (parent ?args))
+         ; replace the body parser-variable with an alias to the individual argument
+         ?obj <- (object (is-a parser-variable)
+                         (name ?bodypv)
+                         (value ?target)
+                         (parent ?tp))
          =>
-         (assert (annotation (target ?bodypv)
-                             (kind alias:body->arg)
-                             (args ?argpv))))
+         (unmake-instance ?obj)
+         ; associate with individual argument itself
+         (make-instance ?bodypv of variable-alias
+                        (parent ?tp)
+                        (linkage ?target-argument)))
 
 
-                             
+
