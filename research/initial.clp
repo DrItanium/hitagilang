@@ -107,13 +107,12 @@
                (?d ORDINAL))
          (returns ORDINAL)
          (body (and ?a
-              ?b
-              ?c
-              ?d)))
+                    ?b
+                    ?c
+                    ?d)))
 (defleaf zoo
          (args (?a ORDINAL))
          (returns ANY)
          (body (while (condition (> ?a 1000))
-                (body (bind ?a 
-                            (+ ?a 1)))))
-         )
+                      (body (bind ?a 
+                                  (+ ?a 1))))))
